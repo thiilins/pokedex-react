@@ -12,7 +12,7 @@ export const HeaderContainer = styled.div`
     align-items: center;
     gap: 2.5rem;
     padding: 2rem;
-    justify-content: space-between;
+    justify-content: center;
     background-color: ${theme.colors.secondary};
     & .logo {
       display: flex;
