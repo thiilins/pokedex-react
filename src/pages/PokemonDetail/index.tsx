@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { api } from '@/services/api'
 import { useParams } from 'react-router-dom'
 import getDetailsModel from '@utils/getDetailsModel'
-import { IPokemonDetailPageDataProps } from '@/types/PokemonDetails'
+import { IPokemonDetailPageDataProps } from '@/types/pokemons'
 import PokemonProfile from '@components/PokemonProfile'
 
 const PokemonDetail: React.FC = () => {

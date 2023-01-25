@@ -1,4 +1,4 @@
-import { IPokemonDetailsProps } from '@/types/pokemons'
+import { IPokemonApiReturnProps } from '@/types/pokemons'
 import { api } from '@services/api'
 import getId from './getId'
 const getDetailsModel = async ({
@@ -13,7 +13,7 @@ const getDetailsModel = async ({
   species,
   stats,
   sprites
-}: IPokemonDetailsProps) => {
+}: IPokemonApiReturnProps) => {
   const res = await api.get(
     species.url.replace('https://pokeapi.co/api/v2', '')
   )
