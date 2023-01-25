@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "composite": true,
+    "module": "ESNext",
+    "lib": ["es2015"],
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["vite.config.ts"],
+  "files": ["./src/types/styled.d.ts"],
+  "extends": "./tsconfig.paths.json"
+}
