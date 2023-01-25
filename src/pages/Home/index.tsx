@@ -1,16 +1,16 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { api } from '@services/api'
 import { IPokemonResumeProps, PokemonsListResponse } from '@/types/pokemons'
-import { Container, ContentHeader, PokemonListContainer } from './styles'
+import { Wrapper, Header, List } from './styles'
 import Loading from '@/helpers/Loading'
 import Pagination from '@/helpers/Pagination'
 import { usePokemons } from '@/contexts/PokemonContexts'
 import { useSearchParams } from 'react-router-dom'
 import { Select } from '@components/Inputs'
 import PokemonCard from '@components/PokemonCard'
-const itemsPerPageOptions = [9, 12, 15, 18, 21]
+const itemsPerPageOptions = [12, 15, 18, 21]
 const Home = () => {
-  const [itemsPerPage, setItemsPorPage] = useState(9)
+  const [itemsPerPage, setItemsPorPage] = useState(12)
   const { pokemonCount, listPokemonResume } = usePokemons()
   const [searchParams, setSearchParams] = useSearchParams({
     page: '1',
@@ -52,16 +52,16 @@ const Home = () => {
     setSearchParams({ page: String(Math.min(pageNumber, totalPages)) })
   }
   return (
-    <Container>
-      <ContentHeader>
+    <Wrapper>
+      <Header>
         <Select
           label="Itens por página"
           options={itemsPerPageOptions}
           value={itemsPerPage}
           setValue={value => setItemsPorPage(+value)}
         />
-      </ContentHeader>
-      <PokemonListContainer>
+      </Header>
+      <List>
         {!loading ? (
           pokemons.map(pokemon => {
             return <PokemonCard key={pokemon.id} {...pokemon} />
@@ -69,7 +69,7 @@ const Home = () => {
         ) : (
           <Loading />
         )}
-      </PokemonListContainer>
+      </List>
       <Pagination
         onPrevious={onPrevious}
         onNext={onNext}
@@ -77,7 +77,7 @@ const Home = () => {
         totalPages={totalPages}
         currentPage={currentPage}
       />
-    </Container>
+    </Wrapper>
   )
 }
 

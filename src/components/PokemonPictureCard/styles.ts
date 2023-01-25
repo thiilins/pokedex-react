@@ -165,6 +165,9 @@ export const PokemonData = styled.div`
       bottom: 3%;
       left: 5%;
       font-size: 4.5rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .details {
       position: absolute;

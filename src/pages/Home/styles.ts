@@ -1,21 +1,20 @@
 import styled, { css } from 'styled-components'
 
-export const Container = styled.div`
+export const Wrapper = styled.div`
   ${({ theme }) => css`
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 99vw;
-    gap: 0;
-  `}
-`
-export const PokemonListContainer = styled.div`
-  ${({ theme }) => css`
-    display: grid;
-    margin: 0 auto;
-    margin-top: 4rem;
     width: 100%;
     max-width: 1920px;
+    margin: 0 auto;
+    flex-direction: column;
+    align-items: center;
+  `}
+`
+export const List = styled.div`
+  ${({ theme }) => css`
+    display: grid;
+    margin: 4rem auto;
+    width: 100%;
     align-items: center;
     justify-content: center;
     grid-template-columns: repeat(auto-fit, var(--card-grid-width));
@@ -23,15 +22,15 @@ export const PokemonListContainer = styled.div`
     grid-gap: 3rem;
   `}
 `
-export const ContentHeader = styled.div`
+export const Header = styled.div`
   ${({ theme }) => css`
     display: flex;
-    position: relative;
+    margin: 0 auto;
     justify-content: flex-end;
     align-items: center;
     padding: 0 5rem;
     margin: 0 auto;
     width: 100%;
-    max-width: 99vw;
+    max-width: 100%;
   `}
 `

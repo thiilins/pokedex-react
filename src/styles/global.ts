@@ -3,12 +3,9 @@ import { createGlobalStyle, css } from 'styled-components'
 export default createGlobalStyle`
 ${({ theme }) => css`
   :root {
-    --card-grid-width: 460px;
-    --card-grid-height: 230px;
-
+    --card-grid-width: 450px;
     @media (max-width: 460px) {
       --card-grid-width: 90vw;
-      --card-grid-height: 45vw;
     }
   }
 
