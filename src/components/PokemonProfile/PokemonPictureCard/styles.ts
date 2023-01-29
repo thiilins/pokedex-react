@@ -1,5 +1,5 @@
 import styled, { css, DefaultTheme } from 'styled-components'
-import { IconWrapper } from '../PokemonTypeIcon/styles'
+import { IconWrapper } from '@components/PokemonTypeIcon/styles'
 import { transparentize } from 'polished'
 import { PokemonTypesVariant } from '@/types/pokemons'
 interface IProfileContainer {
@@ -15,7 +15,7 @@ export const CardContainer = styled.div<IProfileContainer>`
     aspect-ratio: 1 / 1;
     position: relative;
     border-radius: 2rem;
-    background-color: ${theme.colors.types.background[pokemonType]};
+    background-color: ${theme.colors.types[pokemonType]};
     .background__name {
       color: ${theme.colors.types[pokemonType]};
     }
@@ -69,6 +69,7 @@ export const PokemonImageContainer = styled.div<IPokemonTypeProps>`
       top: 10%;
       z-index: 3;
       font-weight: bold;
+
       font-size: 8em;
       text-align: center;
       text-transform: uppercase;
@@ -81,6 +82,7 @@ export const PokemonImageContainer = styled.div<IPokemonTypeProps>`
       -webkit-background-clip: text;
       -webkit-text-stroke: 4px transparent;
       opacity: 0.8;
+      font-family: ${theme.fonts.family.noto};
     }
     .loader__animation {
       position: absolute;

@@ -4,8 +4,10 @@ export default createGlobalStyle`
 ${({ theme }) => css`
   :root {
     --card-grid-width: 450px;
+    --card-grid-height: 300px;
     @media (max-width: 460px) {
       --card-grid-width: 90vw;
+      --card-grid-height: 80vw;
     }
   }
 
@@ -39,7 +41,7 @@ ${({ theme }) => css`
     }
   }
   html {
-    font-family: ${theme.fonts.family};
+    font-family: ${theme.fonts.family.ubuntu};
   }
 
   body {
@@ -50,11 +52,11 @@ ${({ theme }) => css`
     }
 
     ::-webkit-scrollbar-track {
-      background: ${theme.colors.primary}30;
+      background: ${theme.colors.background}30;
     }
 
     ::-webkit-scrollbar-thumb {
-      background-color: ${theme.colors.primary};
+      background-color: ${theme.colors.background};
       border-radius: 20px; /* roundness of the scroll thumb */
     }
   }

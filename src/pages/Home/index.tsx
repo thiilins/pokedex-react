@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { IPokemonResumeProps } from '@/types/pokemons'
-import { Wrapper, Header, List } from './styles'
+import { Header, List } from './styles'
 import Loading from '@/helpers/Loading'
 import Pagination from '@/helpers/Pagination'
 import { usePokemons } from '@/contexts/PokemonContexts'
 import { useSearchParams } from 'react-router-dom'
 import PokemonCard from '@components/PokemonCard'
+import { PageWrapper } from '../styles'
 const Home = () => {
   const [itemsPerPage] = useState(12)
   const { pokemonCount, listPokemonResume } = usePokemons()
@@ -49,7 +50,7 @@ const Home = () => {
     setSearchParams({ page: String(Math.min(pageNumber, totalPages)) })
   }
   return (
-    <Wrapper>
+    <PageWrapper>
       <List>
         {!loading ? (
           pokemons.map(pokemon => {
@@ -66,7 +67,7 @@ const Home = () => {
         totalPages={totalPages}
         currentPage={currentPage}
       />
-    </Wrapper>
+    </PageWrapper>
   )
 }
 

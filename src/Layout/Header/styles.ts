@@ -1,3 +1,4 @@
+import { lighten } from 'polished'
 import styled, { css } from 'styled-components'
 export const HeaderContainer = styled.div`
   ${({ theme }) => css`
@@ -13,7 +14,13 @@ export const HeaderContainer = styled.div`
     gap: 2.5rem;
     padding: 2rem;
     justify-content: center;
-    background-color: ${theme.colors.secondary};
+    background-color: ${lighten(0.05, theme.colors.background)};
+    background: linear-gradient(
+      to top,
+      ${theme.colors.background} 0%,
+      ${lighten(0.05, theme.colors.background)} 50%,
+      ${theme.colors.background} 100%
+    );
     & .logo {
       display: flex;
       gap: 1rem;

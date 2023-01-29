@@ -8,7 +8,7 @@ export const PaginationContainer = styled.ul`
 `
 export const Container = styled.div`
   ${({ theme }) => css`
-    color: ${theme.colors.secondaryText};
+    color: ${theme.colors.primaryText};
     min-width: 99vw;
     display: flex;
     justify-content: center;

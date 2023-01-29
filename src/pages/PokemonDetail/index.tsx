@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react'
-import { Container } from './styles'
 import { useEffect } from 'react'
 import { api } from '@/services/api'
 import { useParams } from 'react-router-dom'
 import getDetailsModel from '@utils/getDetailsModel'
 import { IPokemonDetailPageDataProps } from '@/types/pokemons'
 import PokemonProfile from '@components/PokemonProfile'
+import { PageWrapper } from '../styles'
 
 const PokemonDetail: React.FC = () => {
   const [data, setData] = useState<IPokemonDetailPageDataProps>(
@@ -24,9 +24,9 @@ const PokemonDetail: React.FC = () => {
   }, [id])
   if (loading) return <></>
   return (
-    <Container>
+    <PageWrapper>
       <PokemonProfile pokemonData={data} />
-    </Container>
+    </PageWrapper>
   )
 }
 

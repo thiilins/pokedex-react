@@ -1,6 +1,7 @@
 export default {
   colors: {
-    background: '#FFDA27',
+    background: '#060b28',
+    header: '#f44336',
     secondary: '#FFDA27',
     primary: '#316ab1',
     secondaryText: '#060B28',
@@ -12,44 +13,24 @@ export default {
     red: '#f44336',
     blue: '#1565c0',
     types: {
-      bug: '#8CB230',
-      dark: '#58575F',
-      dragon: '#0F6AC0',
-      electric: '#EED535',
-      fairy: '#ED6EC7',
-      fighting: '#D04164',
-      fire: '#FD7D24',
-      flying: '#748FC9',
-      ghost: '#556AAE',
-      grass: '#62B957',
-      ground: '#DD7748',
-      ice: '#61CEC0',
-      normal: '#9DA0AA',
-      poison: '#A552CC',
-      psychic: '#EA5D60',
-      rock: '#BAAB82',
-      steel: '#417D9A',
-      water: '#4A90DA',
-      background: {
-        fairy: '#CB10CB',
-        fire: '#EC6E00',
-        normal: '#9fa39d',
-        fighting: '#ff215b',
-        flying: '#3C92FF',
-        poison: '#f149ff',
-        ground: '#ff6b0d',
-        rock: '#6E5707',
-        bug: '#65A703',
-        ghost: '#1D32A5',
-        steel: '#022346',
-        water: '#0092E8',
-        grass: '#076E00',
-        electric: '#d3bb09',
-        psychic: '#FF5349',
-        ice: '#19E5C4',
-        dragon: '#0076ff',
-        dark: '#32179B'
-      }
+      fairy: '#CB10CB',
+      fire: '#EC6E00',
+      normal: '#9fa39d',
+      fighting: '#ff215b',
+      flying: '#3C92FF',
+      poison: '#f149ff',
+      ground: '#ff6b0d',
+      rock: '#6E5707',
+      bug: '#65A703',
+      ghost: '#1D32A5',
+      steel: '#022346',
+      water: '#0092E8',
+      grass: '#076E00',
+      electric: '#d3bb09',
+      psychic: '#FF5349',
+      ice: '#19E5C4',
+      dragon: '#0076ff',
+      dark: '#32179B'
     }
   },
   borders: {
@@ -67,7 +48,11 @@ export default {
     xLarge: '5rem'
   },
   fonts: {
-    family: "'Ubuntu', sans-serif",
+    family: {
+      ubuntu: "'Ubuntu', sans-serif",
+      roboto: "'Roboto', sans-serif",
+      noto: "'Noto Serif JP', serif"
+    },
     weight: {
       regular: 400,
       medium: 500,

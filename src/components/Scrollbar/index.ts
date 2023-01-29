@@ -7,11 +7,11 @@ const Scrollbar = styled.div`
     }
 
     ::-webkit-scrollbar-track {
-      background: ${theme.colors.primary}30;
+      background: ${theme.colors.background}30;
     }
 
     ::-webkit-scrollbar-thumb {
-      background-color: ${theme.colors.primary};
+      background-color: ${theme.colors.background};
       border-radius: 20px; /* roundness of the scroll thumb */
     }
   `}
