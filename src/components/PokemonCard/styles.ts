@@ -22,15 +22,14 @@ export const CardContainer = styled.div<IPokemonTypeProps>`
       img {
         transform: scale(1.1);
       }
-      .card__bg:not(.main) {
-        animation: 2s linear 1s infinite running bgAnimate;
-      }
     }
 
     & .main__bg {
       display: none;
     }
-
+    .card__bg:not(.main) {
+      animation: 2s linear 1s infinite running bgAnimate;
+    }
     ${CardFooter} {
       background-color: ${theme.colors.types[type]};
     }
@@ -212,8 +211,9 @@ export const CardDetails = styled.div`
     }
 
     width: 100%;
+    padding: 0 0 0 2.5rem;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     flex-direction: column;
     gap: 0.5rem;
 
@@ -225,12 +225,14 @@ export const CardDetails = styled.div`
     .types__container {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 0.5rem;
     }
     .name {
+      z-index: 3;
+      position: relative;
       text-transform: capitalize;
-      text-align: center;
-      font-size: 1.2rem;
+      font-size: 1rem;
       width: 90%;
       white-space: nowrap;
       overflow: hidden;
@@ -256,8 +258,7 @@ export const PokemonImageContainer = styled.div<IPokemonTypeProps>`
       justify-content: center;
       position: relative;
       height: 70%;
-      width: 100%;
-
+      aspect-ratio: 1 / 1;
       right: 10%;
     }
     .card__bg {

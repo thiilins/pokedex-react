@@ -54,7 +54,7 @@ const PokemonCard: React.FC<IProps> = ({ pokemonId }) => {
         </CardDetails>
       </CardDataContainer>
       <div className="main__bg">
-        <div className="card__bg" />
+        <div className="card__bg main" />
       </div>
 
       <Link to={`/pokemon/${data.name}`}>
