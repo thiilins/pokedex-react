@@ -132,6 +132,12 @@ export const PokemonImageContainer = styled.div<IPokemonTypeProps>`
         box-shadow: 0px 0px 40px 6px #fff;
       }
     }
+    @media (max-width: 590px) {
+      .background__name {
+        top: 16%;
+        font-size: 4.5rem;
+      }
+    }
     @media (max-width: 460px) {
       .background__name {
         top: 13%;
@@ -222,6 +228,27 @@ export const PokemonData = styled.div`
       border-radius: 20px;
       top: 3%;
       left: 5%;
+    }
+    @media (max-width: 590px) {
+      .name {
+        font-size: 3.4rem;
+        transform: translate(-40%, -180%) rotate(-90deg);
+      }
+      .types {
+        padding: 0.3rem;
+        ${IconWrapper} {
+          padding: 0.6rem;
+          svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffff;
+          }
+        }
+      }
+      .id {
+        font-size: 1rem;
+        padding: 0.3rem 0.5rem;
+      }
     }
     @media (max-width: 460px) {
       .name {
