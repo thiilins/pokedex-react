@@ -16,7 +16,7 @@ const PokemonTypeIcon: React.FC<IPokemonTypeIcon> = ({ type, haveName }) => {
     <IconWrapper type={v} haveName={haveName}>
       <>
         {<TYPE_ICON />}
-        {haveName && type}
+        {haveName && <span className="type__name">{String(type)}</span>}
       </>
     </IconWrapper>
   )

@@ -12,8 +12,8 @@ export const List = styled.div`
     grid-template-columns: repeat(auto-fit, var(--card-grid-width));
     grid-template-rows: auto;
     grid-gap: 2rem 1rem;
-    @media (max-width: 440px) {
-      grid-gap: 6rem 2rem;
+    @media (min-width: 440px) {
+      grid-gap: 4rem 1rem;
     }
   `}
 `

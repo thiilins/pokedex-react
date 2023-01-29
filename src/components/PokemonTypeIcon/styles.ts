@@ -8,9 +8,12 @@ interface IIConWrapper {
 
 export const IconWrapper = styled.div<IIConWrapper>`
   ${({ theme, type, haveName }) => css`
-    padding: ${haveName ? '0.4rem 0.6rem ' : '1rem'};
-    border-radius: ${haveName ? '1.5rem' : '100%'};
-    aspect-ratio: ${haveName ? ' 3 / 1' : ' 1 / 1'};
+    border-radius: 100%;
+    & > span.type__name {
+      display: none;
+    }
+    padding: 0.5rem;
+    aspect-ratio: 1 / 1;
     display: flex;
     gap: 0.5rem;
     align-items: center;
@@ -23,9 +26,23 @@ export const IconWrapper = styled.div<IIConWrapper>`
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     svg {
-      width: 30px;
-      height: 30px;
+      width: 20px;
+      height: 20px;
       fill: #ffff;
+    }
+    @media (min-width: 440px) {
+      border-radius: ${haveName ? '1.5rem' : '100%'};
+      padding: ${haveName ? '0.4rem 0.6rem' : '1rem'};
+      aspect-ratio: ${haveName ? '3 / 1' : '1 / 1'};
+
+      & > span.type__name {
+        display: unset;
+      }
+      svg {
+        width: 30px;
+        height: 30px;
+        fill: #ffff;
+      }
     }
   `}
 `
