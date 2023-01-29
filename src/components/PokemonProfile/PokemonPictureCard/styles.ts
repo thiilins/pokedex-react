@@ -1,6 +1,6 @@
 import styled, { css, DefaultTheme } from 'styled-components'
 import { IconWrapper } from '@components/PokemonTypeIcon/styles'
-import { PokemonTypesVariant } from '@/types/PokemonTypesVariant'
+import { PokemonTypesVariant } from '@/types/pokemon'
 
 interface IProfileContainer {
   pokemonType: PokemonTypesVariant
