@@ -171,6 +171,7 @@ export const CardDetails = styled.div`
     .name {
       text-transform: capitalize;
       font-size: 2rem;
+      max-width: 80%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
