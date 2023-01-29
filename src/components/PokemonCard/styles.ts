@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components'
 import { transparentize, darken, lighten } from 'polished'
 import { IconWrapper } from '../PokemonTypeIcon/styles'
 import { Link } from 'react-router-dom'
+import _ from 'lodash'
 interface IPokemonTypeProps {
   type: PokemonTypesVariant
 }
@@ -10,10 +11,14 @@ export const CardContainer = styled.div<IPokemonTypeProps>`
   ${({ theme, type }) => css`
     --in-color: ${transparentize(0.4, theme.colors.types[type])};
     --out-color: ${transparentize(0.5, theme.colors.types[type])};
+    height: var(--card-grid-width);
+    background-color: transparent;
+
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
+    z-index: 3;
     &:hover {
       img {
         transform: scale(1.1);
@@ -26,7 +31,7 @@ export const CardContainer = styled.div<IPokemonTypeProps>`
       background-color: ${theme.colors.types[type]};
     }
     .card__bg {
-      z-index: 3;
+      z-index: 5;
       width: 100%;
       height: 100%;
       border-radius: 50%;
@@ -37,17 +42,17 @@ export const CardContainer = styled.div<IPokemonTypeProps>`
       box-shadow: 5px 0px 30px 15px var(--in-color);
       border: 0;
       &.main {
+        z-index: 4;
         box-shadow: none;
         position: absolute;
         background: linear-gradient(
           to top,
           var(--in-color) 0%,
           var(--in-color) 58%,
-          transparent 59%
+          transparent 60%
         );
 
-        z-index: 2;
-        top: -100px;
+        top: 12%;
         display: flex;
         width: 20rem;
         height: 15rem;
@@ -81,9 +86,9 @@ export const CardContainer = styled.div<IPokemonTypeProps>`
 export const CardFooter = styled.footer`
   ${({ theme }) => css`
     height: 3rem;
-
+    z-index: 5;
     position: absolute;
-    z-index: 3;
+
     left: 0%;
     bottom: -3rem;
     padding: 0.5rem;
@@ -139,11 +144,12 @@ export const CardFooter = styled.footer`
 export const CardDataContainer = styled.div<IPokemonTypeProps>`
   ${({ theme, type }) => css`
     cursor: pointer;
+    z-index: 5;
     user-select: none;
     height: var(--card-grid-height);
     width: 100%;
-    position: relative;
-    z-index: 3;
+    position: absolute;
+    bottom: 0;
     background: rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(20px);
@@ -161,6 +167,7 @@ export const CardDataContainer = styled.div<IPokemonTypeProps>`
 export const CardDetails = styled.div`
   ${({ theme }) => css`
     position: absolute;
+    z-index: 5;
     bottom: 10%;
     display: flex;
     align-items: center;
@@ -206,7 +213,7 @@ export const CardDetails = styled.div`
 export const PokemonImageContainer = styled.div<IPokemonTypeProps>`
   ${({ theme }) => css`
     position: relative;
-    z-index: 4;
+    z-index: 6;
     top: -100px;
     display: flex;
     width: 15rem;
@@ -217,7 +224,7 @@ export const PokemonImageContainer = styled.div<IPokemonTypeProps>`
     transition: all 0.5s;
 
     & img {
-      z-index: 4;
+      z-index: 6;
       padding: 1.5rem;
       aspect-ratio: 1 / 1;
       display: flex;

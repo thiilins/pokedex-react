@@ -5,12 +5,12 @@ export const List = styled.div`
     display: grid;
     margin: 4rem auto;
     width: 100%;
-    padding: 150px 0;
+    padding: 1rem 0;
     justify-content: center;
-    max-width: 1500px;
+    max-width: 1520px;
     align-items: center;
     grid-template-columns: repeat(auto-fit, var(--card-grid-width));
-    grid-gap: 180px 1.2rem;
+    grid-gap: 2rem 1rem;
   `}
 `
 export const Header = styled.div`
