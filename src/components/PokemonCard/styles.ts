@@ -30,17 +30,7 @@ export const CardContainer = styled.div<IPokemonTypeProps>`
     & .main__bg {
       display: none;
     }
-    .card__bg {
-      z-index: 3;
-      width: 45%;
-      aspect-ratio: 1 / 1;
-      position: absolute;
-      left: 5%;
-      border-radius: 50%;
-      background-color: var(--in-color);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
+
     ${CardFooter} {
       background-color: ${theme.colors.types[type]};
     }
@@ -90,15 +80,6 @@ export const CardContainer = styled.div<IPokemonTypeProps>`
           width: 60%;
           height: 80%;
         }
-      }
-      .card__bg {
-        z-index: 5;
-        width: 100%;
-        left: unset;
-        border-radius: 50%;
-        -webkit-backdrop-filter: blur(20px);
-        box-shadow: 5px 0px 30px 15px var(--in-color);
-        border: 0;
       }
     }
     @keyframes bgAnimate {
@@ -265,27 +246,51 @@ export const PokemonImageContainer = styled.div<IPokemonTypeProps>`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    width: 100%;
     height: 100%;
 
     & img {
       z-index: 6;
       padding: 1.5rem;
-      aspect-ratio: 1 / 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 90%;
-      height: 90%;
+      position: relative;
+      height: 70%;
+      width: 100%;
+
+      right: 10%;
+    }
+    .card__bg {
+      z-index: 3;
+      width: 50%;
+      aspect-ratio: 1 / 1;
+      position: absolute;
+      left: 5%;
+      right: 5%;
+      border-radius: 50%;
+      background-color: var(--in-color);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
     @media (min-width: 440px) {
       position: relative;
       z-index: 6;
       top: -60%;
       width: 60%;
+      .card__bg {
+        z-index: 5;
+        width: 100%;
+        left: unset;
+        border-radius: 50%;
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 5px 0px 30px 15px var(--in-color);
+        border: 0;
+      }
       & img {
         width: 100%;
         height: 100%;
+        position: unset;
+        right: unset;
       }
     }
   `}
