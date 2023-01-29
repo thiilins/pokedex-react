@@ -10,7 +10,11 @@ export const List = styled.div`
     max-width: 1520px;
     align-items: center;
     grid-template-columns: repeat(auto-fit, var(--card-grid-width));
+    grid-template-rows: auto;
     grid-gap: 2rem 1rem;
+    @media (max-width: 440px) {
+      grid-gap: 6rem 2rem;
+    }
   `}
 `
 export const Header = styled.div`

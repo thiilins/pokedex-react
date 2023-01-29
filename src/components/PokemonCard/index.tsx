@@ -43,7 +43,10 @@ const PokemonCard: React.FC<IPokemonResumeProps> = ({
           </div>
         </CardDetails>
       </CardDataContainer>
-      <div className="card__bg main" />
+      <div className="main__bg">
+        <div className="card__bg" />
+      </div>
+
       <Link to={`/pokemon/${name}`}>
         <CardFooter>
           <span>

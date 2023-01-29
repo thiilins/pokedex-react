@@ -30,6 +30,33 @@ export const CardContainer = styled.div<IPokemonTypeProps>`
     ${CardFooter} {
       background-color: ${theme.colors.types[type]};
     }
+    & .main__bg {
+      overflow: hidden;
+      background: transparent;
+      height: var(--card-grid-height);
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .card__bg {
+        z-index: 4;
+        box-shadow: none;
+        position: absolute;
+        background: linear-gradient(
+          to top,
+          var(--in-color) 0%,
+          var(--in-color) 58%,
+          transparent 60%
+        );
+
+        top: -30%;
+        display: flex;
+        width: 60%;
+        height: 80%;
+      }
+    }
     .card__bg {
       z-index: 5;
       width: 100%;
@@ -41,22 +68,6 @@ export const CardContainer = styled.div<IPokemonTypeProps>`
       -webkit-backdrop-filter: blur(20px);
       box-shadow: 5px 0px 30px 15px var(--in-color);
       border: 0;
-      &.main {
-        z-index: 4;
-        box-shadow: none;
-        position: absolute;
-        background: linear-gradient(
-          to top,
-          var(--in-color) 0%,
-          var(--in-color) 58%,
-          transparent 60%
-        );
-
-        top: 12%;
-        display: flex;
-        width: 20rem;
-        height: 15rem;
-      }
     }
     @keyframes bgAnimate {
       0% {
@@ -111,33 +122,6 @@ export const CardFooter = styled.footer`
     svg {
       width: 25px;
       height: 25px;
-    }
-    &:hover {
-      span {
-        position: relative;
-        left: -35%;
-      }
-      svg {
-        animation: 3s linear infinite 1s running rotateSvg;
-        @keyframes rotateSvg {
-          0% {
-            position: relative;
-            right: 0%;
-            transform: rotate(0);
-          }
-
-          50% {
-            position: relative;
-            right: -100%;
-            transform: rotate(360deg);
-          }
-          100% {
-            position: relative;
-            right: 0%;
-            transform: rotate(0);
-          }
-        }
-      }
     }
   `}
 `
@@ -202,7 +186,7 @@ export const CardDetails = styled.div`
         fill: #ffff;
       }
     }
-    @media (max-width: 460px) {
+    @media (max-width: 440px) {
       .name {
         font-size: 2rem;
       }
@@ -214,15 +198,17 @@ export const PokemonImageContainer = styled.div<IPokemonTypeProps>`
   ${({ theme }) => css`
     position: relative;
     z-index: 6;
-    top: -100px;
+    top: -50%;
     display: flex;
-    width: 15rem;
-    height: 15rem;
+    width: 60%;
+    aspect-ratio: 1 / 1;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     transition: all 0.5s;
-
+    @media (max-width: 440px) {
+      width: 70%;
+    }
     & img {
       z-index: 6;
       padding: 1.5rem;

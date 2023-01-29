@@ -138,7 +138,7 @@ export const PokemonImageContainer = styled.div<IPokemonTypeProps>`
         font-size: 4.5rem;
       }
     }
-    @media (max-width: 460px) {
+    @media (max-width: 440px) {
       .background__name {
         top: 13%;
         font-size: 3rem;
@@ -250,7 +250,7 @@ export const PokemonData = styled.div`
         padding: 0.3rem 0.5rem;
       }
     }
-    @media (max-width: 460px) {
+    @media (max-width: 440px) {
       .name {
         font-size: 2.4rem;
         transform: translate(-40%, -180%) rotate(-90deg);

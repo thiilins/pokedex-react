@@ -18,7 +18,7 @@ export const CardContainer = styled.div`
       font-size: 3rem;
     }
     margin: 0 auto;
-    @media (max-width: 460px) {
+    @media (max-width: 440px) {
       h1 {
         font-size: 1.5rem;
       }
