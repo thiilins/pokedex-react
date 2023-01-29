@@ -1,5 +1,4 @@
-import { IPokemonResumeProps, PokemonTypesVariant } from '@/types/pokemons'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 // import { PokemonLoader } from '../PokemonPictureCard/styles'
 import { CgPokemon } from 'react-icons/cg'
 import PokemonTypeIcon from '../PokemonTypeIcon'
@@ -13,31 +12,43 @@ import {
   CardFooter
 } from './styles'
 import { Link } from 'react-router-dom'
-
-const PokemonCard: React.FC<IPokemonResumeProps> = ({
-  height,
-  id,
-  image,
-  japan_name,
-  name,
-  species,
-  types,
-  weight
-}) => {
-  const type = types[0].name as PokemonTypesVariant
-
+import { PokemonTypesVariant } from '@/types/PokemonTypesVariant'
+import getPokemonCardDetails from './utils/getPokemonCardDetails'
+import { api } from '@/services/api'
+import { IPokemonCardDetails } from '@/types/pokemonCardDetails'
+interface IProps {
+  pokemonId: string
+}
+const PokemonCard: React.FC<IProps> = ({ pokemonId }) => {
+  const [data, setData] = useState<IPokemonCardDetails>(
+    {} as IPokemonCardDetails
+  )
+  const type = data?.types
+    ? (data?.types[0]?.name as PokemonTypesVariant)
+    : 'fire'
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    const loadPokemon = async () => {
+      const response = await api.get(`/pokemon/${pokemonId}`)
+      const pokemon = getPokemonCardDetails(response.data)
+      setData(pokemon)
+      setLoading(false)
+    }
+    loading && loadPokemon()
+  }, [loading, pokemonId])
+  if (loading) return <></>
   return (
     <CardContainer type={type}>
       <CardDataContainer type={type}>
         <PokemonImageContainer type={type} className="pokemon__image">
-          <img src={image ?? ''} alt={name} />
+          <img src={data.image ?? ''} alt={data.name} />
           <div className="card__bg" />
         </PokemonImageContainer>
         <CardDetails>
-          <span className="id">#{('0000' + id).slice(-4)}</span>
-          <h2 className="name">{name}</h2>
+          <span className="id">#{('0000' + data.id).slice(-4)}</span>
+          <h2 className="name">{data.name}</h2>
           <div className="types__container">
-            {types.map(type => (
+            {data.types.map(type => (
               <PokemonTypeIcon key={type.id} type={type.name} haveName />
             ))}
           </div>
@@ -47,7 +58,7 @@ const PokemonCard: React.FC<IPokemonResumeProps> = ({
         <div className="card__bg" />
       </div>
 
-      <Link to={`/pokemon/${name}`}>
+      <Link to={`/pokemon/${data.name}`}>
         <CardFooter>
           <span>
             Saiba mais <CgPokemon stroke="#fff" />

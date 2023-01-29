@@ -1,7 +1,7 @@
 import styled, { css, DefaultTheme } from 'styled-components'
 import { IconWrapper } from '@components/PokemonTypeIcon/styles'
-import { transparentize } from 'polished'
-import { PokemonTypesVariant } from '@/types/pokemons'
+import { PokemonTypesVariant } from '@/types/PokemonTypesVariant'
+
 interface IProfileContainer {
   pokemonType: PokemonTypesVariant
   miniCard?: boolean
@@ -12,6 +12,7 @@ interface IIndexContainer {
 export const CardContainer = styled.div<IProfileContainer>`
   ${({ theme, pokemonType, miniCard }) => css`
     width: 100%;
+    z-index: 3;
     aspect-ratio: 1 / 1;
     position: relative;
     border-radius: 2rem;

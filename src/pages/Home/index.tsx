@@ -1,23 +1,23 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
-import { IPokemonResumeProps } from '@/types/pokemons'
+import getId from '@utils/getId'
 import { Header, List } from './styles'
 import Loading from '@/helpers/Loading'
 import Pagination from '@/helpers/Pagination'
-import { usePokemons } from '@/contexts/PokemonContexts'
 import { useSearchParams } from 'react-router-dom'
 import PokemonCard from '@components/PokemonCard'
 import { PageWrapper } from '../styles'
+import { api } from '@/services/api'
+import { INamedAPIResource, IPokemonList } from '@/types/general'
 const Home = () => {
   const [itemsPerPage] = useState(12)
-  const { pokemonCount, listPokemonResume } = usePokemons()
+  const [pokemons, setPokemons] = useState<IPokemonList[]>([])
+  const [pokemonCount, setPokemonCount] = useState(0)
   const [searchParams, setSearchParams] = useSearchParams({
     page: '1',
     search: '',
     type: ''
   })
-  const [pokemons, setPokemons] = useState<IPokemonResumeProps[]>(
-    [] as IPokemonResumeProps[]
-  )
+
   const [loading, setLoading] = useState(true)
   const currentPage = useMemo(
     () => (searchParams.has('page') ? +searchParams.get('page')! : 1),
@@ -29,14 +29,25 @@ const Home = () => {
   )
 
   useEffect(() => {
-    setLoading(true)
-    const res = listPokemonResume(
-      itemsPerPage * (currentPage - 1),
-      itemsPerPage
-    )
-    setPokemons(res)
-    setLoading(false)
-  }, [itemsPerPage, listPokemonResume, currentPage])
+    const loadPokemons = async () => {
+      setLoading(true)
+      const res = await api.get(
+        `/pokemon?limit=${itemsPerPage}&offset=${
+          itemsPerPage * (currentPage - 1)
+        }`
+      )
+      setPokemonCount(res.data.count)
+
+      setPokemons(
+        res.data.results.map((item: INamedAPIResource) => ({
+          ...item,
+          id: getId(item.url)
+        }))
+      )
+      setLoading(false)
+    }
+    loadPokemons()
+  }, [itemsPerPage, currentPage])
 
   const onNext = useCallback(() => {
     const page = Math.min(currentPage + 1, totalPages)
@@ -54,7 +65,7 @@ const Home = () => {
       <List>
         {!loading ? (
           pokemons.map(pokemon => {
-            return <PokemonCard key={pokemon.id} {...pokemon} />
+            return <PokemonCard key={pokemon.id} pokemonId={pokemon.id} />
           })
         ) : (
           <Loading />

@@ -6,6 +6,7 @@ export const PageWrapper = styled.div`
     width: 100%;
     max-width: 1920px;
     margin: 0 auto;
+    overflow-x: hidden;
     flex-direction: column;
     align-items: center;
   `}

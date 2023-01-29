@@ -14,17 +14,24 @@ export const Wrapper = styled.div`
 `
 export const Container = styled.div`
   ${({ theme }) => css`
-    grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
     display: grid;
-    width: 100%;
+    grid-template-columns: 100%;
+    flex-direction: column;
+    width: 100vw;
     gap: 2rem;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    @media (max-width: 440px) {
-      grid-template-columns: 90vw;
-      grid-template-rows: 90vw;
-      gap: 1rem;
+    overflow-x: hidden;
+
+    @media (min-width: 900px) {
+      grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+      display: grid;
+      width: 100vw;
+      gap: 2rem;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
     }
   `}
 `

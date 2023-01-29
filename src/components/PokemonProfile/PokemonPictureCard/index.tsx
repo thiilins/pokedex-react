@@ -10,8 +10,10 @@ import {
 
 import WeightIcon from '@assets/weight.svg'
 import HeightIcon from '@assets/height.svg'
-import { IPokemonResumeProps, PokemonTypesVariant } from '@/types/pokemons'
+
 import PokemonTypeIcon from '@components/PokemonTypeIcon'
+import { IPokemonResumeProps } from '@/types/pokemonResume'
+import { PokemonTypesVariant } from '@/types/PokemonTypesVariant'
 interface IPictureCard {
   pokemon: IPokemonResumeProps
   miniCard?: boolean

@@ -2,17 +2,18 @@ import React from 'react'
 import PokemonPictureCard from './PokemonPictureCard'
 import BiographCard from './BiographCard'
 import { Container, Wrapper } from './styles'
-import { IPokemonDetailPageDataProps } from '@/types/pokemons'
+import { IPokemonDetailPageDataProps } from '@/types/PokemonDetailPageDataProps'
+
 interface IPokemonProfileProps {
-  pokemonData: IPokemonDetailPageDataProps
+  pokemonId: string
 }
-const PokemonProfile: React.FC<IPokemonProfileProps> = ({ pokemonData }) => {
+const PokemonProfile: React.FC<IPokemonProfileProps> = ({ pokemonId }) => {
   return (
     <Wrapper>
       <Container>
         {/* <div className="green"></div>
         <div className="red"></div> */}
-        <PokemonPictureCard pokemon={pokemonData} />
+        {/* <PokemonPictureCard pokemon={} /> */}
         <BiographCard />
       </Container>
     </Wrapper>
