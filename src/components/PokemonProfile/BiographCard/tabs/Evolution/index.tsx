@@ -1,4 +1,4 @@
-import { IPokemonCardDetails } from '@/types/pokemonCardDetails'
+import { IPokemonCardDetails } from '@/types/pokemon'
 import React, { useState, useEffect } from 'react'
 
 // import { Container } from './styles';

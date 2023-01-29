@@ -1,4 +1,4 @@
-import { PokemonTypesVariant } from '@/types/pokemons'
+import { PokemonTypesVariant } from '@/types/pokemon'
 import styled, { css } from 'styled-components'
 import { transparentize, darken, lighten } from 'polished'
 import { IconWrapper } from '../PokemonTypeIcon/styles'

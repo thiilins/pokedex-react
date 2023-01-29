@@ -2,7 +2,7 @@ import React from 'react'
 import * as pokemonType from '@assets/pokemonTypes'
 
 import { IconWrapper } from './styles'
-import { PokemonTypesVariant } from '@/types/pokemons'
+import { PokemonTypesVariant } from '@/types/pokemon'
 interface IPokemonTypeIcon {
   type: unknown
   haveName?: boolean

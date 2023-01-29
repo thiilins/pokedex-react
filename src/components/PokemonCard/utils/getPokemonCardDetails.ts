@@ -1,4 +1,4 @@
-import { IPokemonApiReturnProps } from '@/types/pokemonApiReturn'
+import { IPokemonApiReturnProps } from '@/types/pokemon'
 export default (data: IPokemonApiReturnProps) => {
   return {
     name: data.name,

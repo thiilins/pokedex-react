@@ -2,7 +2,7 @@ import React from 'react'
 import PokemonPictureCard from './PokemonPictureCard'
 import BiographCard from './BiographCard'
 import { Container, Wrapper } from './styles'
-import { IPokemonDetailPageDataProps } from '@/types/PokemonDetailPageDataProps'
+import { IPokemonDetailPageDataProps } from '@/types/pokemon'
 
 interface IPokemonProfileProps {
   pokemonId: string

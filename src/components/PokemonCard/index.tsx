@@ -12,10 +12,9 @@ import {
   CardFooter
 } from './styles'
 import { Link } from 'react-router-dom'
-import { PokemonTypesVariant } from '@/types/PokemonTypesVariant'
+import { PokemonTypesVariant, IPokemonCardDetails } from '@/types/pokemon'
 import getPokemonCardDetails from './utils/getPokemonCardDetails'
 import { api } from '@/services/api'
-import { IPokemonCardDetails } from '@/types/pokemonCardDetails'
 interface IProps {
   pokemonId: string
 }
