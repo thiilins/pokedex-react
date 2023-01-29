@@ -151,8 +151,10 @@ export const CardDataContainer = styled.div<IPokemonTypeProps>`
 export const CardDetails = styled.div`
   ${({ theme }) => css`
     position: absolute;
+    overflow: hidden;
     z-index: 5;
     bottom: 10%;
+    width: 100%;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -171,7 +173,8 @@ export const CardDetails = styled.div`
     .name {
       text-transform: capitalize;
       font-size: 2rem;
-      max-width: 80%;
+      text-align: center;
+      width: 90%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -189,7 +192,7 @@ export const CardDetails = styled.div`
     }
     @media (max-width: 440px) {
       .name {
-        font-size: 2rem;
+        font-size: 1.4rem;
       }
     }
   `}
