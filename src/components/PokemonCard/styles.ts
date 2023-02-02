@@ -1,8 +1,6 @@
 import { PokemonTypesVariant } from '@/types/pokemon'
 import styled, { css } from 'styled-components'
-import { transparentize, darken, lighten } from 'polished'
-import { IconWrapper } from '../PokemonTypeIcon/styles'
-import { Link } from 'react-router-dom'
+import { transparentize, lighten } from 'polished'
 import _ from 'lodash'
 interface IPokemonTypeProps {
   type: PokemonTypesVariant
@@ -32,6 +30,9 @@ export const CardContainer = styled.div<IPokemonTypeProps>`
     }
     ${CardFooter} {
       background-color: ${theme.colors.types[type]};
+      &:hover {
+        background-color: ${lighten(0.1, theme.colors.types[type])};
+      }
     }
     /* Web */
     @media (min-width: 440px) {
@@ -111,6 +112,7 @@ export const CardFooter = styled.footer`
     height: 3rem;
     z-index: 5;
     position: absolute;
+    cursor: pointer;
     right: 0%;
     bottom: 0%;
     width: 55%;

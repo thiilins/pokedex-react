@@ -8,8 +8,13 @@ import PokemonCard from '@components/PokemonCard'
 import { PageWrapper } from '../styles'
 import { api } from '@/services/api'
 import { INamedAPIResource, IPokemonList } from '@/types/general'
+import PokemonProfile from '@components/PokemonProfile'
+import { IPokemonDetailPageDataProps } from '@/types/pokemon'
 const Home = () => {
   const [itemsPerPage] = useState(12)
+  const [open, setOpen] = useState(true)
+  const [pokemonModalData, setPokemonModalData] =
+    useState<IPokemonDetailPageDataProps | null>(null)
   const [pokemons, setPokemons] = useState<IPokemonList[]>([])
   const [pokemonCount, setPokemonCount] = useState(0)
   const [searchParams, setSearchParams] = useSearchParams({
@@ -17,7 +22,7 @@ const Home = () => {
     search: '',
     type: ''
   })
-
+  const options = { open, setOpen, pokemonModalData, setPokemonModalData }
   const [loading, setLoading] = useState(true)
   const currentPage = useMemo(
     () => (searchParams.has('page') ? +searchParams.get('page')! : 1),
@@ -62,10 +67,23 @@ const Home = () => {
   }
   return (
     <PageWrapper>
+      {pokemonModalData && (
+        <PokemonProfile
+          pokemon={pokemonModalData}
+          isOpen={open}
+          onRequestClose={() => setOpen(false)}
+        />
+      )}
       <List>
         {!loading ? (
           pokemons.map(pokemon => {
-            return <PokemonCard key={pokemon.id} pokemonId={pokemon.id} />
+            return (
+              <PokemonCard
+                key={pokemon.id}
+                pokemonId={pokemon.id}
+                {...options}
+              />
+            )
           })
         ) : (
           <Loading />
