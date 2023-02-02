@@ -3,7 +3,6 @@ import Modal from 'react-modal'
 
 import {
   MainModal,
-  IndexContainer,
   PokemonImageContainer,
   PokemonData,
   PokemonDataContainer

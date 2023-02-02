@@ -8,9 +8,7 @@ interface IProfileContainer {
   type: PokemonTypesVariant
   miniCard?: boolean
 }
-interface IIndexContainer {
-  index: number
-}
+
 export const MainModal = styled(Modal)<IProfileContainer>`
   ${({ theme, type }) => css`
     overflow: auto;
@@ -44,25 +42,6 @@ export const MainModal = styled(Modal)<IProfileContainer>`
         justify-content: center;
       }
     }
-  `}
-`
-
-export const IndexContainer = styled.div<IIndexContainer>`
-  ${({ theme, index = 2 }) => css`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    min-width: 100%;
-    min-height: 100%;
-    aspect-ratio: 1 / 1;
-    z-index: ${index};
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   `}
 `
 
