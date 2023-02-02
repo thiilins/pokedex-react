@@ -9,19 +9,19 @@
 <h1 align="center">pokedex-react</h1>
 
 <p align="center">
-  <img alt="Principal linguagem do projeto" src="https://img.shields.io/github/languages/top/thiilins/pokedex-react?style=for-the-badge&color=ef5350">
+  <img alt="Principal linguagem do projeto" src="https://img.shields.io/github/languages/top/thiilins/pokedex-react?style=for-the-badge&color=0e5ec1">
 
-  <img alt="Quantidade de linguagens utilizadas" src="https://img.shields.io/github/languages/count/thiilins/pokedex-react?style=for-the-badge&color=ef5350">
+  <img alt="Quantidade de linguagens utilizadas" src="https://img.shields.io/github/languages/count/thiilins/pokedex-react?style=for-the-badge&color=0e5ec1">
 
-  <img alt="Tamanho do repositório" src="https://img.shields.io/github/repo-size/thiilins/pokedex-react?style=for-the-badge&color=ef5350">
+  <img alt="Tamanho do repositório" src="https://img.shields.io/github/repo-size/thiilins/pokedex-react?style=for-the-badge&color=0e5ec1">
 
-  <img alt="Licença" src="https://img.shields.io/github/license/thiilins/pokedex-react?style=for-the-badge&color=ef5350">
+  <img alt="Licença" src="https://img.shields.io/github/license/thiilins/pokedex-react?style=for-the-badge&color=0e5ec1">
 
-  <!-- <img alt="Github issues" src="https://img.shields.io/github/issues/thiilins/pokedex-react?style=for-the-badge&color=ef5350" /> -->
+  <!-- <img alt="Github issues" src="https://img.shields.io/github/issues/thiilins/pokedex-react?style=for-the-badge&color=0e5ec1" /> -->
 
-  <!-- <img alt="Github forks" src="https://img.shields.io/github/forks/thiilins/pokedex-react?style=for-the-badge&color=ef5350" /> -->
+  <!-- <img alt="Github forks" src="https://img.shields.io/github/forks/thiilins/pokedex-react?style=for-the-badge&color=0e5ec1" /> -->
 
-  <!-- <img alt="Github stars" src="https://img.shields.io/github/stars/thiilins/pokedex-react?style=for-the-badge&color=ef5350" /> -->
+  <!-- <img alt="Github stars" src="https://img.shields.io/github/stars/thiilins/pokedex-react?style=for-the-badge&color=0e5ec1" /> -->
 </p>
 
 <!-- Status -->
@@ -34,7 +34,6 @@
 
 <p align="center">
   <a href="#dart-sobre">Sobre</a> &#xa0; | &#xa0;
-  <a href="#sparkles-funcionalidades">Funcionalidades</a> &#xa0; | &#xa0;
   <a href="#rocket-tecnologias">Tecnologias</a> &#xa0; | &#xa0;
   <a href="#white_check_mark-pré-requisitos">Pré requisitos</a> &#xa0; | &#xa0;
   <a href="#checkered_flag-começando">Começando</a> &#xa0; | &#xa0;
@@ -48,12 +47,6 @@
 
 Sobre o seu projeto
 
-## :sparkles: Funcionalidades
-
-:heavy_check_mark: Funcionalidade 1;\
-:heavy_check_mark: Funcionalidade 2;\
-:heavy_check_mark: Funcionalidade 3;
-
 ## :rocket: Tecnologias
 
 As seguintes ferramentas foram usadas na construção do projeto:
@@ -61,7 +54,6 @@ As seguintes ferramentas foram usadas na construção do projeto:
 - [Expo](https://expo.io/)
 - [Node.js](https://nodejs.org/en/)
 - [React](https://pt-br.reactjs.org/)
-- [React Native](https://reactnative.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
 
 ## :white_check_mark: Pré requisitos
