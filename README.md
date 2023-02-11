@@ -6,7 +6,7 @@
   <a href="https://pokedex-react-dusky.vercel.app/">Demo</a>
 </div>
 
-<h1 align="center">pokedex-react</h1>
+<h1 align="center">Pokedex React [V1] </h1>
 
 <p align="center">
   <img alt="Principal linguagem do projeto" src="https://img.shields.io/github/languages/top/thiilins/pokedex-react?style=for-the-badge&color=0e5ec1">
