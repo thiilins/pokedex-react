@@ -1,5 +1,5 @@
 <div align="center" id="top">
-  <img src="./.github/imgs/cover.png" alt="pokedex-react" width='100%'/>
+ <a href="https://pokedex-react-dusky.vercel.app/"><img src="./.github/imgs/cover.png" alt="pokedex-react" width='100%'/></a>
 
 &#xa0;
 
