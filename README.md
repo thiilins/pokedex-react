@@ -26,11 +26,7 @@
 
 <!-- Status -->
 
-<!-- <h4 align="center">
-	🚧  pokedex-react 🚀 Em construção...  🚧
-</h4>
 
-<hr> -->
 
 <p align="center">
   <a href="#dart-sobre">Sobre</a> &#xa0; | &#xa0;
@@ -45,7 +41,7 @@
 
 ## :dart: Sobre
 
-Sobre o seu projeto
+Pokedex construída com finalidade de estudos, treinando construção de modal, layouts responsivos, consumo de dados via api, paginação e rotas internas via React-dom.
 
 ## :rocket: Tecnologias
 
