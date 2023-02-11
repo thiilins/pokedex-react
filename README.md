@@ -41,8 +41,7 @@
 
 ## :dart: Sobre
 
-Pokedex construída com finalidade de estudos, treinando construção de modal, layouts responsivos, consumo de dados via api, paginação e rotas internas via React-dom.
-
+Pokedéx construída com finalidade de estudos, treinando construção de modal, layouts responsivos, consumo de dados via api, paginação e rotas internas via "react-router-dom"
 ## :rocket: Tecnologias
 
 As seguintes ferramentas foram usadas na construção do projeto:
