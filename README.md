@@ -1,5 +1,5 @@
 <div align="center" id="top">
- <a href="https://pokedex-react-dusky.vercel.app/"><img src="./.github/imgs/cover.png" alt="pokedex-react" width='100%'/></a>
+ <a href="https://pokedex-react-dusky.vercel.app/"><img src="./.github/assets/banner.png" alt="pokedex-react" width='100%'/></a>
 
 &#xa0;
 
@@ -26,8 +26,6 @@
 
 <!-- Status -->
 
-
-
 <p align="center">
   <a href="#dart-sobre">Sobre</a> &#xa0; | &#xa0;
   <a href="#rocket-tecnologias">Tecnologias</a> &#xa0; | &#xa0;
@@ -42,6 +40,7 @@
 ## :dart: Sobre
 
 Pokedéx construída com finalidade de estudos, treinando construção de modal, layouts responsivos, consumo de dados via api, paginação e rotas internas via "react-router-dom"
+
 ## :rocket: Tecnologias
 
 As seguintes ferramentas foram usadas na construção do projeto:
