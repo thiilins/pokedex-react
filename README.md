@@ -3,7 +3,7 @@
 
 &#xa0;
 
-  <!-- <a href="https://pokedex-react.netlify.com">Demo</a> -->
+  <a href="https://pokedex-react-dusky.vercel.app/">Demo</a>
 </div>
 
 <h1 align="center">pokedex-react</h1>
