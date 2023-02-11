@@ -44,9 +44,6 @@ Pokedéx construída com finalidade de estudos, treinando construção de modal,
 ## :rocket: Tecnologias
 
 As seguintes ferramentas foram usadas na construção do projeto:
-
-- [Expo](https://expo.io/)
-- [Node.js](https://nodejs.org/en/)
 - [React](https://pt-br.reactjs.org/)
 - [TypeScript](https://www.typescriptlang.org/)
 
