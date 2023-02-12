@@ -1,9 +1,9 @@
 <div align="center" id="top">
- <img src="./.github/assets/readme_banner.png" alt="pokedex-react" width='100%'/>
+ <a href="https://td-pokedex-react.vercel.app/"><img src="./.github/assets/readme_banner.png" alt="pokedex-react" width='100%'/></a>
 
 &#xa0;
 
-  <!-- <a href="https://pokedex-react-dusky.vercel.app/">Demo</a> -->
+  <a href="https://td-pokedex-react.vercel.app/">Demo</a>
 </div>
 
 <h1 align="center">Pokedex React [V 1.0] </h1>
