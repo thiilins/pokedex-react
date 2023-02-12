@@ -39,7 +39,7 @@
 
 ## :dart: Sobre
 
-Pokedéx construída com finalidade de estudos, treinando construção de modal, layouts responsivos, consumo de dados via api, paginação e rotas internas via "react-router-dom"
+Pokedéx construída com finalidade de estudos, treinando construção de modal, layouts responsivos, consumo de dados via api, paginação e rotas internas via react-router-dom
 
 ## :rocket: Tecnologias
 
