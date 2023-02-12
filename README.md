@@ -1,5 +1,5 @@
 <div align="center" id="top">
- <img src="./.github/assets/cover.png" alt="pokedex-react" width='100%'/>
+ <img src="./.github/assets/readme_banner.png" alt="pokedex-react" width='100%'/>
 
 &#xa0;
 
