@@ -1,12 +1,12 @@
 <div align="center" id="top">
- <a href="https://pokedex-react-dusky.vercel.app/"><img src="./.github/assets/banner.png" alt="pokedex-react" width='100%'/></a>
+ <img src="./.github/assets/cover.png" alt="pokedex-react" width='100%'/>
 
 &#xa0;
 
-  <a href="https://pokedex-react-dusky.vercel.app/">Demo</a>
+  <!-- <a href="https://pokedex-react-dusky.vercel.app/">Demo</a> -->
 </div>
 
-<h1 align="center">Pokedex React [V1] </h1>
+<h1 align="center">Pokedex React [V 1.0] </h1>
 
 <p align="center">
   <img alt="Principal linguagem do projeto" src="https://img.shields.io/github/languages/top/thiilins/pokedex-react?style=for-the-badge&color=0e5ec1">
@@ -44,6 +44,7 @@ Pokedéx construída com finalidade de estudos, treinando construção de modal,
 ## :rocket: Tecnologias
 
 As seguintes ferramentas foram usadas na construção do projeto:
+
 - [React](https://pt-br.reactjs.org/)
 - [TypeScript](https://www.typescriptlang.org/)
 
