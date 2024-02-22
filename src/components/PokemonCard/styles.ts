@@ -262,14 +262,13 @@ export const PokemonImageContainer = styled.div<IPokemonTypeProps>`
       height: 70%;
       aspect-ratio: 1 / 1;
       right: 10%;
+      filter: drop-shadow(0px 0px 12px var(--in-color));
     }
     .card__bg {
       z-index: 3;
       width: 50%;
       aspect-ratio: 1 / 1;
       position: absolute;
-      left: 5%;
-      right: 5%;
       border-radius: 50%;
       background-color: var(--in-color);
       backdrop-filter: blur(20px);

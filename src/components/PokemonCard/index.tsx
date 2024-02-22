@@ -11,10 +11,8 @@ import {
   CardDataContainer,
   CardFooter
 } from './styles'
-import { Link } from 'react-router-dom'
 import {
   PokemonTypesVariant,
-  IPokemonCardDetails,
   IPokemonDetailPageDataProps
 } from '@/types/pokemon'
 import getPokemonCardDetails from './utils/getPokemonCardDetails'
