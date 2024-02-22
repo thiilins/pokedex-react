@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "vite --host",
     "start": "vite --host",
+    "prebuild": "rimraf dist",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint src --max-warnings=0",
-    "postinstall": "husky install"
+    "postinstall": "husky"
   },
   "dependencies": {
     "@mui/icons-material": "^5.11.0",
@@ -57,6 +58,7 @@
     "husky": "^9.0.7",
     "lint-staged": "^15.0.1",
     "prettier": "^3.0.0",
+    "rimraf": "^5.0.5",
     "tsconfig-paths": "^4.1.1",
     "typescript": "^5.0.3",
     "typescript-styled-plugin": "^0.18.2",
