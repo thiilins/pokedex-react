@@ -17,7 +17,7 @@
     "@mui/lab": "^5.0.0-alpha.117",
     "@mui/material": "^5.11.6",
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest",
-    "@mui/styled-engine-sc": "^5.11.0",
+    "@mui/styled-engine-sc": "^6.0.2",
     "@tippyjs/react": "^4.2.6",
     "axios": "^1.2.2",
     "lodash": "^4.17.21",
