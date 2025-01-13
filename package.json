@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.191",
-    "@types/react": "^18.0.26",
+    "@types/react": "^19.0.6",
     "@types/react-dom": "^19.0.1",
     "@types/react-modal": "^3.13.1",
     "@types/react-router-dom": "^5.3.3",
