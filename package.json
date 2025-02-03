@@ -13,7 +13,7 @@
     "postinstall": "husky"
   },
   "dependencies": {
-    "@mui/icons-material": "^5.11.0",
+    "@mui/icons-material": "^6.4.2",
     "@mui/lab": "^5.0.0-alpha.117",
     "@mui/material": "^5.11.6",
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest",
