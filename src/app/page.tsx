@@ -608,9 +608,15 @@ export default function Home() {
               POWERED BY
             </span>
             <div className="flex items-center gap-1.5">
-              {/* Developer Logo Placeholder - sleek tech shape */}
-              <div className="relative w-5 h-5 rounded-lg bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-slate-950 font-sans font-black text-[10px] shadow-glow-cyan/20 group-hover:shadow-glow-cyan/40 group-hover:animate-pulse transition-all">
-                TL
+              {/* Developer Logo - SVG carregado dos assets públicos */}
+              <div className="relative w-5 h-5 flex items-center justify-center">
+                <Image
+                  src="/assets/img/thiagolins-dev.svg"
+                  alt="Thiago Lins Logo"
+                  width={20}
+                  height={20}
+                  className="object-contain filter brightness-100 group-hover:animate-pulse transition-all"
+                />
               </div>
               <span className="font-sans font-black text-xs text-white tracking-wide group-hover:text-secondary transition-colors uppercase">
                 Thiago Lins
