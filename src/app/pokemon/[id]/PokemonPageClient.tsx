@@ -269,7 +269,6 @@ export default function PokemonPageClient({ data, currentId }: IPokemonPageClien
           />
 
           <MoveList
-            pokemonId={String(data.id)}
             moves={data.moves}
             typeBgClass={style.bg}
             toggleMoveDetails={toggleMoveDetails}

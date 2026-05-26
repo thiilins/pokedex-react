@@ -43,11 +43,7 @@ interface PokedexContextType {
   // Pokémon do Dia
   featuredPokemon: any
 
-  // Custom Decks (Move Tutor)
-  customDecks: Record<string, any[]>
-  equipMove: (pokemonId: string, move: any) => void
-  unequipMove: (pokemonId: string, moveName: string) => void
-  isMoveEquipped: (pokemonId: string, moveName: string) => boolean
+
 }
 
 const PokedexContext = createContext<PokedexContextType | undefined>(undefined)
@@ -76,36 +72,6 @@ export const PokedexProvider: React.FC<{
 
   // Pokémon do Dia
   const [featuredPokemon, setFeaturedPokemon] = useState<any>(null)
-
-  // Custom Decks (Move Tutor)
-  const [customDecks, setCustomDecks] = useState<Record<string, any[]>>({})
-
-  const equipMove = useCallback((pokemonId: string, move: any) => {
-    setCustomDecks(prev => {
-      const deck = prev[pokemonId] || []
-      if (deck.some(m => m.name === move.name)) return prev
-      if (deck.length >= 4) return prev
-      return {
-        ...prev,
-        [pokemonId]: [...deck, move]
-      }
-    })
-  }, [])
-
-  const unequipMove = useCallback((pokemonId: string, moveName: string) => {
-    setCustomDecks(prev => {
-      const deck = prev[pokemonId] || []
-      return {
-        ...prev,
-        [pokemonId]: deck.filter(m => m.name !== moveName)
-      }
-    })
-  }, [])
-
-  const isMoveEquipped = useCallback((pokemonId: string, moveName: string) => {
-    const deck = customDecks[pokemonId] || []
-    return deck.some(m => m.name === moveName)
-  }, [customDecks])
 
   // 1. Pokémon do Dia via Server Action (cache server-side).
   //    featuredId depende de new Date() (request-time), por isso resolve no cliente.
@@ -245,10 +211,6 @@ export const PokedexProvider: React.FC<{
     clearCompare,
     handleSelectSlot,
     featuredPokemon,
-    customDecks,
-    equipMove,
-    unequipMove,
-    isMoveEquipped
   }), [
     allPokemons,
     typeFilteredPokemons,
@@ -264,10 +226,6 @@ export const PokedexProvider: React.FC<{
     clearCompare,
     handleSelectSlot,
     featuredPokemon,
-    customDecks,
-    equipMove,
-    unequipMove,
-    isMoveEquipped
   ])
 
   return (

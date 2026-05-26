@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import Image from 'next/image'
-import { X, Swords, Trophy, Heart, Shield, Zap, ShieldAlert, Gauge, Star, Volume2, Play, Pause, RotateCcw, Gamepad2, Cpu, Sparkles } from 'lucide-react'
+import { X, Swords, Trophy, Heart, Shield, Zap, ShieldAlert, Gauge, Star, Volume2, Play, Pause, RotateCcw, Gamepad2, Cpu } from 'lucide-react'
 import PokemonTypeIcon, { typeStylingMap } from './PokemonTypeIcon'
-import { usePokedex } from '@/contexts/PokedexContext'
 import { getTypeEffectiveness, PokemonType } from '@/utils/typeMatchups'
 
 interface IProps {
@@ -191,7 +190,6 @@ const BattleVersusModal: React.FC<IProps> = ({
   onSelectSlot
 }) => {
   const [isRendered, setIsRendered] = useState(false)
-  const { customDecks } = usePokedex()
 
   // Arena Modes: 'compare' | 'auto' | 'manual'
   const [arenaMode, setArenaMode] = useState<'compare' | 'auto' | 'manual'>('compare')
@@ -280,21 +278,8 @@ const BattleVersusModal: React.FC<IProps> = ({
   // Resolve equipped and fallback moves
   const getFighterMoves = (pokemon: any): ICombatMove[] => {
     if (!pokemon) return []
-    
-    // Check custom decks first
-    const custom = customDecks[pokemon.id.toString()]
-    if (custom && custom.length > 0) {
-      return custom.map(m => ({
-        name: m.name,
-        power: m.power ?? 50,
-        accuracy: m.accuracy ?? 100,
-        pp: m.pp ?? 20,
-        damageClass: m.damageClass === 'special' ? 'special' : 'physical',
-        type: m.type ?? 'normal'
-      }))
-    }
 
-    // Fallback to top moves from pokemon details
+    // Use first 4 moves from pokemon's move list with smart attribute resolution
     const pokeMoves = pokemon.moves || []
     const firstFour = pokeMoves.slice(0, 4)
     const pokemonType = pokemon.types?.[0]?.name?.toLowerCase() || 'normal'
@@ -843,22 +828,6 @@ const BattleVersusModal: React.FC<IProps> = ({
                     </div>
                   </div>
 
-                  {/* Moves display list in comparison view */}
-                  <div className="w-full text-left space-y-1">
-                    <div className="text-[7.5px] font-mono font-black text-slate-500 tracking-wider uppercase">DECK EQUIPADO</div>
-                    <div className="grid grid-cols-2 gap-1">
-                      {movesA.map((mv, i) => (
-                        <div key={i} className="px-2 py-1 bg-white/5 border border-white/5 rounded-lg text-[8px] truncate capitalize font-mono text-white">
-                          ⚡ {mv.name.replace(/-/g, ' ')}
-                        </div>
-                      ))}
-                      {Array.from({ length: 4 - movesA.length }).map((_, i) => (
-                        <div key={i} className="px-2 py-1 border border-dashed border-white/5 text-[8px] font-mono text-slate-600 uppercase text-center rounded-lg">
-                          Vazio
-                        </div>
-                      ))}
-                    </div>
-                  </div>
 
                   {/* Total score box */}
                   <div className="px-5 py-2 rounded-xl border border-white/5 bg-slate-950/40 text-center w-full max-w-[150px] relative z-10 mt-2">
@@ -1018,22 +987,6 @@ const BattleVersusModal: React.FC<IProps> = ({
                     </div>
                   </div>
 
-                  {/* Moves list display */}
-                  <div className="w-full text-left space-y-1">
-                    <div className="text-[7.5px] font-mono font-black text-slate-500 tracking-wider uppercase">DECK EQUIPADO</div>
-                    <div className="grid grid-cols-2 gap-1">
-                      {movesB.map((mv, i) => (
-                        <div key={i} className="px-2 py-1 bg-white/5 border border-white/5 rounded-lg text-[8px] truncate capitalize font-mono text-white">
-                          ⚡ {mv.name.replace(/-/g, ' ')}
-                        </div>
-                      ))}
-                      {Array.from({ length: 4 - movesB.length }).map((_, i) => (
-                        <div key={i} className="px-2 py-1 border border-dashed border-white/5 text-[8px] font-mono text-slate-600 uppercase text-center rounded-lg">
-                          Vazio
-                        </div>
-                      ))}
-                    </div>
-                  </div>
 
                   {/* Total score box */}
                   <div className="px-5 py-2 rounded-xl border border-white/5 bg-slate-950/40 text-center w-full max-w-[150px] relative z-10 mt-2">
