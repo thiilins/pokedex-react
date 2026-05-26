@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { Swords } from 'lucide-react'
 import PokemonTypeIcon, { typeStylingMap } from './PokemonTypeIcon'
 import { api } from '@/services/api'
 import getId from '@/utils/getId'
@@ -8,17 +9,34 @@ interface IProps {
   pokemonId: string
   setPokemonModalData: (pokemon: any) => void
   setOpen: (status: boolean) => void
+  pokemonCache: Record<string, any>
+  onDataLoaded: (id: string, data: any) => void
+  isComparing: boolean
+  onCompareToggle: (id: string) => void
+  compareListLength: number
 }
 
 const PokemonCard: React.FC<IProps> = ({
   pokemonId,
   setOpen,
-  setPokemonModalData
+  setPokemonModalData,
+  pokemonCache,
+  onDataLoaded,
+  isComparing,
+  onCompareToggle,
+  compareListLength
 }) => {
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // 1. Check Cache first! (Performance Extrema)
+    if (pokemonCache[pokemonId]) {
+      setData(pokemonCache[pokemonId])
+      setLoading(false)
+      return
+    }
+
     let isMounted = true
     const loadPokemon = async () => {
       try {
@@ -28,12 +46,12 @@ const PokemonCard: React.FC<IProps> = ({
         const speciesUrl = response.data.species.url.replace('https://pokeapi.co/api/v2', '')
         const speciesResponse = await api.get(speciesUrl)
         
-        // Find Japanese name in names array
+        // Find Japanese name
         const japanNameObj = speciesResponse.data.names.find(
           (n: any) => n.language.name === 'ja-Hrkt' || n.language.name === 'ja'
         ) || speciesResponse.data.names[0]
 
-        // Find Portuguese description or fallback to English
+        // Find Portuguese description
         const flavorEntry = speciesResponse.data.flavor_text_entries.find(
           (entry: any) => entry.language.name === 'pt' || entry.language.name === 'pt-BR'
         ) || speciesResponse.data.flavor_text_entries.find(
@@ -43,7 +61,7 @@ const PokemonCard: React.FC<IProps> = ({
           ? flavorEntry.flavor_text.replace(/\f/g, ' ').replace(/\n/g, ' ').replace(/\r/g, ' ') 
           : 'Sem descrição registrada no banco de dados.'
 
-        // Find genus (category) in Portuguese or English
+        // Find genus
         const genusEntry = speciesResponse.data.genera.find(
           (g: any) => g.language.name === 'pt' || g.language.name === 'pt-BR'
         ) || speciesResponse.data.genera.find(
@@ -93,6 +111,7 @@ const PokemonCard: React.FC<IProps> = ({
 
         if (isMounted) {
           setData(parsedData)
+          onDataLoaded(pokemonId, parsedData) // Update parent Cache!
           setLoading(false)
         }
       } catch (err) {
@@ -104,7 +123,7 @@ const PokemonCard: React.FC<IProps> = ({
     return () => {
       isMounted = false
     }
-  }, [pokemonId])
+  }, [pokemonId, pokemonCache, onDataLoaded])
 
   if (loading || !data) {
     return (
@@ -131,7 +150,9 @@ const PokemonCard: React.FC<IProps> = ({
         setPokemonModalData(data)
         setOpen(true)
       }}
-      className={`group relative flex flex-col justify-between w-full h-[280px] sm:h-[340px] rounded-[24px] sm:rounded-[32px] border ${style.border} bg-gradient-to-b ${style.gradient} to-[#060b28]/95 backdrop-blur-md overflow-hidden cursor-pointer select-none transition-all duration-500 hover:-translate-y-2 hover:${style.glow} hover:border-white/20 active:scale-98`}
+      className={`group relative flex flex-col justify-between w-full h-[280px] sm:h-[340px] rounded-[24px] sm:rounded-[32px] border bg-gradient-to-b ${style.gradient} to-[#060b28]/95 backdrop-blur-md overflow-hidden cursor-pointer select-none transition-all duration-500 hover:-translate-y-2 hover:${style.glow} hover:border-white/20 active:scale-98 ${
+        isComparing ? 'border-secondary ring-1 ring-secondary/50 shadow-glow-cyan/20' : style.border
+      }`}
     >
       
       {/* Glow hover effect */}
@@ -143,14 +164,22 @@ const PokemonCard: React.FC<IProps> = ({
           #{String(data.id).padStart(4, '0')}
         </span>
         
-        {/* Pokéball logo */}
-        <svg 
-          viewBox="0 0 512 512" 
-          className="w-5 h-5 text-white/10 group-hover:text-white/25 group-hover:rotate-180 transition-all duration-700 pointer-events-none"
-          fill="currentColor"
+        {/* Battle Versus Swords toggle button! */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation() // Avoid opening details modal!
+            onCompareToggle(pokemonId)
+          }}
+          disabled={!isComparing && compareListLength >= 2}
+          className={`p-1.5 rounded-lg border transition-all duration-300 active:scale-90 disabled:opacity-25 disabled:pointer-events-none cursor-pointer ${
+            isComparing 
+              ? 'bg-secondary text-slate-950 border-secondary shadow-glow-cyan/50 scale-105' 
+              : 'bg-white/5 text-white/40 border-white/10 hover:text-white hover:bg-white/10 hover:border-white/20'
+          }`}
+          title={isComparing ? 'Remover do combate' : 'Adicionar ao combate'}
         >
-          <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zm0 48c105 0 191.8 77.2 206.1 178.9h-82C368.1 184 317.4 152 256 152s-112.1 32-124.1 74.9h-82C64.2 125.2 151 48 256 48zm0 416c-105 0-191.8-77.2-206.1-178.9h82c12 42.9 62.7 74.9 124.1 74.9s112.1-32 124.1-74.9h82c-14.3 101.7-81.1 178.9-206.1 178.9zm0-232c-26.5 0-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48s-21.5-48-48-48z"/>
-        </svg>
+          <Swords className="w-3.5 h-3.5" />
+        </button>
       </div>
 
       {/* Floating Pokemon image - sized responsively */}

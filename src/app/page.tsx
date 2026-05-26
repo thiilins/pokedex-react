@@ -1,14 +1,16 @@
 'use client'
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { api } from '@/services/api'
 import getId from '@/utils/getId'
 import Header from '@/components/Header'
 import PokemonCard from '@/components/PokemonCard'
 import PokemonProfileModal from '@/components/PokemonProfileModal'
+import BattleVersusModal from '@/components/BattleVersusModal'
 import Pagination from '@/components/Pagination'
-import { Sparkles, Trophy, Shield, Database, Activity, Star, Zap } from 'lucide-react'
+import { Sparkles, Trophy, Shield, Swords, Star } from 'lucide-react'
 import Image from 'next/image'
+import { typeStylingMap } from '@/components/PokemonTypeIcon'
 
 interface IPokemonListItem {
   name: string
@@ -33,8 +35,38 @@ export default function Home() {
   const [open, setOpen] = useState(false)
   const [pokemonModalData, setPokemonModalData] = useState<any>(null)
 
-  // Pokemon of the Day (Charizard - 6)
+  // 1. Caching Instantâneo Database State (Performance Extrema!)
+  const [pokemonCache, setPokemonCache] = useState<Record<string, any>>({})
+
+  // 2. Módulo de Comparação de Combate (Battle Versus) State
+  const [compareList, setCompareList] = useState<string[]>([])
+  const [compareOpen, setCompareOpen] = useState(false)
+
+  // Pokémon of the Day (Charizard - 6)
   const [featuredPokemon, setFeaturedPokemon] = useState<any>(null)
+
+  // Callback to register loaded Pokémon details in Cache (Performance Extrema!)
+  const handleDataLoaded = useCallback((id: string, parsedData: any) => {
+    setPokemonCache((prev) => {
+      if (prev[id]) return prev
+      return { ...prev, [id]: parsedData }
+    })
+  }, [])
+
+  // Callback to toggle Pokémon inside the Battle Versus List
+  const handleCompareToggle = useCallback((id: string) => {
+    setCompareList((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((p) => p !== id)
+      }
+      if (prev.length >= 2) return prev // Max 2 pokemons
+      const newList = [...prev, id]
+      if (newList.length === 2) {
+        setCompareOpen(true) // Automatically open the arena when 2 are selected!
+      }
+      return newList
+    })
+  }, [])
 
   // 1. Initial Load: Fetch all 1025 pokemons
   useEffect(() => {
@@ -56,7 +88,7 @@ export default function Home() {
     fetchAllPokemons()
   }, [])
 
-  // 2. Load Featured Pokemon of the Day (Charizard)
+  // 2. Load Featured Pokemon of the Day
   useEffect(() => {
     const loadFeatured = async () => {
       try {
@@ -149,19 +181,63 @@ export default function Home() {
     return Math.ceil(processedPokemons.length / itemsPerPage)
   }, [processedPokemons, itemsPerPage])
 
+  // 3. Tema Orgânico Dinâmico (Active Type Aura!)
+  // If details modal is open, adapt the ambient orbs to the open Pokémon's element color!
+  const activeType = useMemo(() => {
+    if (open && pokemonModalData) {
+      return pokemonModalData.types[0]?.name?.toLowerCase() || ''
+    }
+    // If Battle Versus is open, blend type colors dynamically
+    if (compareOpen && compareList.length === 2) {
+      const pokeA = pokemonCache[compareList[0]]
+      return pokeA?.types[0]?.name?.toLowerCase() || ''
+    }
+    return ''
+  }, [open, pokemonModalData, compareOpen, compareList, pokemonCache])
+
+  const styleAura = useMemo(() => {
+    if (activeType) {
+      return typeStylingMap[activeType] || null
+    }
+    return null
+  }, [activeType])
+
   const statNameMap: Record<string, string> = {
     hp: 'Vida',
     attack: 'Ataque',
     defense: 'Defesa',
   }
 
+  // Retrieve A and B data from Cache for Versus Modal
+  const pokeVersusA = useMemo(() => {
+    if (compareList.length >= 1) return pokemonCache[compareList[0]]
+    return null
+  }, [compareList, pokemonCache])
+
+  const pokeVersusB = useMemo(() => {
+    if (compareList.length >= 2) return pokemonCache[compareList[1]]
+    return null
+  }, [compareList, pokemonCache])
+
   return (
     <div className="min-h-screen bg-background text-white flex flex-col relative overflow-hidden bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:24px_24px]">
       
-      {/* Dynamic Animated Ambient Neon Orbs (Gives life and movement to the background!) */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[40%] rounded-full bg-secondary/5 filter blur-[100px] pointer-events-none animate-pulse-glow" />
-      <div className="absolute top-[20%] right-[-10%] w-[45%] h-[45%] rounded-full bg-accent/5 filter blur-[100px] pointer-events-none animate-pulse-glow" style={{ animationDelay: '1.2s' }} />
-      <div className="absolute bottom-[10%] left-[20%] w-[35%] h-[35%] rounded-full bg-header/5 filter blur-[100px] pointer-events-none animate-pulse-glow" style={{ animationDelay: '2.4s' }} />
+      {/* 3. Tema Orgânico Dinâmico: Glowing backdrop pulses in Pokémon's element color when active! */}
+      <div 
+        className={`absolute top-[-10%] left-[-10%] w-[60%] h-[40%] rounded-full filter blur-[120px] pointer-events-none transition-all duration-700 ${
+          styleAura 
+            ? `${styleAura.bg}/15 scale-110` 
+            : 'bg-secondary/5'
+        } animate-pulse-glow`} 
+      />
+      <div 
+        className={`absolute bottom-[10%] right-[-10%] w-[50%] h-[50%] rounded-full filter blur-[120px] pointer-events-none transition-all duration-700 ${
+          styleAura 
+            ? `${styleAura.bg}/15 scale-110` 
+            : 'bg-accent/5'
+        } animate-pulse-glow`} 
+        style={{ animationDelay: '1.2s' }}
+      />
 
       {/* Header toolbar */}
       <Header
@@ -176,21 +252,17 @@ export default function Home() {
       {/* Main Body */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 md:py-8 flex flex-col justify-between relative z-10">
         
-        {/* SUPER ANIMATED PORTUGUESE HERO BANNER */}
+        {/* HERO BANNER */}
         {!searchQuery && !selectedType && currentPage === 1 && (
           <section className="relative mb-8 md:mb-12 p-6 md:p-10 rounded-[28px] md:rounded-[36px] overflow-hidden border border-white/5 bg-slate-950/30 backdrop-blur-xl flex flex-col lg:flex-row items-center gap-6 md:gap-8 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
             
-            {/* Organic animated gradient orbs inside the hero */}
             <div className="absolute -left-12 -top-12 w-44 h-44 bg-secondary/15 filter blur-3xl animate-pulse-glow" />
             <div className="absolute -right-12 -bottom-12 w-44 h-44 bg-header/15 filter blur-3xl animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
-            
-            {/* Tech grid mesh on hero backdrop */}
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.005)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none" />
 
             {/* Left Content Column */}
             <div className="space-y-4 md:space-y-6 flex-1 text-center lg:text-left order-2 lg:order-1 relative z-10">
               
-              {/* Dynamic tag badge with glowing accents */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[10px] font-black bg-gradient-to-r from-secondary/15 via-accent/15 to-header/15 text-secondary border border-secondary/20 tracking-widest uppercase shadow-glow-cyan/10">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
@@ -245,11 +317,9 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Card Column: Featured Pokémon of the Day (fully animated and glowing!) */}
+            {/* Featured Column */}
             {featuredPokemon && (
               <div className="relative w-full max-w-xs md:max-w-sm p-6 rounded-3xl border border-white/10 bg-[#080d24]/60 backdrop-blur-xl shadow-glow-cyan/15 group overflow-hidden order-1 lg:order-2">
-                
-                {/* Orbital tech grid in backdrop */}
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.005)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none" />
                 <div className="absolute -right-16 -top-16 w-36 h-36 rounded-full bg-header/20 filter blur-3xl animate-pulse-glow" />
 
@@ -260,8 +330,7 @@ export default function Home() {
                   <span className="text-[10px] font-mono text-white/30">#{String(featuredPokemon.id).padStart(4, '0')}</span>
                 </div>
 
-                {/* Majestic floating Pokémon of the Day */}
-                <div className="relative w-32 h-32 md:w-40 md:h-40 mx-auto my-1 animate-float drop-shadow-[0_12px_22px_rgba(0,0,0,0.65)] hover:scale-105 transition-transform duration-300">
+                <div className="relative w-32 h-32 md:w-40 md:h-40 mx-auto my-1 animate-float drop-shadow-[0_12px_22px_rgba(0,0,0,0.65)]">
                   <Image
                     src={featuredPokemon.image}
                     alt={featuredPokemon.name}
@@ -272,14 +341,12 @@ export default function Home() {
                   />
                 </div>
 
-                {/* Stats Panel */}
                 <div className="space-y-3 relative z-10 text-center mt-3">
                   <div>
                     <h3 className="text-xl md:text-2xl font-black text-white capitalize tracking-wide leading-none">{featuredPokemon.name}</h3>
                     <p className="text-[9px] text-slate-500 font-mono tracking-widest uppercase mt-1">Fogo / Voador</p>
                   </div>
 
-                  {/* Battle attributes */}
                   <div className="grid grid-cols-3 gap-2 text-center border-t border-white/5 pt-3">
                     {featuredPokemon.stats.map((st: any) => {
                       const label = statNameMap[st.name.toLowerCase()] || st.name
@@ -298,7 +365,7 @@ export default function Home() {
           </section>
         )}
 
-        {/* Section title & count */}
+        {/* Section title */}
         <div className="flex items-center justify-between mb-4 md:mb-6">
           <div className="flex items-center gap-2.5">
             <div className="w-2.5 h-6 rounded-full bg-secondary shadow-glow-cyan" />
@@ -345,6 +412,11 @@ export default function Home() {
                   pokemonId={pokemon.id}
                   setPokemonModalData={setPokemonModalData}
                   setOpen={setOpen}
+                  pokemonCache={pokemonCache}
+                  onDataLoaded={handleDataLoaded}
+                  isComparing={compareList.includes(pokemon.id)}
+                  onCompareToggle={handleCompareToggle}
+                  compareListLength={compareList.length}
                 />
               ))}
             </div>
@@ -360,6 +432,27 @@ export default function Home() {
 
       </main>
 
+      {/* FLOATING VS COMBAT COMPANION PROMPT (Guides the user when 1 Pokémon is selected) */}
+      {compareList.length === 1 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-md p-4 rounded-2xl border border-secondary/40 bg-slate-950/90 backdrop-blur-md shadow-glow-cyan/20 animate-bounce flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-secondary/10 text-secondary animate-pulse">
+              <Swords className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-[10px] font-black text-secondary tracking-widest uppercase">Arena Versus</div>
+              <div className="text-xs text-white">Selecione mais um Pokémon para duelar! (1/2)</div>
+            </div>
+          </div>
+          <button 
+            onClick={() => setCompareList([])}
+            className="text-xs text-slate-400 hover:text-white underline cursor-pointer"
+          >
+            Cancelar
+          </button>
+        </div>
+      )}
+
       {/* Footer Info */}
       <footer className="py-6 text-center border-t border-white/5 text-[9px] text-slate-600 font-mono tracking-widest uppercase bg-slate-950/40 backdrop-blur-md">
         &copy; {new Date().getFullYear()} PokéDex Premium.
@@ -371,6 +464,19 @@ export default function Home() {
           pokemon={pokemonModalData}
           isOpen={open}
           onRequestClose={() => setOpen(false)}
+        />
+      )}
+
+      {/* Battle Versus Arena Modal (Triggers when 2 Pokemons are selected!) */}
+      {compareList.length === 2 && pokeVersusA && pokeVersusB && (
+        <BattleVersusModal
+          pokemonA={pokeVersusA}
+          pokemonB={pokeVersusB}
+          isOpen={compareOpen}
+          onClose={() => {
+            setCompareOpen(false)
+            setCompareList([]) // Reset selection upon closing versus modal!
+          }}
         />
       )}
 
