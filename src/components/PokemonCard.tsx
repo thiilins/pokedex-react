@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Swords, ExternalLink } from 'lucide-react'
 import PokemonTypeIcon, { typeStylingMap } from './PokemonTypeIcon'
-import { getCachedPokemonDetail } from '@/services/pokemonService'
+import { fetchPokemonDetailAction } from '@/services/pokemonActions'
 
 interface IProps {
   pokemonId: string
@@ -49,7 +49,7 @@ const PokemonCard: React.FC<IProps> = ({
     let isMounted = true
     const loadPokemon = async () => {
       try {
-        const parsedData = await getCachedPokemonDetail(parseInt(pokemonId))
+        const parsedData = await fetchPokemonDetailAction(parseInt(pokemonId))
         if (isMounted) {
           setData(parsedData)
           onDataLoaded(pokemonId, parsedData)

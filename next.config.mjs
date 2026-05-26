@@ -9,13 +9,7 @@ const nextConfig = {
       },
     ],
   },
-  eslint: {
-    // Disables ESLint check during builds to speed up and avoid build blocks
-    ignoreDuringBuilds: true,
-  },
-  experimental: {
-    useCache: true,
-  },
+  cacheComponents: true,
 }
 
 export default nextConfig

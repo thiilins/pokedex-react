@@ -1,11 +1,26 @@
-'use server'
-
-import axios from 'axios'
 import getId from '@/utils/getId'
+import { cacheLife, cacheTag } from 'next/cache'
 
-const serviceApi = axios.create({
-  baseURL: 'https://pokeapi.co/api/v2'
-})
+const BASE_URL = 'https://pokeapi.co/api/v2'
+
+// Função auxiliar interna para realizar requisições normais sem opções legadas de cache
+async function fetchFromApi(path: string) {
+  const cleanPath = path.startsWith('http')
+    ? path
+    : `${BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`
+
+  // Requisição feita de forma normal, delegando o caching inteiramente ao Next.js 16
+  const res = await fetch(cleanPath)
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to fetch from PokeAPI: ${res.statusText} at ${cleanPath}`
+    )
+  }
+
+  const data = await res.json()
+  return { data }
+}
 
 // Auxiliares internos para o parser no lado do servidor (SSR)
 const parseEvoChainNode = (node: any): { name: string; id: string }[] => {
@@ -39,13 +54,15 @@ const extractRetroSprites = (versionsObj: any) => {
 }
 
 /**
- * Service SSR com a diretiva 'use cache' do Next.js 15+
+ * Service SSR com a diretiva 'use cache' no nível da função (conforme a doc)
  * Busca a listagem indexada de todos os 1025 Pokémon de forma isolada no servidor.
  */
 export async function getCachedAllPokemons() {
   'use cache'
+  cacheLife('max')
+  cacheTag('all-pokemons')
   try {
-    const res = await serviceApi.get('/pokemon?limit=1025')
+    const res = await fetchFromApi('/pokemon?limit=1025')
     return res.data.results.map((item: any) => ({
       name: item.name,
       url: item.url,
@@ -58,27 +75,34 @@ export async function getCachedAllPokemons() {
 }
 
 /**
- * Service SSR com a diretiva 'use cache' do Next.js 15+
+ * Service SSR com a diretiva 'use cache' no nível da função (conforme a doc)
  * Busca e consolida os detalhes completos de um Pokémon por ID no servidor.
  */
 export async function getCachedPokemonDetail(id: number) {
   'use cache'
-  try {
-    const [res, speciesRes] = await Promise.all([
-      serviceApi.get(`/pokemon/${id}`),
-      serviceApi.get(`/pokemon/${id}`).then(r =>
-        serviceApi.get(r.data.species.url.replace('https://pokeapi.co/api/v2', ''))
-      )
-    ])
+  cacheLife('max')
+  cacheTag(`pokemon-${id}`)
 
-    const evoRes = await serviceApi.get(
-      speciesRes.data.evolution_chain.url.replace('https://pokeapi.co/api/v2', '')
+  try {
+    // pokemon → species → evolution_chain é uma cadeia de dependência real.
+    // Antes buscávamos /pokemon/${id} duas vezes (a 2ª só pra pegar species.url,
+    // que já vem na 1ª resposta) — fetch redundante removido.
+    const res = await fetchFromApi(`/pokemon/${id}`)
+    const speciesRes = await fetchFromApi(
+      res.data.species.url.replace('https://pokeapi.co/api/v2', '')
+    )
+
+    const evoRes = await fetchFromApi(
+      speciesRes.data.evolution_chain.url.replace(
+        'https://pokeapi.co/api/v2',
+        ''
+      )
     )
 
     const abilities = await Promise.all(
       res.data.abilities.map(async (ab: any) => {
         try {
-          const abRes = await serviceApi.get(`/ability/${getId(ab.ability.url)}`)
+          const abRes = await fetchFromApi(`/ability/${getId(ab.ability.url)}`)
           const entry = abRes.data.effect_entries?.find(
             (e: any) => e.language.name === 'en'
           )
@@ -108,7 +132,7 @@ export async function getCachedPokemonDetail(id: number) {
         ? await Promise.all(
             res.data.forms.map(async (f: any) => {
               try {
-                const fRes = await serviceApi.get(`/pokemon-form/${getId(f.url)}`)
+                const fRes = await fetchFromApi(`/pokemon-form/${getId(f.url)}`)
                 return {
                   name: f.name,
                   id: getId(f.url),
@@ -143,8 +167,7 @@ export async function getCachedPokemonDetail(id: number) {
       (
         speciesRes.data.genera.find(
           (g: any) => g.language.name === 'pt-BR' || g.language.name === 'pt'
-        ) ||
-        speciesRes.data.genera.find((g: any) => g.language.name === 'en')
+        ) || speciesRes.data.genera.find((g: any) => g.language.name === 'en')
       )?.genus || ''
 
     const japanName =
@@ -159,6 +182,11 @@ export async function getCachedPokemonDetail(id: number) {
       id: res.data.id,
       name: res.data.name,
       japan_name: japanName,
+      order: res.data.order,
+      species: {
+        name: res.data.species.name,
+        url: res.data.species.url
+      },
       description: flavor,
       category: genus,
       capture_rate: speciesRes.data.capture_rate,
@@ -212,7 +240,8 @@ export async function getCachedPokemonDetail(id: number) {
         home_female_shiny: sg?.other?.home?.front_shiny_female || '',
         dream: sg?.other?.dream_world?.front_default || '',
         showdown: sg?.other?.showdown?.front_default || sg?.front_default || '',
-        showdown_shiny: sg?.other?.showdown?.front_shiny || sg?.front_shiny || '',
+        showdown_shiny:
+          sg?.other?.showdown?.front_shiny || sg?.front_shiny || '',
         female: sg?.front_female || '',
         female_shiny: sg?.front_shiny_female || ''
       },
@@ -222,21 +251,30 @@ export async function getCachedPokemonDetail(id: number) {
         '/assets/img/fallback.png'
     }
   } catch (err) {
-    console.error(`Error in pokemonService.getCachedPokemonDetail for ID ${id}:`, err)
+    console.error(
+      `Error in pokemonService.getCachedPokemonDetail for ID ${id}:`,
+      err
+    )
     throw err
   }
 }
 
 /**
- * Service SSR com a diretiva 'use cache' do Next.js 15+
+ * Service SSR com a diretiva 'use cache' no nível da função (conforme a doc)
  * Busca os detalhes de um golpe de Pokémon no servidor de forma isolada.
  */
 export async function getCachedMoveDetail(name: string, url: string) {
   'use cache'
+  cacheLife('max')
+  cacheTag(`move-${getId(url)}`)
   try {
-    const res = await serviceApi.get(`/move/${getId(url)}`)
-    const eff = res.data.effect_entries?.find((e: any) => e.language.name === 'en')
-    const flv = res.data.flavor_text_entries?.find((e: any) => e.language.name === 'en')
+    const res = await fetchFromApi(`/move/${getId(url)}`)
+    const eff = res.data.effect_entries?.find(
+      (e: any) => e.language.name === 'en'
+    )
+    const flv = res.data.flavor_text_entries?.find(
+      (e: any) => e.language.name === 'en'
+    )
     return {
       accuracy: res.data.accuracy ?? '---',
       power: res.data.power ?? '---',
@@ -244,23 +282,31 @@ export async function getCachedMoveDetail(name: string, url: string) {
       damageClass: res.data.damage_class?.name || 'status',
       type: res.data.type?.name || 'normal',
       description: (
-        (eff?.effect || eff?.short_effect || flv?.flavor_text || 'Sem descrição.') as string
+        (eff?.effect ||
+          eff?.short_effect ||
+          flv?.flavor_text ||
+          'Sem descrição.') as string
       ).replace(/\f|\n|\r/g, ' ')
     }
   } catch (err) {
-    console.error(`Error in pokemonService.getCachedMoveDetail for move ${name}:`, err)
+    console.error(
+      `Error in pokemonService.getCachedMoveDetail for move ${name}:`,
+      err
+    )
     throw err
   }
 }
 
 /**
- * Service SSR com a diretiva 'use cache' do Next.js 15+
+ * Service SSR com a diretiva 'use cache' no nível da função (conforme a doc)
  * Busca os Pokémon filtrados por tipo no servidor de forma isolada.
  */
 export async function getCachedPokemonsByType(selectedType: string) {
   'use cache'
+  cacheLife('max')
+  cacheTag(`type-${selectedType.toLowerCase()}`)
   try {
-    const res = await serviceApi.get(`/type/${selectedType.toLowerCase()}`)
+    const res = await fetchFromApi(`/type/${selectedType.toLowerCase()}`)
     return res.data.pokemon
       .map((item: any) => ({
         name: item.pokemon.name,
@@ -269,8 +315,10 @@ export async function getCachedPokemonsByType(selectedType: string) {
       }))
       .filter((p: any) => parseInt(p.id) <= 1025)
   } catch (err) {
-    console.error(`Error in pokemonService.getCachedPokemonsByType for type ${selectedType}:`, err)
+    console.error(
+      `Error in pokemonService.getCachedPokemonsByType for type ${selectedType}:`,
+      err
+    )
     throw err
   }
 }
-

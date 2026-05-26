@@ -2,10 +2,19 @@
 
 import React from 'react'
 import { PokedexProvider } from '@/contexts/PokedexContext'
+import type { IPokemonListItem } from '@/contexts/PokedexContext'
 
-export const Providers: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface IProvidersProps {
+  children: React.ReactNode
+  initialPokemonsPromise: Promise<IPokemonListItem[]>
+}
+
+export const Providers: React.FC<IProvidersProps> = ({
+  children,
+  initialPokemonsPromise
+}) => {
   return (
-    <PokedexProvider>
+    <PokedexProvider initialPokemonsPromise={initialPokemonsPromise}>
       {children}
     </PokedexProvider>
   )

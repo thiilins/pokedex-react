@@ -1,8 +1,11 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, use } from 'react'
 import { getDailyRandomNumber } from '@/utils/generateDayNumber'
-import { getCachedAllPokemons, getCachedPokemonDetail, getCachedPokemonsByType } from '@/services/pokemonService'
+import {
+  fetchPokemonDetailAction,
+  fetchPokemonsByTypeAction
+} from '@/services/pokemonActions'
 
 export interface IPokemonListItem {
   name: string
@@ -43,10 +46,15 @@ interface PokedexContextType {
 
 const PokedexContext = createContext<PokedexContextType | undefined>(undefined)
 
-export const PokedexProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [allPokemons, setAllPokemons] = useState<IPokemonListItem[]>([])
+export const PokedexProvider: React.FC<{
+  children: React.ReactNode
+  initialPokemonsPromise: Promise<IPokemonListItem[]>
+}> = ({ children, initialPokemonsPromise }) => {
+  // Lista de 1025 resolvida da Promise cacheada (use cache no servidor) — sem fetch no boot.
+  const initialPokemons = use(initialPokemonsPromise)
+  const [allPokemons] = useState<IPokemonListItem[]>(initialPokemons)
   const [typeFilteredPokemons, setTypeFilteredPokemons] = useState<IPokemonListItem[] | null>(null)
-  const [loadingAll, setLoadingAll] = useState(true)
+  const [loadingAll, setLoadingAll] = useState(false)
 
   // Filtros
   const [searchQuery, setSearchQuery] = useState('')
@@ -63,28 +71,13 @@ export const PokedexProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Pokémon do Dia
   const [featuredPokemon, setFeaturedPokemon] = useState<any>(null)
 
-  // 1. Initial Load: Fetch all 1025 pokemons via Server Action (Cached)
-  useEffect(() => {
-    const fetchAllPokemons = async () => {
-      try {
-        setLoadingAll(true)
-        const parsed = await getCachedAllPokemons()
-        setAllPokemons(parsed)
-        setLoadingAll(false)
-      } catch (err) {
-        console.error('Failed to load pokemon index in Context:', err)
-        setLoadingAll(false)
-      }
-    }
-    fetchAllPokemons()
-  }, [])
-
-  // 2. Fetch Pokémon do Dia via Server Action (Cached)
+  // 1. Pokémon do Dia via Server Action (cache server-side).
+  //    featuredId depende de new Date() (request-time), por isso resolve no cliente.
   useEffect(() => {
     const loadFeatured = async () => {
       try {
         const featuredId = getDailyRandomNumber()
-        const detail = await getCachedPokemonDetail(featuredId)
+        const detail = await fetchPokemonDetailAction(featuredId)
 
         setFeaturedPokemon({
           id: detail.id,
@@ -108,7 +101,7 @@ export const PokedexProvider: React.FC<{ children: React.ReactNode }> = ({ child
     loadFeatured()
   }, [])
 
-  // 3. Type Filter Load via Server Action (Cached)
+  // 2. Filtro por tipo via Server Action (cache server-side).
   useEffect(() => {
     const fetchPokemonsByType = async () => {
       if (!selectedType) {
@@ -118,7 +111,7 @@ export const PokedexProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       try {
         setLoadingAll(true)
-        const parsed = await getCachedPokemonsByType(selectedType)
+        const parsed = await fetchPokemonsByTypeAction(selectedType)
         setTypeFilteredPokemons(parsed)
         setLoadingAll(false)
       } catch (err) {
@@ -183,12 +176,12 @@ export const PokedexProvider: React.FC<{ children: React.ReactNode }> = ({ child
     })
   }, [])
 
-  // Auto-fetch compareList items details to populate Cache (Fighter Selector) via Server Action (Cached)
+  // 3. Detalhes dos Pokémon em comparação (Fighter Selector) via Server Action (cache server-side).
   useEffect(() => {
     compareList.forEach(async id => {
       if (!id || pokemonCache[id]) return
       try {
-        const parsedData = await getCachedPokemonDetail(parseInt(id))
+        const parsedData = await fetchPokemonDetailAction(parseInt(id))
         setPokemonInCache(id.toString(), parsedData)
       } catch (err) {
         console.error(`Failed to fetch details for compare ID ${id} in Context:`, err)

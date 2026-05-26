@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from 'next'
 import { Outfit, Roboto_Mono } from 'next/font/google'
-import React from 'react'
+import React, { Suspense } from 'react'
 import './globals.css'
 import { Providers } from '@/components/Providers'
+import { getCachedAllPokemons } from '@/services/pokemonService'
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -38,14 +39,21 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // getCachedAllPokemons() é cacheada (use cache, server-side). Passamos a Promise
+  // SEM await: o layout não bloqueia o shell e o Provider (client) resolve via
+  // React.use(). No prerender o dado cacheado é preenchido (PPR); no boot do
+  // cliente não há fetch — a lista já vem resolvida.
+  const initialPokemonsPromise = getCachedAllPokemons()
+
   return (
     <html lang="pt-BR" className={`${outfit.variable} ${robotoMono.variable}`}>
       <body className="antialiased min-h-screen selection:bg-secondary selection:text-slate-900 bg-background">
-        <Providers>
-          {children}
-        </Providers>
+        <Suspense fallback={null}>
+          <Providers initialPokemonsPromise={initialPokemonsPromise}>
+            {children}
+          </Providers>
+        </Suspense>
       </body>
     </html>
   )
 }
-

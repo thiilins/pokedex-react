@@ -1,7 +1,7 @@
 'use client'
 
 import PokemonTypeIcon, { typeStylingMap } from '@/components/PokemonTypeIcon'
-import { getCachedPokemonDetail } from '@/services/pokemonService'
+import { fetchPokemonDetailAction } from '@/services/pokemonActions'
 import { Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -33,7 +33,7 @@ export const MiniCollectorCard: React.FC<IMiniCollectorCardProps> = ({
     let isMounted = true
     const load = async () => {
       try {
-        const detail = await getCachedPokemonDetail(parseInt(id))
+        const detail = await fetchPokemonDetailAction(parseInt(id))
         if (!isMounted) return
         setTypes(detail.types)
         setStats(detail.stats.slice(0, 3).map((s: any) => ({ name: s.name, base_stat: s.base_stat })))

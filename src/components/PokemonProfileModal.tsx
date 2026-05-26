@@ -287,11 +287,11 @@ const PokemonProfileModal: React.FC<IProps> = ({
                 <div className="grid grid-cols-2 gap-3 text-xs font-mono text-center">
                   <div className="px-4 py-2.5 rounded-xl border border-white/5 bg-white/[0.02]">
                     <span className="text-slate-500 uppercase text-[9px] block">Nº ORDEM POKEDEX</span>
-                    <span className="font-black text-white text-sm">#{pokemon.order}</span>
+                    <span className="font-black text-white text-sm">#{pokemon.order || pokemon.id}</span>
                   </div>
                   <div className="px-4 py-2.5 rounded-xl border border-white/5 bg-white/[0.02]">
                     <span className="text-slate-500 uppercase text-[9px] block">ESPÉCIE POKÉMON</span>
-                    <span className="font-black text-white text-sm capitalize">{pokemon.species.name}</span>
+                    <span className="font-black text-white text-sm capitalize">{pokemon.species?.name || pokemon.name}</span>
                   </div>
                 </div>
 
