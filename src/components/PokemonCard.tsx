@@ -102,6 +102,7 @@ const PokemonCard: React.FC<IProps> = ({
             effort: st.effort,
             base_stat: st.base_stat
           })),
+          cries: response.data.cries ?? null,
           image:
             response.data.sprites?.other?.dream_world?.front_default ??
             response.data.sprites?.other['official-artwork']?.front_default ??

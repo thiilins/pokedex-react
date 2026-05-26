@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { X, Ruler, Weight, Award, Star, Compass, Heart, Swords, Shield, Zap, ShieldAlert, Gauge, Sparkles } from 'lucide-react'
+import { X, Ruler, Weight, Award, Star, Compass, Heart, Swords, Shield, Zap, ShieldAlert, Gauge, Sparkles, Volume2 } from 'lucide-react'
 import PokemonTypeIcon, { typeStylingMap } from './PokemonTypeIcon'
 import { pokemonTypesIcons } from './PokemonTypeIconData'
 
@@ -95,9 +95,26 @@ const PokemonProfileModal: React.FC<IProps> = ({
                 <span className="text-[9px] font-mono font-black text-white/55 tracking-widest leading-none">
                   NO. {String(pokemon.id).padStart(4, '0')}
                 </span>
-                <span className="text-lg md:text-xl font-black tracking-wide text-white uppercase mt-0.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">
-                  {pokemon.name}
-                </span>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="text-lg md:text-xl font-black tracking-wide text-white uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">
+                    {pokemon.name}
+                  </span>
+                  
+                  {pokemon.cries?.latest && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        const audio = new Audio(pokemon.cries.latest)
+                        audio.volume = 0.35
+                        audio.play().catch(err => console.error("Audio failed:", err))
+                      }}
+                      className="p-1 rounded bg-white/10 border border-white/10 text-white/60 hover:text-white hover:bg-white/20 transition-all active:scale-90 cursor-pointer shadow-sm select-none"
+                      title="Ouvir Rugido"
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Type capsule icons (Standard absolute sizes!) */}

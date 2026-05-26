@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
-import { X, Swords, Trophy, Activity, Heart, Shield, Zap, ShieldAlert, Gauge, Star } from 'lucide-react'
+import { X, Swords, Trophy, Activity, Heart, Shield, Zap, ShieldAlert, Gauge, Star, Volume2 } from 'lucide-react'
 import PokemonTypeIcon, { typeStylingMap } from './PokemonTypeIcon'
 
 interface IProps {
@@ -288,7 +288,22 @@ const BattleVersusModal: React.FC<IProps> = ({
 
                 <div className="space-y-1.5 relative z-10">
                   <span className="text-[10px] font-mono text-white/30 tracking-wider">#{String(pokemonA.id).padStart(4, '0')}</span>
-                  <h3 className="text-xl font-black capitalize text-white tracking-wide">{pokemonA.name}</h3>
+                  <div className="flex items-center justify-center gap-2">
+                    <h3 className="text-xl font-black capitalize text-white tracking-wide">{pokemonA.name}</h3>
+                    {pokemonA.cries?.latest && (
+                      <button
+                        onClick={() => {
+                          const audio = new Audio(pokemonA.cries.latest)
+                          audio.volume = 0.35
+                          audio.play().catch(err => console.error("Audio failed:", err))
+                        }}
+                        className="p-1 rounded bg-white/10 border border-white/10 text-white/60 hover:text-white hover:bg-white/20 transition-all active:scale-90 cursor-pointer shadow-sm select-none"
+                        title="Ouvir Rugido"
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                   <div className="flex justify-center gap-1">
                     {pokemonA.types.map((t: any) => (
                       <PokemonTypeIcon key={t.id} type={t.name} className="px-2 py-0.5 text-[9px]" />
@@ -431,7 +446,22 @@ const BattleVersusModal: React.FC<IProps> = ({
 
                 <div className="space-y-1.5 relative z-10">
                   <span className="text-[10px] font-mono text-white/30 tracking-wider">#{String(pokemonB.id).padStart(4, '0')}</span>
-                  <h3 className="text-xl font-black capitalize text-white tracking-wide">{pokemonB.name}</h3>
+                  <div className="flex items-center justify-center gap-2">
+                    <h3 className="text-xl font-black capitalize text-white tracking-wide">{pokemonB.name}</h3>
+                    {pokemonB.cries?.latest && (
+                      <button
+                        onClick={() => {
+                          const audio = new Audio(pokemonB.cries.latest)
+                          audio.volume = 0.35
+                          audio.play().catch(err => console.error("Audio failed:", err))
+                        }}
+                        className="p-1 rounded bg-white/10 border border-white/10 text-white/60 hover:text-white hover:bg-white/20 transition-all active:scale-90 cursor-pointer shadow-sm select-none"
+                        title="Ouvir Rugido"
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                   <div className="flex justify-center gap-1">
                     {pokemonB.types.map((t: any) => (
                       <PokemonTypeIcon key={t.id} type={t.name} className="px-2 py-0.5 text-[9px]" />
