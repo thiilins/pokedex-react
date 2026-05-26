@@ -401,9 +401,8 @@ export const Home3DCollectorCard = (
       <div 
         style={{
           backgroundColor: '#faf6e9',
-          backgroundImage: `radial-gradient(#000000 12%, transparent 12%)`,
-          backgroundSize: '16px 16px',
-          backgroundOpacity: '0.02'
+          backgroundImage: `radial-gradient(rgba(0, 0, 0, 0.025) 12%, transparent 12%)`,
+          backgroundSize: '16px 16px'
         }}
         className="w-full h-full rounded-[28px] border-4 border-black p-4 flex flex-col justify-between relative overflow-hidden bg-cover">
         
