@@ -1002,250 +1002,403 @@ const BattleVersusModal: React.FC<IProps> = ({
 
         {/* COMBAT SIMULATOR ENGINE ACTIVE (Auto or Manual) */}
         {arenaMode !== 'compare' && pokemonA && pokemonB && (
-          <div className="flex flex-col gap-6 flex-1 relative z-10 mb-6 w-full animate-fadeIn select-none">
-            
-            {/* 1. VISUAL BATTLEFIELD ROW */}
-            <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-6 py-4 rounded-3xl bg-slate-950/40 border border-white/5 p-6 relative overflow-hidden">
-              
-              {/* Fighter A Panel (Left) */}
-              <div className="flex flex-col items-center space-y-3 relative text-center">
-                <div className={`absolute w-32 h-32 rounded-full ${styleA.bg} filter blur-3xl opacity-20 -z-10`} />
-                <span className={`text-[8px] font-mono font-black border px-2 py-0.5 rounded-md ${activeTurn === 'A' ? 'bg-secondary/20 text-secondary border-secondary/30 animate-pulse shadow-glow-cyan' : 'bg-white/5 text-slate-400 border-white/5'}`}>
-                  {activeTurn === 'A' ? '⚡ SEU TURNO' : 'DEFENDENDO'}
-                </span>
-                
-                <div className={`relative w-28 h-28 drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] ${activeTurn === 'A' ? 'scale-105 animate-float' : 'opacity-85'}`}>
-                  <Image src={pokemonA.image} alt={pokemonA.name} fill className="object-contain" />
+          <div className="flex flex-col gap-4 flex-1 relative z-10 mb-4 w-full animate-fadeIn select-none">
+
+            {/* ══════════════════════════════════════════════════════════
+                RPG MANUAL MODE — Classic Pokemon Battlefield Layout
+                ══════════════════════════════════════════════════════════ */}
+            {arenaMode === 'manual' && battleState !== 'finished' && (
+              <div className="flex flex-col gap-3">
+
+                {/* BATTLEFIELD ARENA */}
+                <div
+                  className="relative w-full rounded-3xl overflow-hidden border border-white/8"
+                  style={{ minHeight: 300, background: 'linear-gradient(180deg, #050b1f 0%, #0a0f28 50%, #0d1535 100%)' }}
+                >
+                  {/* Grid scanlines overlay */}
+                  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
+                  {/* Ground divider line */}
+                  <div className="absolute bottom-[38%] left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+                  {/* ── OPPONENT (B) — top-right ── */}
+                  <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3">
+                    {/* HP Card B */}
+                    <div className="flex-1 max-w-[220px] bg-slate-950/80 border border-white/10 rounded-2xl p-3 backdrop-blur-sm">
+                      <div className="flex items-center justify-between mb-1">
+                        <div>
+                          <div className="text-[8px] font-mono text-slate-500 uppercase tracking-widest">OPONENTE</div>
+                          <div className="text-sm font-black capitalize text-white leading-tight">{pokemonB.name}</div>
+                        </div>
+                        <div className="flex gap-1">
+                          {pokemonB.types.map((t: any) => (
+                            <span key={t.id} className="text-[7px] font-black uppercase px-1.5 py-0.5 rounded bg-white/10 text-white/80">{t.name}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="space-y-0.5">
+                        <div className="flex justify-between text-[7px] font-mono text-slate-400">
+                          <span className="font-black text-white/60">HP</span>
+                          <span className={`font-black ${(hpB / maxHpB) > 0.5 ? 'text-emerald-400' : (hpB / maxHpB) > 0.2 ? 'text-amber-400' : 'text-red-400'}`}>{hpB} / {maxHpB}</span>
+                        </div>
+                        <div className="w-full h-3.5 rounded-full bg-black/50 border border-white/10 overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all duration-500 ${
+                              (hpB / maxHpB) > 0.5 ? 'bg-gradient-to-r from-emerald-500 to-teal-400' :
+                              (hpB / maxHpB) > 0.2 ? 'bg-gradient-to-r from-amber-500 to-yellow-400' :
+                              'bg-gradient-to-r from-red-600 to-rose-400 animate-pulse'
+                            }`}
+                            style={{ width: `${(hpB / maxHpB) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Turn indicator B */}
+                    <div className={`px-2.5 py-1 rounded-xl text-[8px] font-mono font-black uppercase tracking-widest border transition-all ${
+                      activeTurn === 'B'
+                        ? 'bg-red-500/20 text-red-400 border-red-500/40 shadow-[0_0_12px_rgba(239,68,68,0.3)] animate-pulse'
+                        : 'bg-white/3 text-slate-600 border-white/5'
+                    }`}>
+                      {activeTurn === 'B' ? (isThinking ? '🧠 Pensando…' : '⚡ Atacando') : '🛡 Guard'}
+                    </div>
+                  </div>
+
+                  {/* Sprite B — top right, smaller (enemy position) */}
+                  <div className={`absolute right-8 bottom-[40%] w-28 h-28 md:w-36 md:h-36 transition-all duration-300 ${activeTurn === 'B' ? 'scale-105' : 'scale-95 opacity-80'}`}>
+                    <div className={`absolute inset-0 rounded-full ${styleB.bg} filter blur-2xl opacity-30`} />
+                    <Image src={pokemonB.image} alt={pokemonB.name} fill className="object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]" />
+                  </div>
+
+                  {/* Sprite A — bottom left, bigger (player position) */}
+                  <div className={`absolute left-6 bottom-[36%] -translate-y-0 w-36 h-36 md:w-44 md:h-44 transition-all duration-300 ${activeTurn === 'A' ? 'scale-105 animate-float' : 'scale-95 opacity-80'}`}>
+                    <div className={`absolute inset-0 rounded-full ${styleA.bg} filter blur-2xl opacity-35`} />
+                    <Image src={pokemonA.image} alt={pokemonA.name} fill className="object-contain drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] scale-x-[-1]" />
+                  </div>
+
+                  {/* ── PLAYER (A) — bottom-right HP card ── */}
+                  <div className="absolute bottom-4 right-4 left-4 flex items-end justify-end gap-3">
+                    {/* Turn indicator A */}
+                    <div className={`px-2.5 py-1 rounded-xl text-[8px] font-mono font-black uppercase tracking-widest border transition-all ${
+                      activeTurn === 'A'
+                        ? 'bg-secondary/20 text-secondary border-secondary/40 shadow-[0_0_12px_rgba(0,240,255,0.3)] animate-pulse'
+                        : 'bg-white/3 text-slate-600 border-white/5'
+                    }`}>
+                      {activeTurn === 'A' ? '⚡ Seu turno' : '🛡 Guard'}
+                    </div>
+
+                    {/* HP Card A */}
+                    <div className="flex-1 max-w-[220px] bg-slate-950/80 border border-white/10 rounded-2xl p-3 backdrop-blur-sm">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex gap-1">
+                          {pokemonA.types.map((t: any) => (
+                            <span key={t.id} className="text-[7px] font-black uppercase px-1.5 py-0.5 rounded bg-white/10 text-white/80">{t.name}</span>
+                          ))}
+                        </div>
+                        <div className="text-right">
+                          <div className="text-[8px] font-mono text-slate-500 uppercase tracking-widest">JOGADOR</div>
+                          <div className="text-sm font-black capitalize text-white leading-tight">{pokemonA.name}</div>
+                        </div>
+                      </div>
+                      <div className="space-y-0.5">
+                        <div className="flex justify-between text-[7px] font-mono text-slate-400">
+                          <span className={`font-black ${(hpA / maxHpA) > 0.5 ? 'text-emerald-400' : (hpA / maxHpA) > 0.2 ? 'text-amber-400' : 'text-red-400'}`}>{hpA} / {maxHpA}</span>
+                          <span className="font-black text-white/60">HP</span>
+                        </div>
+                        <div className="w-full h-3.5 rounded-full bg-black/50 border border-white/10 overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all duration-500 ${
+                              (hpA / maxHpA) > 0.5 ? 'bg-gradient-to-r from-secondary to-teal-400' :
+                              (hpA / maxHpA) > 0.2 ? 'bg-gradient-to-r from-amber-500 to-yellow-400' :
+                              'bg-gradient-to-r from-red-600 to-rose-400 animate-pulse'
+                            }`}
+                            style={{ width: `${(hpA / maxHpA) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="space-y-1">
-                  <h4 className="text-sm font-black capitalize text-white tracking-wide">{pokemonA.name}</h4>
-                  <div className="flex justify-center gap-1">
-                    {pokemonA.types.map((t: any) => (
-                      <span key={t.id} className="text-[7px] font-black uppercase px-1.5 py-0.5 rounded bg-white/10 text-white/80">
-                        {t.name}
-                      </span>
+
+                {/* LAST ACTION LOG (1-2 lines compact) */}
+                <div className="rounded-2xl border border-white/5 bg-[#030611]/90 px-4 py-2.5 font-mono text-[9px] min-h-[40px] flex items-center gap-2">
+                  <span className="text-slate-600 text-[7px] uppercase tracking-widest shrink-0">LOG</span>
+                  <div className="flex-1 space-y-0.5">
+                    {combatLog.slice(-2).map(log => (
+                      <div key={log.id} className={`leading-snug ${
+                        log.type === 'system' ? 'text-amber-400' :
+                        log.type === 'dmg-a' ? 'text-emerald-400 font-bold' :
+                        log.type === 'dmg-b' ? 'text-pink-400 font-bold' :
+                        log.type === 'crit' ? 'text-yellow-300 font-black uppercase animate-pulse' :
+                        log.type === 'miss' ? 'text-purple-400' : 'text-slate-300'
+                      }`}>{log.text}</div>
                     ))}
+                    {combatLog.length === 0 && <span className="text-slate-600">Pronto para batalhar…</span>}
                   </div>
                 </div>
 
-                {/* HP Neon Progress Bar A */}
-                <div className="w-full max-w-[200px] space-y-1 text-left">
-                  <div className="flex justify-between text-[8px] font-mono font-black text-slate-400">
-                    <span>HP</span>
-                    <span>{hpA} / {maxHpA}</span>
-                  </div>
-                  <div className="w-full h-3 rounded-full bg-white/5 border border-white/5 overflow-hidden p-0.5">
-                    <div 
-                      className={`h-full rounded-full transition-all duration-300 ${
-                        (hpA / maxHpA) > 0.5 ? 'bg-gradient-to-r from-emerald-500 to-teal-400 shadow-glow-grass' : 
-                        (hpA / maxHpA) > 0.2 ? 'bg-gradient-to-r from-amber-500 to-yellow-400' : 'bg-gradient-to-r from-red-600 to-rose-400 animate-pulse'
-                      }`}
-                      style={{ width: `${(hpA / maxHpA) * 100}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* VERSUS HUD (Middle) */}
-              <div className="flex flex-col items-center justify-center space-y-4 py-4 px-2 bg-slate-950/60 border border-white/5 rounded-2xl">
-                <div className="relative">
-                  <div className="w-14 h-14 rounded-full border border-red-500/25 bg-red-950/20 flex items-center justify-center shadow-glow-pink/10">
-                    <Swords className="w-7 h-7 text-red-500 animate-pulse" />
-                  </div>
-                  <div className="absolute inset-0 border border-secondary/25 rounded-full animate-ping opacity-25" />
-                </div>
-                
-                <div className="text-center font-mono">
-                  <div className="text-[7.5px] text-slate-500 font-black uppercase tracking-wider">Simulador Versus</div>
-                  <span className="text-[10px] text-white/80 font-bold uppercase">
-                    {battleState === 'idle' ? 'Pronto' : battleState === 'running' ? 'DUELO ATIVO' : battleState === 'paused' ? 'PAUSADO' : 'DUELO FINALIZADO'}
-                  </span>
-                </div>
-
-                {/* Auto Sim Controllers */}
-                {arenaMode === 'auto' && battleState !== 'finished' && (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={togglePauseAutoBattle}
-                      className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all cursor-pointer active:scale-95"
-                      title={battleState === 'running' ? 'Pausar' : 'Retomar'}
-                    >
-                      {battleState === 'running' ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                    </button>
-                    <button
-                      onClick={resetBattleState}
-                      className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 transition-all cursor-pointer active:scale-95"
-                      title="Reiniciar"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Fighter B Panel (Right) */}
-              <div className="flex flex-col items-center space-y-3 relative text-center">
-                <div className={`absolute w-32 h-32 rounded-full ${styleB.bg} filter blur-3xl opacity-20 -z-10`} />
-                <span className={`text-[8px] font-mono font-black border px-2 py-0.5 rounded-md ${activeTurn === 'B' ? 'bg-header/20 text-header border-header/30 animate-pulse shadow-glow-pink' : 'bg-white/5 text-slate-400 border-white/5'}`}>
-                  {activeTurn === 'B' ? (isThinking ? '🧠 COGITANDO...' : '⚡ TURNO DA IA') : 'DEFENDENDO'}
-                </span>
-                
-                <div className={`relative w-28 h-28 drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] ${activeTurn === 'B' ? 'scale-105 animate-float' : 'opacity-85'}`}>
-                  <Image src={pokemonB.image} alt={pokemonB.name} fill className="object-contain" />
-                </div>
-                
-                <div className="space-y-1">
-                  <h4 className="text-sm font-black capitalize text-white tracking-wide">{pokemonB.name}</h4>
-                  <div className="flex justify-center gap-1">
-                    {pokemonB.types.map((t: any) => (
-                      <span key={t.id} className="text-[7px] font-black uppercase px-1.5 py-0.5 rounded bg-white/10 text-white/80">
-                        {t.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* HP Neon Progress Bar B */}
-                <div className="w-full max-w-[200px] space-y-1 text-left">
-                  <div className="flex justify-between text-[8px] font-mono font-black text-slate-400">
-                    <span>HP</span>
-                    <span>{hpB} / {maxHpB}</span>
-                  </div>
-                  <div className="w-full h-3 rounded-full bg-white/5 border border-white/5 overflow-hidden p-0.5">
-                    <div 
-                      className={`h-full rounded-full transition-all duration-300 ${
-                        (hpB / maxHpB) > 0.5 ? 'bg-gradient-to-r from-emerald-500 to-teal-400 shadow-glow-grass' : 
-                        (hpB / maxHpB) > 0.2 ? 'bg-gradient-to-r from-amber-500 to-yellow-400' : 'bg-gradient-to-r from-red-600 to-rose-400 animate-pulse'
-                      }`}
-                      style={{ width: `${(hpB / maxHpB) * 100}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            {/* 2. CHRONOLOGICAL CYBER LOG SECTION */}
-            <div className="flex flex-col flex-1 min-h-[160px] max-h-[220px] rounded-2xl border border-white/5 bg-[#030611]/80 p-4 font-mono text-[9px] relative">
-              <div className="text-[7.5px] font-mono font-black text-slate-500 tracking-widest uppercase pb-1.5 border-b border-white/5 mb-2 select-none flex items-center justify-between">
-                <span>CONFRONTO CYBER LOG // HISTÓRICO</span>
-                <span className="text-[6.5px] animate-pulse">Sintonização Concluída</span>
-              </div>
-              <div 
-                ref={logContainerRef}
-                className="flex-1 overflow-y-auto space-y-1.5 pr-2 custom-scrollbar text-left"
-              >
-                {combatLog.map((log) => (
-                  <div 
-                    key={log.id} 
-                    className={`leading-relaxed border-l-2 pl-2 ${
-                      log.type === 'system' ? 'text-amber-400 border-amber-500/40 bg-amber-500/5' : 
-                      log.type === 'dmg-a' ? 'text-emerald-400 border-emerald-500/40 bg-emerald-500/5 font-bold' : 
-                      log.type === 'dmg-b' ? 'text-pink-400 border-pink-500/40 bg-pink-500/5 font-bold' : 
-                      log.type === 'crit' ? 'text-yellow-300 border-yellow-400 bg-yellow-400/5 font-black uppercase tracking-wider animate-pulse' : 
-                      log.type === 'miss' ? 'text-purple-400 border-purple-500/30' : 
-                      'text-slate-300 border-slate-700'
-                    }`}
-                  >
-                    {log.text}
-                  </div>
-                ))}
-                {combatLog.length === 0 && (
-                  <div className="text-slate-600 text-center py-8">Iniciando transmissões da arena...</div>
-                )}
-              </div>
-            </div>
-
-            {/* 3. INTERACTIVE RPG MOVES PANEL (Manual Mode Only) */}
-            {arenaMode === 'manual' && battleState === 'running' && (
-              <div className="space-y-2.5">
-                <div className="text-[7.5px] font-mono font-black text-secondary tracking-widest uppercase text-left">
-                  🛠️ GOLPES DE COMBATE DO JOGADOR // COMANDOS ({activeTurn === 'A' ? 'SEU TURNO!' : 'IA PENSANDO...'})
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+                {/* MOVE BUTTONS — 2x2 grid, large and tactile */}
+                <div className={`grid grid-cols-2 gap-3 transition-opacity duration-300 ${activeTurn !== 'A' || isThinking ? 'opacity-40 pointer-events-none' : ''}`}>
                   {movesA.map((move) => {
                     const defenderTypeStrings = pokemonB.types.map((t: any) => t.name)
                     const effectivenessMap = getTypeEffectiveness(defenderTypeStrings)
                     const mult = effectivenessMap[move.type.toLowerCase() as PokemonType] ?? 1.0
-
-                    // Color based on advantage
-                    const advantageText = mult > 1 ? 'x' + mult : mult === 0 ? 'Imune' : mult < 1 ? 'x' + mult : ''
-                    const advantageClass = mult > 1 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : mult === 0 ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' : mult < 1 ? 'bg-red-500/10 text-red-400 border-red-500/20' : ''
+                    const multLabel = mult === 0 ? 'IMUNE' : mult !== 1 ? `×${mult}` : ''
+                    const multClass = mult > 1 ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                      : mult === 0 ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+                      : mult < 1 ? 'bg-red-500/20 text-red-300 border-red-500/30' : ''
+                    const isPhysical = move.damageClass === 'physical'
 
                     return (
                       <button
                         key={move.name}
                         onClick={() => executaTurnoManualJogador(move)}
                         disabled={activeTurn !== 'A' || isThinking}
-                        className="p-3 rounded-2xl bg-[#080d24]/60 border border-white/10 hover:border-secondary hover:bg-secondary/10 text-left transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none cursor-pointer flex flex-col justify-between h-20 select-none group relative overflow-hidden"
+                        className="group relative flex flex-col gap-2 p-4 rounded-2xl bg-[#0a0f28] border border-white/8 hover:border-secondary/60 hover:bg-secondary/5 hover:shadow-[0_0_20px_rgba(0,240,255,0.15)] active:scale-95 transition-all duration-150 cursor-pointer text-left overflow-hidden"
                       >
-                        <div className="flex justify-between items-start w-full">
-                          <span className="text-[8px] font-black font-mono px-1.5 py-0.5 rounded bg-white/5 text-slate-300 uppercase tracking-widest">
+                        {/* Glow on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-secondary/0 to-secondary/0 group-hover:from-secondary/5 group-hover:to-transparent transition-all duration-300 pointer-events-none rounded-2xl" />
+
+                        <div className="flex items-center justify-between gap-2 relative z-10">
+                          <span className={`text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-lg border ${
+                            isPhysical ? 'bg-orange-500/15 text-orange-300 border-orange-500/25' : 'bg-blue-500/15 text-blue-300 border-blue-500/25'
+                          }`}>
                             {move.type}
                           </span>
-                          {advantageText && (
-                            <span className={`text-[7px] font-mono font-black px-1.5 py-0.5 rounded uppercase ${advantageClass}`}>
-                              {advantageText}
+                          {multLabel && (
+                            <span className={`text-[8px] font-black px-2 py-0.5 rounded-lg border ${multClass}`}>
+                              {multLabel}
                             </span>
                           )}
                         </div>
-                        
-                        <div className="truncate">
-                          <h5 className="text-[10px] font-black capitalize text-white group-hover:text-secondary truncate mt-1">
+
+                        <div className="relative z-10">
+                          <div className="text-sm font-black capitalize text-white group-hover:text-secondary transition-colors leading-tight">
                             {move.name.replace(/-/g, ' ')}
-                          </h5>
-                          <div className="flex justify-between text-[7px] font-mono text-slate-500 mt-0.5">
-                            <span>PODER: <strong className="text-slate-300">{move.power}</strong></span>
-                            <span>ACC: <strong className="text-slate-300">{move.accuracy}%</strong></span>
+                          </div>
+                          <div className="flex gap-3 mt-1 text-[8px] font-mono text-slate-500">
+                            <span>POW <strong className="text-slate-300">{move.power}</strong></span>
+                            <span>ACC <strong className="text-slate-300">{move.accuracy}%</strong></span>
+                            <span className={`${isPhysical ? 'text-orange-400' : 'text-blue-400'}`}>{isPhysical ? 'FÍS' : 'ESP'}</span>
                           </div>
                         </div>
                       </button>
                     )
                   })}
-                  {Array.from({ length: 4 - movesA.length }).map((_, i) => (
-                    <div key={i} className="p-3 rounded-2xl border border-dashed border-white/5 bg-white/[0.005] text-[9px] font-mono text-slate-700 flex items-center justify-center text-center">
-                      Slots de Golpe Vazio
+                  {Array.from({ length: Math.max(0, 4 - movesA.length) }).map((_, i) => (
+                    <div key={i} className="p-4 rounded-2xl border border-dashed border-white/5 text-[9px] font-mono text-slate-700 flex items-center justify-center">
+                      —
                     </div>
                   ))}
+                </div>
+
+                {/* Waiting for AI indicator */}
+                {activeTurn === 'B' && (
+                  <div className="flex items-center justify-center gap-2 py-2 text-[9px] font-mono text-slate-500 animate-pulse">
+                    <div className="w-3 h-3 border border-t-header border-white/10 rounded-full animate-spin" />
+                    <span>{isThinking ? `${pokemonB.name.toUpperCase()} está escolhendo um golpe…` : `${pokemonB.name.toUpperCase()} está atacando!`}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ══════════════════════════════════════════════════════════
+                AUTO SIMULATION MODE — Split Screen Layout
+                ══════════════════════════════════════════════════════════ */}
+            {arenaMode === 'auto' && battleState !== 'finished' && (
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4" style={{ minHeight: 380 }}>
+
+                {/* LEFT SIDE — Visual battlefield with both Pokémon + HP bars */}
+                <div className="md:col-span-2 flex flex-col gap-3 justify-between rounded-3xl border border-white/8 bg-gradient-to-b from-[#050b1f] to-[#0d1535] p-5 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+
+                  {/* Fighter B (opponent — top) */}
+                  <div className="flex flex-col items-end gap-2 relative z-10">
+                    <div className={`flex justify-between w-full items-center gap-2 px-3 py-2 rounded-xl bg-slate-950/70 border ${activeTurn === 'B' ? 'border-red-500/40 shadow-[0_0_10px_rgba(239,68,68,0.2)]' : 'border-white/5'}`}>
+                      <div>
+                        <div className="text-[7px] font-mono text-slate-500 uppercase">Oponente</div>
+                        <div className="text-xs font-black capitalize text-white">{pokemonB.name}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className={`text-[8px] font-mono font-black ${(hpB / maxHpB) > 0.5 ? 'text-emerald-400' : (hpB / maxHpB) > 0.2 ? 'text-amber-400' : 'text-red-400 animate-pulse'}`}>
+                          {hpB} / {maxHpB}
+                        </div>
+                        <div className="w-24 h-2.5 rounded-full bg-black/50 border border-white/10 overflow-hidden mt-0.5">
+                          <div
+                            className={`h-full rounded-full transition-all duration-500 ${
+                              (hpB / maxHpB) > 0.5 ? 'bg-gradient-to-r from-emerald-500 to-teal-400' :
+                              (hpB / maxHpB) > 0.2 ? 'bg-gradient-to-r from-amber-500 to-yellow-400' :
+                              'bg-gradient-to-r from-red-600 to-rose-400 animate-pulse'
+                            }`}
+                            style={{ width: `${(hpB / maxHpB) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className={`relative w-24 h-24 self-end transition-all duration-300 ${activeTurn === 'B' ? 'scale-110' : 'scale-95 opacity-75'}`}>
+                      <div className={`absolute inset-0 rounded-full ${styleB.bg} blur-2xl opacity-40`} />
+                      <Image src={pokemonB.image} alt={pokemonB.name} fill className="object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]" />
+                    </div>
+                  </div>
+
+                  {/* VS divider */}
+                  <div className="flex items-center gap-2 relative z-10">
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                    <div className="w-8 h-8 rounded-full border border-white/15 bg-white/5 flex items-center justify-center">
+                      <Swords className="w-4 h-4 text-white/40" />
+                    </div>
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                  </div>
+
+                  {/* Fighter A (player — bottom) */}
+                  <div className="flex flex-col items-start gap-2 relative z-10">
+                    <div className={`relative w-24 h-24 self-start transition-all duration-300 ${activeTurn === 'A' ? 'scale-110' : 'scale-95 opacity-75'}`}>
+                      <div className={`absolute inset-0 rounded-full ${styleA.bg} blur-2xl opacity-40`} />
+                      <Image src={pokemonA.image} alt={pokemonA.name} fill className="object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] scale-x-[-1]" />
+                    </div>
+
+                    <div className={`flex justify-between w-full items-center gap-2 px-3 py-2 rounded-xl bg-slate-950/70 border ${activeTurn === 'A' ? 'border-secondary/40 shadow-[0_0_10px_rgba(0,240,255,0.2)]' : 'border-white/5'}`}>
+                      <div>
+                        <div className="text-[7px] font-mono text-slate-500 uppercase">Jogador A</div>
+                        <div className="text-xs font-black capitalize text-white">{pokemonA.name}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className={`text-[8px] font-mono font-black ${(hpA / maxHpA) > 0.5 ? 'text-emerald-400' : (hpA / maxHpA) > 0.2 ? 'text-amber-400' : 'text-red-400 animate-pulse'}`}>
+                          {hpA} / {maxHpA}
+                        </div>
+                        <div className="w-24 h-2.5 rounded-full bg-black/50 border border-white/10 overflow-hidden mt-0.5">
+                          <div
+                            className={`h-full rounded-full transition-all duration-500 ${
+                              (hpA / maxHpA) > 0.5 ? 'bg-gradient-to-r from-secondary to-teal-400' :
+                              (hpA / maxHpA) > 0.2 ? 'bg-gradient-to-r from-amber-500 to-yellow-400' :
+                              'bg-gradient-to-r from-red-600 to-rose-400 animate-pulse'
+                            }`}
+                            style={{ width: `${(hpA / maxHpA) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Auto controls at the bottom of the left panel */}
+                  {(battleState === 'running' || battleState === 'paused') && (
+                    <div className="flex gap-2 justify-center relative z-10">
+                      <button
+                        onClick={togglePauseAutoBattle}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-[9px] font-mono font-black uppercase tracking-wider transition-all cursor-pointer active:scale-95"
+                      >
+                        {battleState === 'running' ? <><Pause className="w-3 h-3" /> Pausar</> : <><Play className="w-3 h-3" /> Retomar</>}
+                      </button>
+                      <button
+                        onClick={resetBattleState}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 text-[9px] font-mono font-black uppercase tracking-wider transition-all cursor-pointer active:scale-95"
+                      >
+                        <RotateCcw className="w-3 h-3" /> Reset
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* RIGHT SIDE — Terminal combat log */}
+                <div className="md:col-span-3 flex flex-col rounded-3xl border border-white/8 bg-[#020509] overflow-hidden" style={{ minHeight: 380 }}>
+                  {/* Terminal header bar */}
+                  <div className="flex items-center gap-2 px-4 py-3 border-b border-white/8 bg-[#040810]">
+                    <div className="flex gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-amber-500/70" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
+                    </div>
+                    <span className="text-[8px] font-mono text-slate-500 uppercase tracking-widest ml-1">BATTLE_LOG — ARENA VERSUS v2</span>
+                    {battleState === 'running' && (
+                      <div className="ml-auto flex items-center gap-1.5">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                        </span>
+                        <span className="text-[7px] font-mono text-emerald-500 uppercase tracking-widest">LIVE</span>
+                      </div>
+                    )}
+                    {battleState === 'paused' && (
+                      <span className="ml-auto text-[7px] font-mono text-amber-500 uppercase tracking-widest">⏸ PAUSED</span>
+                    )}
+                  </div>
+
+                  {/* Log entries */}
+                  <div ref={logContainerRef} className="flex-1 overflow-y-auto p-4 space-y-1.5 font-mono text-[9px] custom-scrollbar" style={{ maxHeight: 340 }}>
+                    {combatLog.length === 0 && (
+                      <div className="text-slate-700 py-8 text-center">
+                        <div className="animate-pulse">$ aguardando dados de combate…</div>
+                      </div>
+                    )}
+                    {combatLog.map((log, i) => (
+                      <div key={log.id} className="flex gap-2 items-start leading-relaxed">
+                        <span className="text-slate-700 shrink-0 text-[7px] pt-0.5 w-5 text-right">{i + 1}</span>
+                        <span className={`flex-1 ${
+                          log.type === 'system' ? 'text-amber-400 font-bold' :
+                          log.type === 'dmg-a' ? 'text-emerald-400' :
+                          log.type === 'dmg-b' ? 'text-pink-400' :
+                          log.type === 'crit' ? 'text-yellow-300 font-black uppercase tracking-wide animate-pulse' :
+                          log.type === 'miss' ? 'text-purple-400' : 'text-slate-400'
+                        }`}>{log.type === 'system' ? '> ' : '  '}{log.text}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* 4. RESULT WINNER SCREEN OVERLAY (Finished state) */}
+            {/* ══════════════════════════════════════════════════════════
+                RESULT SCREEN — Winner (both modes)
+                ══════════════════════════════════════════════════════════ */}
             {battleState === 'finished' && combatWinner && (
-              <div className="p-6 rounded-3xl bg-slate-950/70 border border-white/10 text-center space-y-4 animate-scaleUp relative overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.05)_0%,transparent_70%)] pointer-events-none" />
-                <div className="inline-flex p-4 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 shadow-glow-electric animate-bounce">
-                  <Trophy className="w-8 h-8 fill-slate-950" />
+              <div className="relative rounded-3xl border border-white/10 bg-slate-950/80 backdrop-blur overflow-hidden p-8 text-center space-y-5">
+                {/* Radial glow bg */}
+                <div className={`absolute inset-0 pointer-events-none ${combatWinner === 'A' ? 'bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.08)_0%,transparent_65%)]' : 'bg-[radial-gradient(ellipse_at_center,rgba(255,0,128,0.08)_0%,transparent_65%)]'}`} />
+
+                {/* Winner sprite big */}
+                <div className="flex justify-center relative">
+                  <div className="relative w-28 h-28">
+                    <div className={`absolute inset-0 rounded-full ${combatWinner === 'A' ? styleA.bg : styleB.bg} blur-3xl opacity-50 animate-pulse`} />
+                    <Image
+                      src={combatWinner === 'A' ? pokemonA.image : pokemonB.image}
+                      alt={combatWinner === 'A' ? pokemonA.name : pokemonB.name}
+                      fill
+                      className="object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.8)] animate-float"
+                    />
+                  </div>
                 </div>
+
                 <div className="space-y-1 relative z-10">
-                  <div className="text-[9px] text-slate-500 font-mono font-black uppercase tracking-widest">Duelo Concluído // Vencedor</div>
-                  <h3 className="text-2xl font-black text-white uppercase tracking-wider">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-[9px] font-mono font-black uppercase tracking-widest">
+                    <Trophy className="w-3.5 h-3.5" /> Duelo Concluído
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-black uppercase tracking-wide mt-2">
                     {combatWinner === 'A' ? (
-                      <span>👑 <span className="text-secondary capitalize">{pokemonA.name}</span> é o Vencedor!</span>
+                      <span className="text-secondary">{pokemonA.name}</span>
                     ) : (
-                      <span>👑 <span className="text-header capitalize">{pokemonB.name}</span> é o Vencedor!</span>
+                      <span className="text-header">{pokemonB.name}</span>
                     )}
+                    <span className="text-white"> venceu!</span>
                   </h3>
-                  <p className="text-xs text-slate-400 max-w-md mx-auto mt-2 leading-relaxed">
-                    {combatWinner === 'A' 
-                      ? 'Excelente liderança! Suas táticas e build de golpes configurada superaram a defesa adversária na Arena Versus.' 
-                      : 'O oponente se provou mais rápido e estratégico nesta simulação. Reajuste seus golpes equipados no Move Tutor e tente novamente!'}
+                  <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed mt-2">
+                    {combatWinner === 'A'
+                      ? `${pokemonA.name} saiu vitorioso da arena. Revanche?`
+                      : `${pokemonB.name} dominou o confronto. Não desista, tente de novo!`}
                   </p>
                 </div>
+
                 <div className="flex justify-center gap-3 relative z-10">
                   <button
                     onClick={() => startBattle(arenaMode)}
-                    className="px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest text-slate-950 bg-gradient-to-r from-secondary to-cyan-400 hover:scale-102 active:scale-95 transition-all cursor-pointer"
+                    className="px-7 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest text-slate-950 bg-gradient-to-r from-secondary to-cyan-400 hover:brightness-110 active:scale-95 transition-all cursor-pointer"
                   >
-                    Batalhar Novamente
+                    Revanche
                   </button>
                   <button
                     onClick={resetBattleState}
-                    className="px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest text-white bg-white/5 border border-white/10 hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
+                    className="px-7 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest text-white bg-white/5 border border-white/10 hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
                   >
-                    Voltar aos Detalhes
+                    Voltar
                   </button>
                 </div>
               </div>
@@ -1253,6 +1406,9 @@ const BattleVersusModal: React.FC<IProps> = ({
 
           </div>
         )}
+
+
+        {/* COMBAT CONCLUSION ROW */}
 
         {/* COMBAT CONCLUSION ROW */}
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 relative z-10">
