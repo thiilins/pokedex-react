@@ -1012,16 +1012,16 @@ const BattleVersusModal: React.FC<IProps> = ({
 
                 {/* BATTLEFIELD ARENA */}
                 <div
-                  className="relative w-full rounded-3xl overflow-hidden border border-white/8"
-                  style={{ minHeight: 300, background: 'linear-gradient(180deg, #050b1f 0%, #0a0f28 50%, #0d1535 100%)' }}
+                  className="relative w-full rounded-3xl overflow-hidden border border-white/8 h-[340px] md:h-[420px]"
+                  style={{ background: 'linear-gradient(180deg, #050b1f 0%, #0a0f28 50%, #0d1535 100%)' }}
                 >
                   {/* Grid scanlines overlay */}
                   <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
                   {/* Ground divider line */}
-                  <div className="absolute bottom-[38%] left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                  <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
                   {/* ── OPPONENT (B) — top-right ── */}
-                  <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3">
+                  <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3 z-30">
                     {/* HP Card B */}
                     <div className="flex-1 max-w-[220px] bg-slate-950/80 border border-white/10 rounded-2xl p-3 backdrop-blur-sm">
                       <div className="flex items-center justify-between mb-1">
@@ -1064,19 +1064,19 @@ const BattleVersusModal: React.FC<IProps> = ({
                   </div>
 
                   {/* Sprite B — top right, smaller (enemy position) */}
-                  <div className={`absolute right-8 bottom-[40%] w-28 h-28 md:w-36 md:h-36 transition-all duration-300 ${activeTurn === 'B' ? 'scale-105' : 'scale-95 opacity-80'}`}>
+                  <div className={`absolute right-4 top-14 md:right-12 md:top-16 w-32 h-32 md:w-40 md:h-40 transition-all duration-300 z-10 ${activeTurn === 'B' ? 'scale-105' : 'scale-95 opacity-80'}`}>
                     <div className={`absolute inset-0 rounded-full ${styleB.bg} filter blur-2xl opacity-30`} />
                     <Image src={pokemonB.image} alt={pokemonB.name} fill className="object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]" />
                   </div>
 
                   {/* Sprite A — bottom left, bigger (player position) */}
-                  <div className={`absolute left-6 bottom-[36%] -translate-y-0 w-36 h-36 md:w-44 md:h-44 transition-all duration-300 ${activeTurn === 'A' ? 'scale-105 animate-float' : 'scale-95 opacity-80'}`}>
+                  <div className={`absolute left-2 bottom-2 md:left-8 md:bottom-6 w-40 h-40 md:w-52 md:h-52 transition-all duration-300 z-20 ${activeTurn === 'A' ? 'scale-105 animate-float' : 'scale-95 opacity-80'}`}>
                     <div className={`absolute inset-0 rounded-full ${styleA.bg} filter blur-2xl opacity-35`} />
                     <Image src={pokemonA.image} alt={pokemonA.name} fill className="object-contain drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] scale-x-[-1]" />
                   </div>
 
                   {/* ── PLAYER (A) — bottom-right HP card ── */}
-                  <div className="absolute bottom-4 right-4 left-4 flex items-end justify-end gap-3">
+                  <div className="absolute bottom-4 right-4 left-4 flex items-end justify-end gap-3 z-30 pointer-events-none">
                     {/* Turn indicator A */}
                     <div className={`px-2.5 py-1 rounded-xl text-[8px] font-mono font-black uppercase tracking-widest border transition-all ${
                       activeTurn === 'A'
