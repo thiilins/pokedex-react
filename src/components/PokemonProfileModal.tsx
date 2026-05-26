@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { X, Ruler, Weight, Award, Star, Compass, Heart, Swords, Shield, Zap, ShieldAlert, Gauge, Sparkles } from 'lucide-react'
 import PokemonTypeIcon, { typeStylingMap } from './PokemonTypeIcon'
+import { pokemonTypesIcons } from './PokemonTypeIconData'
 
 interface IProps {
   pokemon: any
@@ -33,15 +34,14 @@ const PokemonProfileModal: React.FC<IProps> = ({
   const primaryType = pokemon.types[0]?.name.toLowerCase() || 'normal'
   const style = typeStylingMap[primaryType] || typeStylingMap.normal
 
-  // Max stat standard calculation
+  // Max stat percentage calculation
   const getStatPercent = (val: number) => {
     return Math.min(Math.round((val / 255) * 100), 100)
   }
 
-  // Calculate Combat Rating (Total Base Stats)
+  // Calculate Combat Rating
   const totalStats = pokemon.stats.reduce((acc: number, curr: any) => acc + curr.base_stat, 0)
 
-  // Map stats to corresponding sleek lucide icons & labels
   const statCardConfig: Record<string, { icon: React.FC<any>, label: string, color: string }> = {
     hp: { icon: Heart, label: 'HP / Vida', color: 'text-red-500' },
     attack: { icon: Swords, label: 'Ataque', color: 'text-orange-500' },
@@ -53,7 +53,7 @@ const PokemonProfileModal: React.FC<IProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-0 md:p-6 transition-all duration-300 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 md:p-6 transition-all duration-300 ${
         isOpen ? 'opacity-100 backdrop-blur-md' : 'opacity-0 backdrop-blur-none pointer-events-none'
       }`}
     >
@@ -62,79 +62,124 @@ const PokemonProfileModal: React.FC<IProps> = ({
 
       {/* Main Console Container */}
       <div
-        className={`relative w-full rounded-t-[36px] md:rounded-[36px] border ${style.border} bg-gradient-to-br from-[#080d24]/90 via-[#040714]/95 to-[#0b0f2a]/95 backdrop-blur-2xl overflow-y-auto md:overflow-hidden shadow-2xl flex flex-col md:flex-row transition-all duration-300 max-h-[90vh] md:max-h-[85vh] md:max-w-4xl z-10 bottom-0 md:bottom-auto left-0 md:left-auto right-0 md:right-auto absolute md:relative ${
+        className={`relative w-full rounded-t-[36px] md:rounded-[36px] border ${style.border} bg-gradient-to-br from-[#080d24]/95 via-[#040714]/98 to-[#0b0f2a]/95 backdrop-blur-2xl overflow-y-auto md:overflow-hidden shadow-2xl flex flex-col md:flex-row transition-all duration-300 max-h-[95vh] md:max-h-[85vh] md:max-w-4xl z-10 bottom-0 md:bottom-auto left-0 md:left-auto right-0 md:right-auto absolute md:relative ${
           isOpen 
             ? 'translate-y-0 md:scale-100 md:translate-y-0 shadow-[0_0_60px_rgba(0,240,255,0.25)]' 
             : 'translate-y-full md:scale-95 md:translate-y-4'
         }`}
       >
         
-        {/* Holographic Watermark Backdrop */}
-        <div className="absolute -left-12 bottom-6 text-[8rem] md:text-[10rem] font-black font-noto text-white/[0.03] pointer-events-none uppercase tracking-widest leading-none select-none z-0">
-          {pokemon.japan_name}
-        </div>
-
-        {/* Swipe drag indicator for mobile */}
+        {/* Swipe drag handle for mobile drawer */}
         <div className="md:hidden flex justify-center py-3.5 w-full absolute top-0 left-0 z-20" onClick={onRequestClose}>
           <div className="w-12 h-1 rounded-full bg-white/20 hover:bg-white/35 transition-colors cursor-pointer" />
         </div>
 
-        {/* Left Column: Visual Highlight Panel */}
-        <div className={`relative flex-1 flex flex-col items-center justify-center p-6 md:p-8 border-b md:border-b-0 md:border-r ${style.border} overflow-hidden z-10 pt-10 md:pt-8`}>
+        {/* LEFT COLUMN: SPECTACULAR HIGH-FIDELITY COLLECTOR COMBAT CARD! */}
+        <div className="relative p-5 sm:p-6 md:p-8 flex items-center justify-center z-10 w-full md:w-auto md:min-w-[360px]">
           
-          {/* Shifting radial glow background */}
-          <div className={`absolute w-64 h-64 md:w-80 md:h-80 rounded-full ${style.bg} filter blur-[80px] md:blur-[100px] opacity-25 -z-10 animate-pulse-glow`} />
+          {/* THE HOLOGRAPHIC CARD CONTAINER */}
+          <div 
+            className={`relative w-full max-w-sm h-[380px] md:h-[480px] rounded-[32px] overflow-hidden border ${style.border} bg-gradient-to-br ${style.gradient} to-[#030616]/95 shadow-[0_15px_30px_rgba(0,0,0,0.5)] flex flex-col justify-between p-6 select-none`}
+          >
+            {/* Tech grid mesh backdrop on card */}
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none" />
 
-          {/* Glowing tech radar outline */}
-          <div className="absolute w-44 h-44 md:w-60 md:h-60 border-2 border-white/5 border-dashed rounded-full -z-10 animate-spin-slow" />
-          <div className="absolute w-52 h-52 md:w-72 md:h-72 border border-white/5 rounded-full -z-10" />
+            {/* Glowing background type color core */}
+            <div className={`absolute w-52 h-52 rounded-full ${style.bg} filter blur-[60px] opacity-35 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10`} />
 
-          {/* Legendary/Mythical holographic badge */}
-          {(pokemon.is_legendary || pokemon.is_mythical) && (
-            <div className="absolute top-8 md:top-6 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black tracking-widest bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 uppercase shadow-glow-electric animate-pulse">
-              <Star className="w-3 h-3 fill-slate-950" /> {pokemon.is_legendary ? 'Lendário' : 'Mítico'}
-            </div>
-          )}
-
-          {/* Big Pokémon Artwork */}
-          <div className="relative w-44 h-44 md:w-56 md:h-56 my-4 md:my-6 drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)] hover:scale-105 transition-transform duration-500 animate-float">
-            <Image
-              src={pokemon.image}
-              alt={pokemon.name}
-              fill
-              priority
-              sizes="(max-width: 768px) 176px, 224px"
-              className="object-contain"
-            />
-          </div>
-
-          {/* Name, genus and elements details */}
-          <div className="text-center space-y-2">
-            <div className="space-y-0.5">
-              <span className="text-[10px] md:text-xs font-mono text-white/40 tracking-widest">
+            {/* CARD HEADER DETAILS */}
+            <div className="flex justify-between items-center relative z-10">
+              
+              {/* Top Left: Outlined ID Badge */}
+              <div className="border-2 border-white/30 bg-white/10 px-3 py-1 rounded-2xl text-[11px] font-mono font-black tracking-widest text-white shadow-sm">
                 #{String(pokemon.id).padStart(4, '0')}
-              </span>
-              <h2 className="text-3xl font-black text-white capitalize tracking-wide drop-shadow-md">
-                {pokemon.name}
-              </h2>
-              <div className="text-xs font-black text-secondary tracking-wider uppercase font-mono bg-secondary/10 border border-secondary/20 px-2 py-0.5 rounded inline-block mt-0.5">
-                {pokemon.category}
               </div>
+
+              {/* Top Right: Custom white/glass type capsule containing element icon badges! */}
+              <div className="flex items-center gap-1.5 p-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20 shadow-sm">
+                {pokemon.types.map((t: any) => {
+                  const IconComp = pokemonTypesIcons[t.name.toLowerCase()]
+                  const typeColors = typeStylingMap[t.name.toLowerCase()] || typeStylingMap.normal
+                  
+                  return (
+                    <div 
+                      key={t.id} 
+                      className={`w-6.5 h-6.5 rounded-full flex items-center justify-center text-white ${typeColors.bg} border border-white/10 p-1.5 shadow-sm`}
+                      title={t.name}
+                    >
+                      {IconComp && <IconComp className="w-full h-full text-white" />}
+                    </div>
+                  )
+                })}
+              </div>
+
             </div>
-            
-            {/* Type Icons */}
-            <div className="flex justify-center gap-1.5 pt-1">
-              {pokemon.types.map((t: any) => (
-                <PokemonTypeIcon key={t.id} type={t.name} haveName className="px-3.5 py-1 text-[9px]" />
-              ))}
+
+            {/* CARD CENTER: Translucent Japanese name backdrop & Floating Artwork */}
+            <div className="relative flex-1 flex flex-col items-center justify-center relative my-3">
+              
+              {/* Translucent outlined Japanese character watermarks */}
+              <div className="font-noto text-5xl md:text-6xl font-black text-white/[0.08] tracking-widest absolute top-4 text-center select-none uppercase pointer-events-none leading-none">
+                {pokemon.japan_name}
+              </div>
+
+              {/* Inner glowing circle core */}
+              <div className="absolute w-44 h-44 md:w-56 md:h-56 rounded-full border border-white/10 bg-white/[0.02] -z-10 animate-spin-slow" />
+              <div className="absolute w-36 h-36 md:w-44 md:h-44 rounded-full border border-white/5 bg-white/[0.01] -z-10" />
+
+              {/* Majestic floating Pokémon artwork */}
+              <div className="relative w-44 h-44 md:w-52 md:h-52 drop-shadow-[0_16px_25px_rgba(0,0,0,0.65)] hover:scale-105 transition-transform duration-500 animate-float">
+                <Image
+                  src={pokemon.image}
+                  alt={pokemon.name}
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 176px, 208px"
+                  className="object-contain"
+                />
+              </div>
+
             </div>
+
+            {/* CARD FOOTER DETAILS */}
+            <div className="flex justify-between items-end relative z-10 mt-auto">
+              
+              {/* Left Side: Huge VERTICAL name, just like in Bulbasaur design! */}
+              <div className="absolute left-0 bottom-0 select-none pointer-events-none origin-bottom-left -rotate-90 -translate-y-4 translate-x-2">
+                <span className="text-[2.2rem] md:text-[2.8rem] font-black tracking-widest text-white/10 uppercase font-sans whitespace-nowrap leading-none block">
+                  {pokemon.name}
+                </span>
+              </div>
+
+              {/* Right Side: Small, high-tech Combat Category */}
+              <div className="ml-auto text-right space-y-1.5 font-mono">
+                <div className="text-[9px] text-white/50 tracking-wider uppercase font-black">
+                  {pokemon.category}
+                </div>
+                
+                {/* Micro Metrics Grid inside the card */}
+                <div className="flex gap-3 text-right text-[10px] font-bold text-white/90">
+                  <div className="flex items-center gap-1">
+                    <Weight className="w-3.5 h-3.5 text-white/60" />
+                    <span>{(pokemon.weight / 10).toFixed(1)} kg</span>
+                  </div>
+                  <div className="flex items-center gap-1 border-l border-white/10 pl-2">
+                    <Ruler className="w-3.5 h-3.5 text-white/60" />
+                    <span>{(pokemon.height / 10).toFixed(1)} m</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
           </div>
+
         </div>
 
-        {/* Right Column: High-Tech Stats / Details panel */}
-        <div className="flex-[1.2] flex flex-col p-6 md:p-8 z-10 relative">
+        {/* RIGHT COLUMN: HIGH-TECH COMBAT TERMINAL TAB DETAILS */}
+        <div className="flex-[1.2] flex flex-col p-6 md:p-8 md:pl-4 z-10 relative">
           
-          {/* Close button */}
+          {/* Close Button */}
           <button
             onClick={onRequestClose}
             className="hidden md:flex absolute top-4 right-4 p-2 rounded-full border border-white/10 bg-white/5 text-white/60 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer"
@@ -172,7 +217,7 @@ const PokemonProfileModal: React.FC<IProps> = ({
             {activeTab === 'about' && (
               <div className="space-y-4 md:space-y-5 animate-fadeIn">
                 
-                {/* Holographic Species Flavor Text (Beautiful quote box!) */}
+                {/* Holographic Description Box */}
                 <div className="relative p-4 rounded-2xl border border-secondary/20 bg-secondary/5 backdrop-blur-md overflow-hidden">
                   <div className="absolute right-3 bottom-3 text-secondary/5 pointer-events-none">
                     <Compass className="w-20 h-20" />
@@ -185,34 +230,7 @@ const PokemonProfileModal: React.FC<IProps> = ({
                   </p>
                 </div>
 
-                {/* Metric widgets */}
-                <div className="grid grid-cols-2 gap-3">
-                  
-                  {/* Height */}
-                  <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-white/5 border border-white/5">
-                    <div className={`p-2.5 rounded-xl ${style.bgAlpha} ${style.text}`}>
-                      <Ruler className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="text-[9px] text-slate-500 font-black uppercase">Altura</div>
-                      <div className="text-sm font-bold text-white">{(pokemon.height / 10).toFixed(1)} m</div>
-                    </div>
-                  </div>
-
-                  {/* Weight */}
-                  <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-white/5 border border-white/5">
-                    <div className={`p-2.5 rounded-xl ${style.bgAlpha} ${style.text}`}>
-                      <Weight className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="text-[9px] text-slate-500 font-black uppercase">Peso</div>
-                      <div className="text-sm font-bold text-white">{(pokemon.weight / 10).toFixed(1)} kg</div>
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* Additional Research Stats Grid */}
+                {/* Metrics Grid */}
                 <div className="grid grid-cols-2 gap-3 p-4 rounded-2xl bg-white/5 border border-white/5 text-xs font-mono">
                   <div className="space-y-1">
                     <div className="text-[9px] text-slate-500 font-black uppercase">Taxa de Captura</div>
@@ -231,6 +249,18 @@ const PokemonProfileModal: React.FC<IProps> = ({
                         <div className="h-full bg-secondary" style={{ width: `${(pokemon.base_happiness / 140) * 100}%` }} />
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                {/* Additional Info Row */}
+                <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-2.5 text-xs font-mono">
+                  <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                    <span className="text-slate-400">Nº ORDEM POKEDEX</span>
+                    <span className="font-bold text-white">#{pokemon.order}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">ESPÉCIE POKÉMON</span>
+                    <span className="font-bold text-white capitalize">{pokemon.species.name}</span>
                   </div>
                 </div>
 
