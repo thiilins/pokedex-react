@@ -170,7 +170,7 @@ export const OfficialTCGCollectorCard = (
           <span
             style={{ color: tcgStyle.border }}
             className="text-[10px] font-mono font-black tracking-widest leading-none">
-            TCG COLLECTION // CARD #{String(data.id).padStart(4, '0')}
+            TCG COLLECTION | CARD #{String(data.id).padStart(4, '0')}
           </span>
           <div className="flex items-center gap-1.5 mt-1">
             <span
@@ -246,7 +246,8 @@ export const OfficialTCGCollectorCard = (
 
       {/* Footer brand details */}
       <div className="flex justify-between items-center text-[7px] font-mono tracking-wider opacity-60 mt-3 border-t border-amber-900/10 pt-2 text-slate-700">
-        <span>KANTO EDITION CARD ©1996</span>
+        <span>KANTO EDITION CARD ©1996</span>{' '}
+        <span className="font-black">{data.japan_name}</span>
         <span className="font-black">THIAGOLINS DEV.BR</span>
       </div>
     </div>
@@ -309,6 +310,7 @@ export const retroGameBoyComponent = (data: any, resolvedMainImage: any) => {
             <div className="text-left font-pixel text-[8px] tracking-tighter uppercase font-bold leading-relaxed">
               #{String(data.id).padStart(4, '0')}
               <div className="text-[12px] mt-1">{data.name}</div>
+              {data.japan_name}
             </div>
           </div>
 
@@ -347,12 +349,10 @@ export const retroGameBoyComponent = (data: any, resolvedMainImage: any) => {
           <div className="absolute w-11 h-3.5 bg-neutral-700 rounded shadow-md" />
           <div className="absolute w-3.5 h-3.5 bg-neutral-800 rounded" />
         </div>
-
         {/* Dynamic logo label */}
         <span className="text-[8px] font-sans font-black text-neutral-800 tracking-widest uppercase">
           GAME BOY DMG-01
-        </span>
-
+        </span>{' '}
         {/* Action button mockups */}
         <div className="flex gap-2 rotate-[-25deg] transform translate-y-1">
           <div className="w-7 h-7 rounded-full bg-red-800 flex items-center justify-center shadow-md">
@@ -481,6 +481,7 @@ export const Home3DCollectorCard = (
       {/* Footer brand details */}
       <div className="flex justify-between items-center text-[7px] font-mono tracking-wider opacity-40 mt-3 border-t border-white/5 pt-2 text-slate-500">
         <span>CYBER SYSTEM COMPILER V2.0</span>
+        <span className="font-black">{data.japan_name}</span>
         <span>POKÉDEX DATABASE</span>
       </div>
     </div>
@@ -591,6 +592,7 @@ export const DreamComicComponent = (
       {/* Footer brand details */}
       <div className="flex justify-between items-center text-[7px] font-mono tracking-wider font-black opacity-80 mt-3 border-t-2 border-black pt-2 text-black">
         <span>POP EDITION COMICS ©1996</span>
+        <span className="font-black">{data.japan_name}</span>
         <span>POKÉDEX VETOR GRAPHIC</span>
       </div>
     </div>
