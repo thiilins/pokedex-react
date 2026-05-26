@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Swords, ExternalLink } from 'lucide-react'
 import PokemonTypeIcon, { typeStylingMap } from './PokemonTypeIcon'
-import { fetchPokemonDetailAction } from '@/services/pokemonActions'
 
 interface IProps {
   pokemonId: string
@@ -38,30 +37,52 @@ const PokemonCard: React.FC<IProps> = ({
 }) => {
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [opening, setOpening] = useState(false)
 
   useEffect(() => {
-    if (pokemonCache[pokemonId]) {
-      setData(pokemonCache[pokemonId])
-      setLoading(false)
-      return
-    }
-
     let isMounted = true
-    const loadPokemon = async () => {
+    const loadCard = async () => {
       try {
-        const parsedData = await fetchPokemonDetailAction(parseInt(pokemonId))
+        // Versão LEVE via Route Handler GET — requisições paralelas (não enfileiradas),
+        // cacheadas no browser/CDN. Busca uma vez por id; o modal puxa o completo ao clicar.
+        const res = await fetch(`/api/pokemon/${pokemonId}`)
+        if (!res.ok) throw new Error(`Failed to load card ${pokemonId}`)
+        const parsedData = await res.json()
         if (isMounted) {
           setData(parsedData)
-          onDataLoaded(pokemonId, parsedData)
           setLoading(false)
         }
       } catch (err) {
-        console.error('Error fetching pokemon details in PokemonCard:', err)
+        console.error('Error fetching pokemon card:', err)
       }
     }
-    loadPokemon()
-    return () => { isMounted = false }
-  }, [pokemonId, pokemonCache, onDataLoaded])
+    loadCard()
+    return () => {
+      isMounted = false
+    }
+  }, [pokemonId])
+
+  // Abre o modal com o detalhe COMPLETO, buscado sob demanda (só ao clicar).
+  const handleOpen = useCallback(async () => {
+    if (pokemonCache[pokemonId]) {
+      setPokemonModalData(pokemonCache[pokemonId])
+      setOpen(true)
+      return
+    }
+    try {
+      setOpening(true)
+      const res = await fetch(`/api/pokemon/${pokemonId}?full=1`)
+      if (!res.ok) throw new Error(`Failed to load detail ${pokemonId}`)
+      const full = await res.json()
+      onDataLoaded(pokemonId, full)
+      setPokemonModalData(full)
+      setOpen(true)
+    } catch (err) {
+      console.error('Error opening pokemon detail:', err)
+    } finally {
+      setOpening(false)
+    }
+  }, [pokemonId, pokemonCache, onDataLoaded, setPokemonModalData, setOpen])
 
   // Skeleton premium
   if (loading || !data) {
@@ -101,10 +122,7 @@ const PokemonCard: React.FC<IProps> = ({
 
   return (
     <div
-      onClick={() => {
-        setPokemonModalData(data)
-        setOpen(true)
-      }}
+      onClick={handleOpen}
       className={`group relative flex flex-col w-full rounded-[24px] border overflow-hidden cursor-pointer select-none transition-all duration-400 hover:-translate-y-1.5 active:scale-[0.98] ${
         isComparing
           ? 'border-secondary ring-1 ring-secondary/40 shadow-glow-cyan/20'
@@ -114,6 +132,12 @@ const PokemonCard: React.FC<IProps> = ({
         background: 'linear-gradient(160deg, #0a0f23 0%, #060a1a 100%)',
       }}
     >
+      {opening && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-background/60 backdrop-blur-sm rounded-[24px]">
+          <div className="w-6 h-6 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+
       {/* Aura de fundo baseada no tipo */}
       <div
         className={`absolute -right-12 -top-12 w-36 h-36 rounded-full ${style.bg} filter blur-[55px] opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none`}

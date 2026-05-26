@@ -75,6 +75,65 @@ export async function getCachedAllPokemons() {
 }
 
 /**
+ * Versão LEVE para os cards do grid (home).
+ * Busca apenas /pokemon + /pokemon-species (2 requisições) — sem evolution,
+ * abilities, forms ou moves. Suficiente para renderizar o card; o detalhe
+ * completo só é buscado ao abrir o modal/ficha.
+ */
+export async function getCachedPokemonCard(id: number) {
+  'use cache'
+  cacheLife('max')
+  cacheTag(`pokemon-card-${id}`)
+  try {
+    const res = await fetchFromApi(`/pokemon/${id}`)
+    const speciesRes = await fetchFromApi(
+      res.data.species.url.replace('https://pokeapi.co/api/v2', '')
+    )
+
+    const japanName =
+      (
+        speciesRes.data.names.find(
+          (n: any) => n.language.name === 'ja-Hrkt' || n.language.name === 'ja'
+        ) || speciesRes.data.names[0]
+      )?.name || res.data.name
+
+    const genus =
+      (
+        speciesRes.data.genera.find(
+          (g: any) => g.language.name === 'pt-BR' || g.language.name === 'pt'
+        ) || speciesRes.data.genera.find((g: any) => g.language.name === 'en')
+      )?.genus || ''
+
+    const sg = res.data.sprites
+    return {
+      id: res.data.id,
+      name: res.data.name,
+      japan_name: japanName,
+      category: genus,
+      is_legendary: speciesRes.data.is_legendary,
+      is_mythical: speciesRes.data.is_mythical,
+      types: res.data.types.map((t: any) => ({
+        slot: t.slot,
+        name: t.type.name,
+        id: +getId(t.type.url),
+        url: t.type.url
+      })),
+      stats: res.data.stats.map((s: any) => ({
+        name: s.stat.name,
+        base_stat: s.base_stat
+      })),
+      image:
+        sg?.other?.['official-artwork']?.front_default ||
+        sg?.other?.home?.front_default ||
+        '/assets/img/fallback.png'
+    }
+  } catch (err) {
+    console.error(`Error in pokemonService.getCachedPokemonCard for ID ${id}:`, err)
+    throw err
+  }
+}
+
+/**
  * Service SSR com a diretiva 'use cache' no nível da função (conforme a doc)
  * Busca e consolida os detalhes completos de um Pokémon por ID no servidor.
  */

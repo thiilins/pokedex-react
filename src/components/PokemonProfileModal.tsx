@@ -30,9 +30,9 @@ const PokemonProfileModal: React.FC<IProps> = ({
     }
   }, [isOpen])
 
-  if (!isOpen && !isRendered) return null
+  if ((!isOpen && !isRendered) || !pokemon) return null
 
-  const primaryType = pokemon.types[0]?.name.toLowerCase() || 'normal'
+  const primaryType = pokemon.types?.[0]?.name?.toLowerCase() || 'normal'
   const style = typeStylingMap[primaryType] || typeStylingMap.normal
 
   // Max stat percentage calculation
@@ -41,7 +41,7 @@ const PokemonProfileModal: React.FC<IProps> = ({
   }
 
   // Calculate Combat Rating
-  const totalStats = pokemon.stats.reduce((acc: number, curr: any) => acc + curr.base_stat, 0)
+  const totalStats = (pokemon.stats ?? []).reduce((acc: number, curr: any) => acc + curr.base_stat, 0)
 
   const statCardConfig: Record<string, { icon: React.FC<any>, label: string, color: string, gradient: string }> = {
     hp: { icon: Heart, label: 'HP / Vida', color: 'text-red-500', gradient: 'from-red-600 to-red-400' },
