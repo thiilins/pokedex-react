@@ -380,109 +380,124 @@ export const Home3DCollectorCard = (
     <div
       id="pokemon-collector-card"
       style={{
-        background: 'linear-gradient(135deg, #070913 0%, #020306 100%)',
-        borderColor: isShiny ? '#f59e0b' : typeStyle.color,
+        backgroundImage: `repeating-linear-gradient(-45deg, #facc15, #facc15 8px, #000 8px, #000 16px)`,
         boxShadow: isShiny
-          ? '0 25px 60px rgba(245, 158, 11, 0.35), inset 0 0 25px rgba(245, 158, 11, 0.1)'
-          : `0 25px 60px ${typeStyle.glow}, inset 0 0 25px rgba(255, 255, 255, 0.02)`
+          ? '0 25px 60px rgba(234, 179, 8, 0.4), 12px 12px 0px #000000'
+          : '0 25px 60px rgba(0, 0, 0, 0.5), 12px 12px 0px #000000'
       }}
-      className="relative w-full max-w-sm h-[530px] rounded-[36px] border-4 flex flex-col justify-between p-6 select-none overflow-hidden shadow-2xl text-white">
-      {/* Holographic grid lines */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-b from-white/[0.01] via-white/[0.06] to-transparent h-1/2 w-full -z-5 animate-scanline pointer-events-none" />
-
-      {/* Ambient type color glow core */}
-      <div
-        style={{ background: isShiny ? '#f59e0b' : typeStyle.color }}
-        className="absolute w-52 h-52 rounded-full filter blur-[70px] opacity-25 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10"
+      className="relative w-full max-w-sm h-[530px] rounded-[36px] p-2.5 select-none overflow-hidden text-black font-sans border-4 border-black">
+      
+      {/* Estilos adicionais injetados para fontes retrô gamer impactantes */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+            .font-marker { font-family: 'Permanent Marker', cursive; }
+          `
+        }}
       />
 
-      {/* Sparkles overlay for Shiny */}
-      {isShiny && (
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.1),transparent_70%)] animate-pulse pointer-events-none" />
-      )}
+      {/* Área interna do card - simula papel de revista fosco */}
+      <div 
+        style={{
+          backgroundColor: '#faf6e9',
+          backgroundImage: `radial-gradient(#000000 12%, transparent 12%)`,
+          backgroundSize: '16px 16px',
+          backgroundOpacity: '0.02'
+        }}
+        className="w-full h-full rounded-[28px] border-4 border-black p-4 flex flex-col justify-between relative overflow-hidden bg-cover">
+        
+        {/* Camada de ruído/retícula fina de revista impressa */}
+        <div
+          className="absolute inset-0 opacity-[0.06] pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.99' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+          }}
+        />
 
-      {/* Header Ribbon Nameplate */}
-      <div className="flex justify-between items-center relative z-10">
-        <div className="flex flex-col text-left">
-          <span className="text-[9px] font-mono font-black text-slate-500 tracking-widest leading-none">
-            NO. {String(data.id).padStart(4, '0')}
-          </span>
-          <div className="flex items-center gap-1.5 mt-1">
-            <span className="text-2xl font-black tracking-wide uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+        {/* Efeito degradê de luz na revista */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-black/[0.03] via-transparent to-white/[0.08] pointer-events-none" />
+
+        {/* ── HEADER: TÍTULO DA CAPA / FICHA TÉCNICA ── */}
+        <div className="relative z-10 flex items-center justify-between gap-2 transform -rotate-1">
+          {/* Box de Nome Inclinado Estilo Chamada de Capa */}
+          <div className="bg-red-500 border-4 border-black rounded-xl px-4 py-1.5 shadow-[4px_4px_0px_#000000] text-left flex-1 min-w-0">
+            <span className="text-[7.5px] font-mono font-black text-yellow-300 tracking-wider block leading-none uppercase">
+              REVELADO! // CAPA Nº {String(data.id).padStart(4, '0')}
+            </span>
+            <span className="text-xl sm:text-2xl font-black text-white tracking-tighter uppercase block truncate drop-shadow-[2px_2px_0px_rgba(0,0,0,0.85)] mt-0.5">
               {data.name}
             </span>
           </div>
-        </div>
 
-        {/* Types capsule icons */}
-        <div className="flex items-center gap-1 p-1 rounded-full bg-white/10 border border-white/20 shadow-sm">
-          {data.types.map((t: any) => {
-            const IconComp = pokemonTypesIcons[t.name.toLowerCase()]
-            return (
-              <div
-                key={t.id}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-white border border-white/10 bg-slate-900/60 shadow-inner"
-                title={t.name}>
-                {IconComp && <IconComp className="w-4 h-4 text-white" />}
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Cyber Hologram Display Box */}
-      <div className="relative flex-1 flex flex-col items-center justify-center my-4 border border-white/5 bg-slate-950/45 rounded-2xl p-4 shadow-inner">
-        {/* Target HUD corners */}
-        <div className="absolute top-2 left-2 w-3.5 h-3.5 border-t-2 border-l-2 border-white/25 rounded-tl" />
-        <div className="absolute top-2 right-2 w-3.5 h-3.5 border-t-2 border-r-2 border-white/25 rounded-tr" />
-        <div className="absolute bottom-2 left-2 w-3.5 h-3.5 border-b-2 border-l-2 border-white/25 rounded-bl" />
-        <div className="absolute bottom-2 right-2 w-3.5 h-3.5 border-b-2 border-r-2 border-white/25 rounded-br" />
-
-        {/* Glowing radar target rings */}
-        <div
-          className="absolute w-40 h-40 rounded-full border border-white/5 animate-ping opacity-30 -z-5"
-          style={{ animationDuration: '4s' }}
-        />
-        <div className="absolute w-32 h-32 rounded-full border border-white/10 -z-5 flex items-center justify-center animate-spin-slow">
-          <div className="w-2 h-2 rounded-full bg-secondary/50 animate-pulse" />
-        </div>
-
-        <div className="relative w-60 h-60 drop-shadow-[0_16px_32px_rgba(0,0,0,0.65)] hover:scale-105 transition-transform duration-500  flex items-center justify-center">
-          <img
-            src={resolvedMainImage}
-            alt={data.name}
-            crossOrigin="anonymous"
-            className="w-full h-full object-contain"
-          />
-        </div>
-      </div>
-
-      {/* Cyber stats banner */}
-      <div className="bg-slate-950/80 border border-white/10 rounded-xl p-3 flex justify-between items-center text-xs relative z-10 shadow-lg">
-        <div className="text-left font-mono text-[9px] uppercase font-bold text-slate-400">
-          <div>{data.category}</div>
-          <div className="text-[7px] text-slate-600 font-normal">
-            CLASSIFICAÇÃO DE COMBATE
+          {/* Types capsule icons */}
+          <div className="bg-cyan-400 border-4 border-black rounded-2xl p-1 shadow-[3px_3px_0px_#000000] flex-shrink-0 flex gap-0.5">
+            {data.types.map((t: any) => {
+              const IconComp = pokemonTypesIcons[t.name.toLowerCase()]
+              return (
+                <div
+                  key={t.id}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-white border-2 border-black bg-black shadow-inner"
+                  title={t.name}>
+                  {IconComp && <IconComp className="w-3.5 h-3.5 text-white" />}
+                </div>
+              )
+            })}
           </div>
         </div>
-        <div className="flex gap-4 font-mono font-bold text-[10px] text-white">
-          <div className="flex items-center gap-1">
-            <Weight className="w-3.5 h-3.5 text-secondary" />
-            <span>{(data.weight / 10).toFixed(1)} kg</span>
+
+        {/* ── IMAGEM DO PERSONAGEM: CAPA DO DETONADO ── */}
+        <div className="relative flex-1 flex flex-col items-center justify-center my-3 bg-gradient-to-br from-indigo-900 to-purple-800 border-4 border-black rounded-2xl shadow-[6px_6px_0px_#000000] p-4 overflow-hidden">
+          {/* Grade neon retrô no fundo da foto */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:12px_12px] pointer-events-none" />
+          
+          {/* Sol radial de contraste de revista */}
+          <div className="absolute w-56 h-56 rounded-full bg-yellow-400/25 filter blur-[40px] -z-5" />
+
+          {/* Selo Diagional "100% DETONADO" */}
+          <div className="absolute top-2.5 left-2.5 bg-yellow-300 border-3 border-black text-black px-2.5 py-0.5 rounded font-black text-[8px] uppercase tracking-widest shadow-[2px_2px_0px_#000000] transform -rotate-12 z-20 font-marker animate-pulse">
+            ★ 100% DETONADO ★
           </div>
-          <div className="flex items-center gap-1 border-l border-white/10 pl-3">
-            <Ruler className="w-3.5 h-3.5 text-accent" />
-            <span>{(data.height / 10).toFixed(1)} m</span>
+
+          {/* Adesivo de Dica de Combate */}
+          <div className="absolute bottom-2 right-2 bg-pink-500 border-3 border-black text-white px-2 py-0.5 rounded font-black text-[7px] uppercase tracking-wider shadow-[2px_2px_0px_#000000] transform rotate-6 z-20">
+            DICA DE MESTRE!
+          </div>
+
+          <div className="relative w-48 h-48 drop-shadow-[8px_8px_0px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform duration-300 flex items-center justify-center z-10">
+            <img
+              src={resolvedMainImage}
+              alt={data.name}
+              crossOrigin="anonymous"
+              className="w-full h-full object-contain"
+            />
           </div>
         </div>
-      </div>
 
-      {/* Footer brand details */}
-      <div className="flex justify-between items-center text-[7px] font-mono tracking-wider opacity-40 mt-3 border-t border-white/5 pt-2 text-slate-500">
-        <span>CYBER SYSTEM COMPILER V2.0</span>
-        <span className="font-black">{data.japan_name}</span>
-        <span>POKÉDEX DATABASE</span>
+        {/* ── METRICS SECTION: BOX DE REVIEW TÉCNICO DE CAPA ── */}
+        <div className="bg-cyan-400 border-4 border-black rounded-xl p-2.5 flex justify-between items-center text-xs relative z-10 shadow-[4px_4px_0px_#000000] transform rotate-1">
+          <div className="text-left font-sans text-[8px] uppercase font-black text-black flex flex-col gap-0.5 leading-none">
+            <span className="bg-black text-cyan-400 px-1 py-0.5 rounded text-[7px] w-fit font-mono font-black">{data.category.toUpperCase()}</span>
+            <span className="text-[6.5px] text-black/70 font-bold mt-1 font-mono">DICAS E ANÁLISE DO MONSTRO</span>
+          </div>
+          <div className="flex gap-2.5 font-mono font-black text-[9px] text-black">
+            <div className="flex items-center gap-1 bg-white border-2 border-black rounded px-1.5 py-0.5">
+              <Weight className="w-3 h-3 text-red-500" />
+              <span>{(data.weight / 10).toFixed(1)} kg</span>
+            </div>
+            <div className="flex items-center gap-1 bg-white border-2 border-black rounded px-1.5 py-0.5">
+              <Ruler className="w-3 h-3 text-indigo-600" />
+              <span>{(data.height / 10).toFixed(1)} m</span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── FOOTER: DIREITOS E CRÉDITOS RETRÔ ── */}
+        <div className="mt-3 bg-yellow-300 border-3 border-black rounded-xl px-3 py-1 flex justify-between items-center text-[7.5px] font-mono tracking-wider font-black text-black shadow-[3px_3px_0px_#000000] relative z-10">
+          <span>AÇÃO GAMES EDITORA ©1996</span>
+          <span className="font-black text-[8px] bg-black text-yellow-300 px-2 py-0.5 rounded uppercase">{data.japan_name}</span>
+          <span>SUPER GAMEPOWER SPECIAL</span>
+        </div>
       </div>
     </div>
   )
@@ -590,9 +605,9 @@ export const DreamComicComponent = (
       </div>
 
       {/* Footer brand details */}
-      <div className="flex justify-between items-center text-[7px] font-mono tracking-wider font-black opacity-80 mt-3 border-t-2 border-black pt-2 text-black">
+      <div className="mt-3 bg-yellow-300 border-[3px] border-black rounded-xl px-3 py-1.5 flex justify-between items-center text-[7.5px] font-mono tracking-wider font-black text-black shadow-[3px_3px_0px_#000000] relative z-10">
         <span>POP EDITION COMICS ©1996</span>
-        <span className="font-black">{data.japan_name}</span>
+        <span className="font-black text-[8px] bg-black text-yellow-300 px-1.5 py-0.5 rounded uppercase">{data.japan_name}</span>
         <span>POKÉDEX VETOR GRAPHIC</span>
       </div>
     </div>

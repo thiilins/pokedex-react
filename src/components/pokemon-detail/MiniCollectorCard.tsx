@@ -1,7 +1,7 @@
 'use client'
 
 import PokemonTypeIcon, { typeStylingMap } from '@/components/PokemonTypeIcon'
-import { api } from '@/services/api'
+import { getCachedPokemonDetail } from '@/services/pokemonService'
 import { Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -33,33 +33,12 @@ export const MiniCollectorCard: React.FC<IMiniCollectorCardProps> = ({
     let isMounted = true
     const load = async () => {
       try {
-        const res = await api.get(`/pokemon/${id}`)
+        const detail = await getCachedPokemonDetail(parseInt(id))
         if (!isMounted) return
-        setTypes(
-          res.data.types.map((t: any) => ({ name: t.type.name, slot: t.slot }))
-        )
-        setStats(
-          res.data.stats
-            .slice(0, 3)
-            .map((s: any) => ({ name: s.stat.name, base_stat: s.base_stat }))
-        )
-
-        // species para categoria e lendário
-        try {
-          const speciesUrl = res.data.species.url.replace(
-            'https://pokeapi.co/api/v2',
-            ''
-          )
-          const sRes = await api.get(speciesUrl)
-          if (!isMounted) return
-          setIsLegendary(sRes.data.is_legendary || sRes.data.is_mythical)
-          const genusEntry =
-            sRes.data.genera.find(
-              (g: any) =>
-                g.language.name === 'pt' || g.language.name === 'pt-BR'
-            ) || sRes.data.genera.find((g: any) => g.language.name === 'en')
-          setCategory(genusEntry?.genus || '')
-        } catch (_) {}
+        setTypes(detail.types)
+        setStats(detail.stats.slice(0, 3).map((s: any) => ({ name: s.name, base_stat: s.base_stat })))
+        setIsLegendary(detail.is_legendary || detail.is_mythical)
+        setCategory(detail.category)
       } catch (_) {}
     }
     load()

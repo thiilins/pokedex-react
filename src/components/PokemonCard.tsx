@@ -3,8 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Swords, ExternalLink } from 'lucide-react'
 import PokemonTypeIcon, { typeStylingMap } from './PokemonTypeIcon'
-import { api } from '@/services/api'
-import getId from '@/utils/getId'
+import { getCachedPokemonDetail } from '@/services/pokemonService'
 
 interface IProps {
   pokemonId: string
@@ -50,76 +49,14 @@ const PokemonCard: React.FC<IProps> = ({
     let isMounted = true
     const loadPokemon = async () => {
       try {
-        const response = await api.get(`/pokemon/${pokemonId}`)
-        const speciesUrl = response.data.species.url.replace('https://pokeapi.co/api/v2', '')
-        const speciesResponse = await api.get(speciesUrl)
-
-        const japanNameObj = speciesResponse.data.names.find(
-          (n: any) => n.language.name === 'ja-Hrkt' || n.language.name === 'ja'
-        ) || speciesResponse.data.names[0]
-
-        const flavorEntry = speciesResponse.data.flavor_text_entries.find(
-          (entry: any) => entry.language.name === 'pt' || entry.language.name === 'pt-BR'
-        ) || speciesResponse.data.flavor_text_entries.find(
-          (entry: any) => entry.language.name === 'en'
-        )
-        const flavorText = flavorEntry
-          ? flavorEntry.flavor_text.replace(/\f/g, ' ').replace(/\n/g, ' ').replace(/\r/g, ' ')
-          : 'Sem descrição registrada no banco de dados.'
-
-        const genusEntry = speciesResponse.data.genera.find(
-          (g: any) => g.language.name === 'pt' || g.language.name === 'pt-BR'
-        ) || speciesResponse.data.genera.find((g: any) => g.language.name === 'en')
-        const category = genusEntry ? genusEntry.genus : 'Pokémon Misterioso'
-
-        const parsedData = {
-          name: response.data.name,
-          japan_name: japanNameObj ? japanNameObj.name : response.data.name,
-          id: response.data.id,
-          order: response.data.order,
-          forms: response.data.forms,
-          description: flavorText,
-          category,
-          capture_rate: speciesResponse.data.capture_rate,
-          base_happiness: speciesResponse.data.base_happiness,
-          is_legendary: speciesResponse.data.is_legendary,
-          is_mythical: speciesResponse.data.is_mythical,
-          moves: response.data.moves.map((move: any) => ({
-            name: move.move.name,
-            id: +getId(move.move.url),
-            url: move.move.url
-          })),
-          types: response.data.types.map((type: any) => ({
-            slot: type.slot,
-            name: type.type.name,
-            id: +getId(type.type.url),
-            url: type.type.url
-          })),
-          species: { id: getId(response.data.species.url), ...response.data.species },
-          weight: response.data.weight,
-          height: response.data.height,
-          stats: response.data.stats.map((st: any) => ({
-            name: st.stat.name,
-            url: st.stat.url,
-            id: getId(st.stat.url),
-            effort: st.effort,
-            base_stat: st.base_stat
-          })),
-          cries: response.data.cries ?? null,
-          image:
-            response.data.sprites?.other?.['official-artwork']?.front_default ??
-            response.data.sprites?.other?.dream_world?.front_default ??
-            response.data.sprites?.other?.home?.front_default ??
-            '/assets/img/fallback.png'
-        }
-
+        const parsedData = await getCachedPokemonDetail(parseInt(pokemonId))
         if (isMounted) {
           setData(parsedData)
           onDataLoaded(pokemonId, parsedData)
           setLoading(false)
         }
       } catch (err) {
-        console.error('Error fetching pokemon details:', err)
+        console.error('Error fetching pokemon details in PokemonCard:', err)
       }
     }
     loadPokemon()

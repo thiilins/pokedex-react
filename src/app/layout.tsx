@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Outfit, Roboto_Mono } from 'next/font/google'
 import React from 'react'
 import './globals.css'
+import { Providers } from '@/components/Providers'
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -40,8 +41,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${outfit.variable} ${robotoMono.variable}`}>
       <body className="antialiased min-h-screen selection:bg-secondary selection:text-slate-900 bg-background">
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )
 }
+

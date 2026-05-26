@@ -6,96 +6,37 @@ import Header from '@/components/Header'
 import PokemonCard from '@/components/PokemonCard'
 import PokemonProfileModal from '@/components/PokemonProfileModal'
 import { typeStylingMap } from '@/components/PokemonTypeIcon'
-import { api } from '@/services/api'
-import { getDailyRandomNumber } from '@/utils/generateDayNumber'
-import getId from '@/utils/getId'
+import { usePokedex } from '@/contexts/PokedexContext'
 import { ArrowUp, Shield, Swords } from 'lucide-react'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-interface IPokemonListItem {
-  name: string
-  url: string
-  id: string
-}
-
 export default function Home() {
-  const [allPokemons, setAllPokemons] = useState<IPokemonListItem[]>([])
-  const [typeFilteredPokemons, setTypeFilteredPokemons] = useState<
-    IPokemonListItem[] | null
-  >(null)
+  const {
+    allPokemons,
+    typeFilteredPokemons,
+    loadingAll: loading,
+    searchQuery,
+    setSearchQuery,
+    selectedType,
+    setSelectedType,
+    sortBy,
+    setSortBy,
+    pokemonCache,
+    setPokemonInCache: handleDataLoaded,
+    compareList,
+    setCompareList,
+    compareOpen,
+    setCompareOpen,
+    toggleCompare: handleCompareToggle,
+    handleSelectSlot,
+    featuredPokemon
+  } = usePokedex()
 
-  const [loading, setLoading] = useState(true)
   const [visibleCount, setVisibleCount] = useState(24)
-
-  // Search & Filters State
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedType, setSelectedType] = useState('')
-  const [sortBy, setSortBy] = useState('id-asc')
 
   // Modal State
   const [open, setOpen] = useState(false)
   const [pokemonModalData, setPokemonModalData] = useState<any>(null)
-
-  // 1. Caching Instantâneo Database State (Performance Extrema!)
-  const [pokemonCache, setPokemonCache] = useState<Record<string, any>>({})
-
-  // 2. Módulo de Comparação de Combate (Battle Versus) State
-  const [compareList, setCompareList] = useState<string[]>([])
-  const [compareOpen, setCompareOpen] = useState(false)
-
-  // Pokémon of the Day (Charizard - 6)
-  const [featuredPokemon, setFeaturedPokemon] = useState<any>(null)
-
-  // Callback to register loaded Pokémon details in Cache (Performance Extrema!)
-  const handleDataLoaded = useCallback((id: string, parsedData: any) => {
-    setPokemonCache(prev => {
-      if (prev[id]) return prev
-      return { ...prev, [id]: parsedData }
-    })
-  }, [])
-
-  // Callback to toggle Pokémon inside the Battle Versus List
-  const handleCompareToggle = useCallback((id: string) => {
-    setCompareList(prev => {
-      const activeList = prev.filter(Boolean)
-      if (activeList.includes(id)) {
-        return prev.map(item => (item === id ? '' : item)).filter(Boolean)
-      }
-
-      const newList = [...prev]
-      if (newList.length < 2) {
-        newList.push(id)
-      } else {
-        const emptyIndex = newList.indexOf('')
-        if (emptyIndex !== -1) {
-          newList[emptyIndex] = id
-        } else {
-          return prev // Slots full
-        }
-      }
-
-      if (newList.filter(Boolean).length === 2) {
-        setCompareOpen(true) // Automatically open when 2 selected!
-      }
-      return newList
-    })
-  }, [])
-
-  // Callback to select specific slot inside the Versus Arena Modal
-  const handleSelectSlot = useCallback((slot: 'A' | 'B', id: string | null) => {
-    setCompareList(prev => {
-      const newList = [...prev]
-      while (newList.length < 2) {
-        newList.push('')
-      }
-      if (slot === 'A') {
-        newList[0] = id || ''
-      } else {
-        newList[1] = id || ''
-      }
-      return newList
-    })
-  }, [])
 
   // Back to Top Button scroll listener
   const [showBackToTop, setShowBackToTop] = useState(false)
@@ -111,210 +52,12 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // 1. Initial Load: Fetch all 1025 pokemons
-  useEffect(() => {
-    const fetchAllPokemons = async () => {
-      try {
-        setLoading(true)
-        const res = await api.get('/pokemon?limit=1025')
-        const parsed = res.data.results.map((item: any) => ({
-          ...item,
-          id: getId(item.url)
-        }))
-        setAllPokemons(parsed)
-        setLoading(false)
-      } catch (err) {
-        console.error('Failed to load pokemon index:', err)
-        setLoading(false)
-      }
-    }
-    fetchAllPokemons()
-  }, [])
-
-  // 2. Load Featured Pokemon of the Day
-  useEffect(() => {
-    const loadFeatured = async () => {
-      try {
-        const featuredId = getDailyRandomNumber()
-        const res = await api.get(`/pokemon/${featuredId}`)
-
-        // Busca dados da espécie para categoria e raridade
-        let category = ''
-        let is_legendary = false
-        let is_mythical = false
-        try {
-          const speciesUrl = res.data.species.url.replace('https://pokeapi.co/api/v2', '')
-          const speciesRes = await api.get(speciesUrl)
-          is_legendary = speciesRes.data.is_legendary
-          is_mythical = speciesRes.data.is_mythical
-          const genusEntry =
-            speciesRes.data.genera.find((g: any) => g.language.name === 'pt' || g.language.name === 'pt-BR') ||
-            speciesRes.data.genera.find((g: any) => g.language.name === 'en')
-          category = genusEntry ? genusEntry.genus : ''
-        } catch (_) {}
-
-        setFeaturedPokemon({
-          id: res.data.id,
-          name: res.data.name,
-          height: res.data.height,
-          weight: res.data.weight,
-          category,
-          is_legendary,
-          is_mythical,
-          image:
-            res.data.sprites?.other?.['official-artwork']?.front_default ??
-            res.data.sprites?.other?.dream_world?.front_default ??
-            res.data.sprites?.other?.home?.front_default ??
-            res.data.sprites?.front_default,
-          types: res.data.types.map((t: any) => ({
-            name: t.type.name,
-            slot: t.slot
-          })),
-          stats: res.data.stats.map((st: any) => ({
-            name: st.stat.name,
-            val: st.base_stat
-          }))
-        })
-      } catch (err) {
-        console.error('Failed to load featured pokemon:', err)
-      }
-    }
-    loadFeatured()
-  }, [])
-
-  // 3. Type Filter Load
-  useEffect(() => {
-    const fetchPokemonsByType = async () => {
-      if (!selectedType) {
-        setTypeFilteredPokemons(null)
-        setVisibleCount(24)
-        return
-      }
-
-      try {
-        setLoading(true)
-        const res = await api.get(`/type/${selectedType.toLowerCase()}`)
-        const parsed = res.data.pokemon
-          .map((item: any) => ({
-            name: item.pokemon.name,
-            url: item.pokemon.url,
-            id: getId(item.pokemon.url)
-          }))
-          .filter((p: any) => parseInt(p.id) <= 1025)
-
-        setTypeFilteredPokemons(parsed)
-        setVisibleCount(24)
-        setLoading(false)
-      } catch (err) {
-        console.error(`Failed to load pokemon type ${selectedType}:`, err)
-        setLoading(false)
-      }
-    }
-    fetchPokemonsByType()
-  }, [selectedType])
-
-  // Reset page on search change
+  // Reset page on search/type change
   useEffect(() => {
     setVisibleCount(24)
-  }, [searchQuery])
+  }, [searchQuery, selectedType])
 
-  // Auto-fetch compareList items details to populate Cache (Fighter Selector)
-  useEffect(() => {
-    compareList.forEach(async id => {
-      if (!id || pokemonCache[id]) return
-      try {
-        const response = await api.get(`/pokemon/${id}`)
-
-        // Fetch species details
-        const speciesUrl = response.data.species.url.replace(
-          'https://pokeapi.co/api/v2',
-          ''
-        )
-        const speciesResponse = await api.get(speciesUrl)
-
-        // Find Japanese name
-        const japanNameObj =
-          speciesResponse.data.names.find(
-            (n: any) =>
-              n.language.name === 'ja-Hrkt' || n.language.name === 'ja'
-          ) || speciesResponse.data.names[0]
-
-        // Find Portuguese description
-        const flavorEntry =
-          speciesResponse.data.flavor_text_entries.find(
-            (entry: any) =>
-              entry.language.name === 'pt' || entry.language.name === 'pt-BR'
-          ) ||
-          speciesResponse.data.flavor_text_entries.find(
-            (entry: any) => entry.language.name === 'en'
-          )
-        const flavorText = flavorEntry
-          ? flavorEntry.flavor_text
-              .replace(/\f/g, ' ')
-              .replace(/\n/g, ' ')
-              .replace(/\r/g, ' ')
-          : 'Sem descrição registrada no banco de dados.'
-
-        // Find genus
-        const genusEntry =
-          speciesResponse.data.genera.find(
-            (g: any) => g.language.name === 'pt' || g.language.name === 'pt-BR'
-          ) ||
-          speciesResponse.data.genera.find((g: any) => g.language.name === 'en')
-        const category = genusEntry ? genusEntry.genus : 'Pokémon Misterioso'
-
-        const parsedData = {
-          name: response.data.name,
-          japan_name: japanNameObj ? japanNameObj.name : response.data.name,
-          id: response.data.id,
-          order: response.data.order,
-          forms: response.data.forms,
-          description: flavorText,
-          category: category,
-          capture_rate: speciesResponse.data.capture_rate,
-          base_happiness: speciesResponse.data.base_happiness,
-          is_legendary: speciesResponse.data.is_legendary,
-          is_mythical: speciesResponse.data.is_mythical,
-          moves: response.data.moves.map((move: any) => ({
-            name: move.move.name,
-            id: +getId(move.move.url),
-            url: move.move.url
-          })),
-          types: response.data.types.map((type: any) => ({
-            slot: type.slot,
-            name: type.type.name,
-            id: +getId(type.type.url),
-            url: type.type.url
-          })),
-          species: {
-            id: getId(response.data.species.url),
-            ...response.data.species
-          },
-          weight: response.data.weight,
-          height: response.data.height,
-          stats: response.data.stats.map((st: any) => ({
-            name: st.stat.name,
-            url: st.stat.url,
-            id: getId(st.stat.url),
-            effort: st.effort,
-            base_stat: st.base_stat
-          })),
-          cries: response.data.cries ?? null,
-          image:
-            response.data.sprites?.other?.dream_world?.front_default ??
-            response.data.sprites?.other['official-artwork']?.front_default ??
-            response.data.sprites?.other?.home?.front_default ??
-            '/assets/img/fallback.png'
-        }
-
-        handleDataLoaded(id.toString(), parsedData)
-      } catch (err) {
-        console.error(`Failed to fetch details for compare ID ${id}:`, err)
-      }
-    })
-  }, [compareList, pokemonCache, handleDataLoaded])
-
-  // 4. Filter & Sort
+  // Filter & Sort
   const processedPokemons = useMemo(() => {
     let list =
       typeFilteredPokemons !== null ? typeFilteredPokemons : allPokemons
@@ -340,7 +83,7 @@ export default function Home() {
     return sorted
   }, [allPokemons, typeFilteredPokemons, searchQuery, sortBy])
 
-  // 5. Paginate using visibleCount for Infinite Scroll
+  // Paginate using visibleCount for Infinite Scroll
   const paginatedPokemons = useMemo(() => {
     return processedPokemons.slice(0, visibleCount)
   }, [processedPokemons, visibleCount])
@@ -373,7 +116,7 @@ export default function Home() {
     [loading, processedPokemons.length, visibleCount]
   )
 
-  // 3. Tema Orgânico Dinâmico (Active Type Aura!)
+  // Tema Orgânico Dinâmico (Active Type Aura!)
   // If details modal is open, adapt the ambient orbs to the open Pokémon's element color!
   const activeType = useMemo(() => {
     if (open && pokemonModalData) {
@@ -394,12 +137,6 @@ export default function Home() {
     return null
   }, [activeType])
 
-  const statNameMap: Record<string, string> = {
-    hp: 'Vida',
-    attack: 'Ataque',
-    defense: 'Defesa'
-  }
-
   // Retrieve A and B data from Cache for Versus Modal
   const pokeVersusA = useMemo(() => {
     if (compareList.length >= 1 && compareList[0])
@@ -415,7 +152,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-white flex flex-col relative overflow-hidden bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:24px_24px]">
-      {/* 3. Tema Orgânico Dinâmico: Glowing backdrop pulses in Pokémon's element color when active! */}
+      {/* Tema Orgânico Dinâmico: Glowing backdrop pulses in Pokémon's element color when active! */}
       <div
         className={`absolute top-[-10%] left-[-10%] w-[60%] h-[40%] rounded-full filter blur-[120px] pointer-events-none transition-all duration-700 ${
           styleAura ? `${styleAura.bg}/15 scale-110` : 'bg-secondary/5'

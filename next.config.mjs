@@ -13,6 +13,10 @@ const nextConfig = {
     // Disables ESLint check during builds to speed up and avoid build blocks
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    useCache: true,
+  },
 }
 
 export default nextConfig
+

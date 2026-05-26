@@ -7,8 +7,8 @@ import { useParams, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { typeStylingMap } from '@/components/PokemonTypeIcon'
-import { api } from '@/services/api'
-import getId from '@/utils/getId'
+import { usePokedex } from '@/contexts/PokedexContext'
+import { getCachedPokemonDetail, getCachedMoveDetail } from '@/services/pokemonService'
 
 import { MoveList } from '@/components/pokemon-detail/MoveList'
 import { PokemonAbilitiesPanel } from '@/components/pokemon-detail/PokemonAbilitiesPanel'
@@ -27,36 +27,6 @@ import { Header } from './_components/header'
 const getArtworkUrl = (id: string) =>
   `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
 
-const parseEvoChainNode = (node: any): { name: string; id: string }[] => {
-  if (!node) return []
-  const id = getId(node.species.url)
-  const list = [{ name: node.species.name, id }]
-  node.evolves_to?.forEach((next: any) => list.push(...parseEvoChainNode(next)))
-  return list
-}
-
-const extractRetroSprites = (versionsObj: any) => {
-  const result: { gameName: string; spriteUrl: string }[] = []
-  if (!versionsObj) return result
-  const fmt = (name: string) =>
-    name
-      .replace(/-/g, ' ')
-      .replace('generation ', 'Gen ')
-      .replace('firered leafgreen', 'FireRed/LeafGreen')
-      .replace('ruby sapphire', 'Ruby/Sapphire')
-      .replace('diamond pearl', 'Diamond/Pearl')
-      .replace('heartgold soulsilver', 'HG/SS')
-      .replace('black white', 'Black/White')
-      .toUpperCase()
-  Object.keys(versionsObj).forEach(gen =>
-    Object.keys(versionsObj[gen]).forEach(game => {
-      const url = versionsObj[gen][game]?.front_default
-      if (url) result.push({ gameName: fmt(game), spriteUrl: url })
-    })
-  )
-  return result
-}
-
 // ─── Page ───────────────────────────────────────────────────────────────────
 
 export default function PokemonPage() {
@@ -64,8 +34,14 @@ export default function PokemonPage() {
   const router = useRouter()
   const currentId = parseInt(params.id as string) || 1
 
-  const [data, setData] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const { pokemonCache, setPokemonInCache } = usePokedex()
+
+  const [data, setData] = useState<any>(() => {
+    return pokemonCache[currentId] || null
+  })
+  const [loading, setLoading] = useState(() => {
+    return !pokemonCache[currentId]
+  })
 
   // Card controls
   const [selectedArtStyle, setSelectedArtStyle] = useState<
@@ -88,182 +64,21 @@ export default function PokemonPage() {
   // ── Fetch ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     let mounted = true
-    setLoading(true)
-    setData(null)
+
+    if (pokemonCache[currentId]) {
+      setData(pokemonCache[currentId])
+      setLoading(false)
+    } else {
+      setLoading(true)
+      setData(null)
+    }
 
     const load = async () => {
       try {
-        const [res, speciesRes] = await Promise.all([
-          api.get(`/pokemon/${currentId}`),
-          api
-            .get(`/pokemon/${currentId}`)
-            .then(r =>
-              api.get(
-                r.data.species.url.replace('https://pokeapi.co/api/v2', '')
-              )
-            )
-        ])
-
-        const evoRes = await api.get(
-          speciesRes.data.evolution_chain.url.replace(
-            'https://pokeapi.co/api/v2',
-            ''
-          )
-        )
-        const abilities = await Promise.all(
-          res.data.abilities.map(async (ab: any) => {
-            try {
-              const abRes = await api.get(`/ability/${getId(ab.ability.url)}`)
-              const entry = abRes.data.effect_entries?.find(
-                (e: any) => e.language.name === 'en'
-              )
-              return {
-                name: ab.ability.name,
-                is_hidden: ab.is_hidden,
-                slot: ab.slot,
-                description: (
-                  entry?.effect ||
-                  entry?.short_effect ||
-                  'Sem descrição.'
-                ).replace(/\f|\n|\r/g, ' ')
-              }
-            } catch {
-              return {
-                name: ab.ability.name,
-                is_hidden: ab.is_hidden,
-                slot: ab.slot,
-                description: 'Sem descrição.'
-              }
-            }
-          })
-        )
-
-        const forms =
-          res.data.forms?.length > 1
-            ? await Promise.all(
-                res.data.forms.map(async (f: any) => {
-                  try {
-                    const fRes = await api.get(`/pokemon-form/${getId(f.url)}`)
-                    return {
-                      name: f.name,
-                      id: getId(f.url),
-                      sprite: fRes.data.sprites.front_default || '',
-                      is_mega: fRes.data.is_mega,
-                      is_battle_only: fRes.data.is_battle_only
-                    }
-                  } catch {
-                    return {
-                      name: f.name,
-                      id: getId(f.url),
-                      sprite: '',
-                      is_mega: false,
-                      is_battle_only: false
-                    }
-                  }
-                })
-              )
-            : []
-
-        const flavor =
-          (
-            speciesRes.data.flavor_text_entries.find(
-              (e: any) =>
-                e.language.name === 'pt-BR' || e.language.name === 'pt'
-            ) ||
-            speciesRes.data.flavor_text_entries.find(
-              (e: any) => e.language.name === 'en'
-            )
-          )?.flavor_text?.replace(/\f|\n|\r/g, ' ') || 'Sem descrição.'
-
-        const genus =
-          (
-            speciesRes.data.genera.find(
-              (g: any) =>
-                g.language.name === 'pt-BR' || g.language.name === 'pt'
-            ) ||
-            speciesRes.data.genera.find((g: any) => g.language.name === 'en')
-          )?.genus || ''
-
-        const japanName =
-          (
-            speciesRes.data.names.find(
-              (n: any) =>
-                n.language.name === 'ja-Hrkt' || n.language.name === 'ja'
-            ) || speciesRes.data.names[0]
-          )?.name || res.data.name
-
-        const sg = res.data.sprites
-        const parsed = {
-          id: res.data.id,
-          name: res.data.name,
-          japan_name: japanName,
-          description: flavor,
-          category: genus,
-          capture_rate: speciesRes.data.capture_rate,
-          base_happiness: speciesRes.data.base_happiness,
-          is_legendary: speciesRes.data.is_legendary,
-          is_mythical: speciesRes.data.is_mythical,
-          weight: res.data.weight,
-          height: res.data.height,
-          cries: res.data.cries ?? null,
-          base_experience: res.data.base_experience,
-          types: res.data.types.map((t: any) => ({
-            slot: t.slot,
-            name: t.type.name,
-            id: +getId(t.type.url),
-            url: t.type.url
-          })),
-          stats: res.data.stats.map((s: any) => ({
-            name: s.stat.name,
-            base_stat: s.base_stat
-          })),
-          abilities,
-          moves: res.data.moves.map((m: any) => ({
-            name: m.move.name,
-            url: m.move.url
-          })),
-          evolution_chain: parseEvoChainNode(evoRes.data.chain),
-          varieties: speciesRes.data.varieties.map((v: any) => ({
-            name: v.pokemon.name,
-            id: getId(v.pokemon.url),
-            is_default: v.is_default
-          })),
-          held_items: (res.data.held_items ?? []).map((hi: any) => ({
-            name: hi.item.name,
-            displayName: hi.item.name
-              .replace(/-/g, ' ')
-              .replace(/\b\w/g, (c: string) => c.toUpperCase()),
-            sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${hi.item.name}.png`,
-            version_details: hi.version_details.map((vd: any) => ({
-              rarity: vd.rarity,
-              versionName: vd.version.name.replace(/-/g, ' ').toUpperCase()
-            }))
-          })),
-          forms,
-          retro_sprites: extractRetroSprites(sg?.versions),
-          sprites_gallery: {
-            official: sg?.other?.['official-artwork']?.front_default || '',
-            official_shiny: sg?.other?.['official-artwork']?.front_shiny || '',
-            home: sg?.other?.home?.front_default || '',
-            home_shiny: sg?.other?.home?.front_shiny || '',
-            home_female: sg?.other?.home?.front_female || '',
-            home_female_shiny: sg?.other?.home?.front_shiny_female || '',
-            dream: sg?.other?.dream_world?.front_default || '',
-            showdown:
-              sg?.other?.showdown?.front_default || sg?.front_default || '',
-            showdown_shiny:
-              sg?.other?.showdown?.front_shiny || sg?.front_shiny || '',
-            female: sg?.front_female || '',
-            female_shiny: sg?.front_shiny_female || ''
-          },
-          image:
-            sg?.other?.['official-artwork']?.front_default ||
-            sg?.other?.home?.front_default ||
-            '/assets/img/fallback.png'
-        }
-
+        const parsed = await getCachedPokemonDetail(currentId)
         if (mounted) {
           setData(parsed)
+          setPokemonInCache(currentId.toString(), parsed)
           setLoading(false)
         }
       } catch (err) {
@@ -377,28 +192,10 @@ export default function PokemonPage() {
       if (moveDetailsCache[name]) return
       try {
         setMoveLoading(p => ({ ...p, [name]: true }))
-        const res = await api.get(`/move/${getId(url)}`)
-        const eff = res.data.effect_entries?.find(
-          (e: any) => e.language.name === 'en'
-        )
-        const flv = res.data.flavor_text_entries?.find(
-          (e: any) => e.language.name === 'en'
-        )
+        const moveDetails = await getCachedMoveDetail(name, url)
         setMoveDetailsCache(p => ({
           ...p,
-          [name]: {
-            accuracy: res.data.accuracy ?? '---',
-            power: res.data.power ?? '---',
-            pp: res.data.pp ?? '---',
-            damageClass: res.data.damage_class?.name || 'status',
-            type: res.data.type?.name || 'normal',
-            description: (
-              (eff?.effect ||
-                eff?.short_effect ||
-                flv?.flavor_text ||
-                'Sem descrição.') as string
-            ).replace(/\f|\n|\r/g, ' ')
-          }
+          [name]: moveDetails
         }))
       } catch (err) {
         console.error(err)
