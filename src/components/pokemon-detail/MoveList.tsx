@@ -1,9 +1,11 @@
 'use client'
 
-import { Search } from 'lucide-react'
+import { Search, X, Sparkles } from 'lucide-react'
 import React, { useMemo, useState } from 'react'
+import { usePokedex } from '@/contexts/PokedexContext'
 
 interface IMoveListProps {
+  pokemonId: string
   moves: any[]
   typeBgClass: string
   toggleMoveDetails: (name: string, url: string) => Promise<void>
@@ -13,6 +15,7 @@ interface IMoveListProps {
 }
 
 export const MoveList: React.FC<IMoveListProps> = ({
+  pokemonId,
   moves,
   typeBgClass,
   toggleMoveDetails,
@@ -21,6 +24,9 @@ export const MoveList: React.FC<IMoveListProps> = ({
   expandedMove
 }) => {
   const [filterQuery, setFilterQuery] = useState('')
+  const { customDecks, equipMove, unequipMove, isMoveEquipped } = usePokedex()
+
+  const equippedMoves = customDecks[pokemonId] || []
 
   // Filter moves list
   const filtered = useMemo(() => {
@@ -30,7 +36,56 @@ export const MoveList: React.FC<IMoveListProps> = ({
   }, [moves, filterQuery])
 
   return (
-    <div className="bg-slate-950/40 border border-white/5 rounded-2xl p-5  gap-3 space-y-4 flex flex-col flex-1 text-left w-full h-full">
+    <div className="bg-slate-950/40 border border-white/5 rounded-2xl p-5 gap-3 space-y-4 flex flex-col flex-1 text-left w-full h-full">
+      
+      {/* SEÇÃO DO DECK DE COMBATE (MOVE TUTOR SLOTS) */}
+      <div className="bg-slate-950/70 border border-white/5 rounded-xl p-4 flex flex-col gap-3">
+        <div className="flex items-center justify-between text-[9px] font-mono font-black tracking-widest text-secondary uppercase pb-2 border-b border-white/5">
+          <span className="flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 animate-pulse text-secondary" /> 
+            DECK DE COMBATE EQUIPADO // SLOTS ({equippedMoves.length}/4)
+          </span>
+          <span className="text-slate-500 font-normal">Máx. 4 Golpes</span>
+        </div>
+
+        {equippedMoves.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-4 border border-dashed border-white/10 rounded-xl bg-white/[0.01]">
+            <span className="text-[8px] text-slate-500 font-mono tracking-wider uppercase">
+              Sem golpes equipados. Equipe até 4 golpes abaixo!
+            </span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2">
+            {equippedMoves.map(move => (
+              <div 
+                key={move.name}
+                className="flex items-center justify-between p-2.5 rounded-lg bg-[#080d24]/60 border border-secondary/30 text-[9px] font-mono text-white capitalize shadow-sm hover:shadow-glow-cyan/5 transition-all"
+              >
+                <div className="flex items-center gap-2 truncate">
+                  <div className={`w-1.5 h-1.5 rounded-full ${typeBgClass} shadow-glow-cyan`} />
+                  <span className="truncate font-sans font-bold">{move.name.replace(/-/g, ' ')}</span>
+                </div>
+                <button
+                  onClick={() => unequipMove(pokemonId, move.name)}
+                  className="p-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-white border border-red-500/20 hover:border-red-500/40 transition-colors active:scale-90 cursor-pointer"
+                  title="Desequipar golpe"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+            {Array.from({ length: 4 - equippedMoves.length }).map((_, i) => (
+              <div 
+                key={i} 
+                className="flex items-center justify-center p-2.5 rounded-lg border border-dashed border-white/5 bg-white/[0.005] text-[9px] font-mono text-slate-600 select-none uppercase tracking-wider"
+              >
+                Vazio
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 select-none">
         <div className="text-[10px] font-mono font-black text-slate-500 tracking-widest uppercase">
           ARSENAL COMPLETO DE GOLPES // MOVES
@@ -68,6 +123,7 @@ export const MoveList: React.FC<IMoveListProps> = ({
               const isExpanded = expandedMove === m.name
               const isLoading = moveLoading[m.name]
               const details = moveDetailsCache[m.name]
+              const isEquipped = isMoveEquipped(pokemonId, m.name)
 
               return (
                 <div
@@ -85,11 +141,16 @@ export const MoveList: React.FC<IMoveListProps> = ({
                       <div
                         className={`w-2 h-2 rounded-full ${typeBgClass} shadow-sm animate-pulse`}
                       />
-                      <span className="capitalize font-sans font-bold truncate">
-                        {m.name.replace(/-/g, ' ')}
+                      <span className={`capitalize font-sans font-bold truncate ${isEquipped ? 'text-secondary font-black' : 'text-white'}`}>
+                        {m.name.replace(/-/g, ' ')} {isEquipped && '⚡'}
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 text-[8px] font-black select-none">
+                      {isEquipped && (
+                        <span className="px-2 py-0.5 rounded bg-secondary/15 text-secondary border border-secondary/25 uppercase">
+                          Equipado
+                        </span>
+                      )}
                       {lvl > 0 ? (
                         <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                           LVL {lvl}
@@ -164,6 +225,44 @@ export const MoveList: React.FC<IMoveListProps> = ({
                             <p className="text-xs text-slate-200 leading-relaxed font-sans font-normal italic">
                               "{details.description}"
                             </p>
+                          </div>
+
+                          {/* Botão de Equipar / Remover do Deck */}
+                          <div className="flex justify-end pt-1">
+                            {isEquipped ? (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  unequipMove(pokemonId, m.name)
+                                }}
+                                className="px-3.5 py-2 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-slate-950 active:scale-95 transition-all text-[8px] font-mono font-black tracking-widest uppercase cursor-pointer"
+                              >
+                                ❌ DESEQUIPAR DO DECK
+                              </button>
+                            ) : (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  equipMove(pokemonId, {
+                                    name: m.name,
+                                    url: m.url,
+                                    power: details.power !== '---' ? parseInt(details.power) || 40 : 40,
+                                    accuracy: details.accuracy !== '---' ? parseInt(details.accuracy) || 100 : 100,
+                                    pp: details.pp !== '---' ? parseInt(details.pp) || 20 : 20,
+                                    damageClass: details.damageClass || 'physical',
+                                    type: details.type || 'normal'
+                                  })
+                                }}
+                                disabled={equippedMoves.length >= 4}
+                                className={`px-3.5 py-2 rounded-xl border text-[8px] font-mono font-black tracking-widest uppercase active:scale-95 transition-all cursor-pointer ${
+                                  equippedMoves.length >= 4
+                                    ? 'border-white/5 bg-white/5 text-slate-500 cursor-not-allowed opacity-40'
+                                    : 'border-secondary/30 bg-secondary/10 text-secondary hover:bg-secondary hover:text-slate-950 shadow-glow-cyan/5'
+                                }`}
+                              >
+                                {equippedMoves.length >= 4 ? '🔒 DECK CHEIO (MÁX 4)' : '⚡ EQUIPAR NO DECK'}
+                              </button>
+                            )}
                           </div>
                         </div>
                       ) : (

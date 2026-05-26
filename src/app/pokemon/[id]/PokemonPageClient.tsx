@@ -21,6 +21,7 @@ import { PokemonVarieties } from '@/components/pokemon-detail/PokemonVarieties'
 import { RetroSpritesGallery } from '@/components/pokemon-detail/RetroSpritesGallery'
 import { typeStylesMap } from '@/constants/typestyle'
 import { Header } from './_components/header'
+import { TypeEffectiveness } from '@/components/pokemon-detail/TypeEffectiveness'
 
 interface IPokemonPageClientProps {
   data: any
@@ -231,6 +232,7 @@ export default function PokemonPageClient({ data, currentId }: IPokemonPageClien
               captureRarity={captureRarity}
               rarityText={rarityText}
             />
+            <TypeEffectiveness types={data.types} />
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
               <div className="md:col-span-6">
                 <PokemonStatsPanel stats={data.stats} totalStats={totalStats} />
@@ -267,6 +269,7 @@ export default function PokemonPageClient({ data, currentId }: IPokemonPageClien
           />
 
           <MoveList
+            pokemonId={String(data.id)}
             moves={data.moves}
             typeBgClass={style.bg}
             toggleMoveDetails={toggleMoveDetails}
