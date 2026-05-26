@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { X, Ruler, Weight, Award, Star, Compass, Heart, Swords, Shield, Zap, ShieldAlert, Gauge, Sparkles, Volume2 } from 'lucide-react'
 import PokemonTypeIcon, { typeStylingMap } from './PokemonTypeIcon'
 import { pokemonTypesIcons } from './PokemonTypeIconData'
@@ -387,10 +388,17 @@ const PokemonProfileModal: React.FC<IProps> = ({
           </div>
 
           {/* Action Footer */}
-          <div className="border-t border-white/10 pt-4 mt-5 flex justify-end">
+          <div className="border-t border-white/10 pt-4 mt-5 flex flex-col sm:flex-row gap-3 justify-end relative z-10 w-full">
+            <Link
+              href={`/pokemon/${pokemon.id}`}
+              onClick={onRequestClose}
+              className="flex-1 sm:flex-none px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest text-slate-950 bg-gradient-to-r from-secondary to-accent hover:scale-[1.02] hover:shadow-glow-cyan/20 active:scale-95 transition-all cursor-pointer text-center select-none"
+            >
+              Ficha Completa // Ver Mais
+            </Link>
             <button
               onClick={onRequestClose}
-              className={`w-full md:w-auto px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest text-white bg-white/5 border border-white/10 hover:bg-white/10 active:scale-95 transition-all cursor-pointer`}
+              className="px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest text-slate-400 bg-white/5 border border-white/10 hover:text-white hover:bg-white/10 active:scale-95 transition-all cursor-pointer text-center select-none"
             >
               Fechar Registro
             </button>
