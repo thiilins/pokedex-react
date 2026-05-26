@@ -67,6 +67,20 @@
   animation: fadeIn 0.3s ease-out forwards;
 }
 
+/* Custom animated scanline sweeping for TCG collector card */
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+.animate-scanline {
+  animation: scanline 5s linear infinite;
+}
+
 /* Dynamic grid widths for responsive Pokédex */
 .pokemon-grid {
   display: grid;

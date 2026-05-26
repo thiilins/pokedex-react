@@ -8,7 +8,7 @@ import PokemonCard from '@/components/PokemonCard'
 import PokemonProfileModal from '@/components/PokemonProfileModal'
 import BattleVersusModal from '@/components/BattleVersusModal'
 import Pagination from '@/components/Pagination'
-import { Sparkles, Trophy, Shield, Swords, Star } from 'lucide-react'
+import { Sparkles, Trophy, Shield, Swords, Star, ArrowUp } from 'lucide-react'
 import Image from 'next/image'
 import { typeStylingMap } from '@/components/PokemonTypeIcon'
 
@@ -23,8 +23,7 @@ export default function Home() {
   const [typeFilteredPokemons, setTypeFilteredPokemons] = useState<IPokemonListItem[] | null>(null)
   
   const [loading, setLoading] = useState(true)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage] = useState(32)
+  const [visibleCount, setVisibleCount] = useState(24)
 
   // Search & Filters State
   const [searchQuery, setSearchQuery] = useState('')
@@ -56,16 +55,58 @@ export default function Home() {
   // Callback to toggle Pokémon inside the Battle Versus List
   const handleCompareToggle = useCallback((id: string) => {
     setCompareList((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((p) => p !== id)
+      const activeList = prev.filter(Boolean)
+      if (activeList.includes(id)) {
+        return prev.map(item => item === id ? '' : item).filter(Boolean)
       }
-      if (prev.length >= 2) return prev // Max 2 pokemons
-      const newList = [...prev, id]
-      if (newList.length === 2) {
-        setCompareOpen(true) // Automatically open the arena when 2 are selected!
+      
+      const newList = [...prev]
+      if (newList.length < 2) {
+        newList.push(id)
+      } else {
+        const emptyIndex = newList.indexOf('')
+        if (emptyIndex !== -1) {
+          newList[emptyIndex] = id
+        } else {
+          return prev // Slots full
+        }
+      }
+      
+      if (newList.filter(Boolean).length === 2) {
+        setCompareOpen(true) // Automatically open when 2 selected!
       }
       return newList
     })
+  }, [])
+
+  // Callback to select specific slot inside the Versus Arena Modal
+  const handleSelectSlot = useCallback((slot: 'A' | 'B', id: string | null) => {
+    setCompareList((prev) => {
+      const newList = [...prev]
+      while (newList.length < 2) {
+        newList.push('')
+      }
+      if (slot === 'A') {
+        newList[0] = id || ''
+      } else {
+        newList[1] = id || ''
+      }
+      return newList
+    })
+  }, [])
+
+  // Back to Top Button scroll listener
+  const [showBackToTop, setShowBackToTop] = useState(false)
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 400) {
+        setShowBackToTop(true)
+      } else {
+        setShowBackToTop(false)
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   // 1. Initial Load: Fetch all 1025 pokemons
@@ -117,7 +158,7 @@ export default function Home() {
     const fetchPokemonsByType = async () => {
       if (!selectedType) {
         setTypeFilteredPokemons(null)
-        setCurrentPage(1)
+        setVisibleCount(24)
         return
       }
 
@@ -131,7 +172,7 @@ export default function Home() {
         })).filter((p: any) => parseInt(p.id) <= 1025)
         
         setTypeFilteredPokemons(parsed)
-        setCurrentPage(1)
+        setVisibleCount(24)
         setLoading(false)
       } catch (err) {
         console.error(`Failed to load pokemon type ${selectedType}:`, err)
@@ -143,8 +184,89 @@ export default function Home() {
 
   // Reset page on search change
   useEffect(() => {
-    setCurrentPage(1)
+    setVisibleCount(24)
   }, [searchQuery])
+
+  // Auto-fetch compareList items details to populate Cache (Fighter Selector)
+  useEffect(() => {
+    compareList.forEach(async (id) => {
+      if (!id || pokemonCache[id]) return
+      try {
+        const response = await api.get(`/pokemon/${id}`)
+        
+        // Fetch species details
+        const speciesUrl = response.data.species.url.replace('https://pokeapi.co/api/v2', '')
+        const speciesResponse = await api.get(speciesUrl)
+        
+        // Find Japanese name
+        const japanNameObj = speciesResponse.data.names.find(
+          (n: any) => n.language.name === 'ja-Hrkt' || n.language.name === 'ja'
+        ) || speciesResponse.data.names[0]
+
+        // Find Portuguese description
+        const flavorEntry = speciesResponse.data.flavor_text_entries.find(
+          (entry: any) => entry.language.name === 'pt' || entry.language.name === 'pt-BR'
+        ) || speciesResponse.data.flavor_text_entries.find(
+          (entry: any) => entry.language.name === 'en'
+        )
+        const flavorText = flavorEntry 
+          ? flavorEntry.flavor_text.replace(/\f/g, ' ').replace(/\n/g, ' ').replace(/\r/g, ' ') 
+          : 'Sem descrição registrada no banco de dados.'
+
+        // Find genus
+        const genusEntry = speciesResponse.data.genera.find(
+          (g: any) => g.language.name === 'pt' || g.language.name === 'pt-BR'
+        ) || speciesResponse.data.genera.find(
+          (g: any) => g.language.name === 'en'
+        )
+        const category = genusEntry ? genusEntry.genus : 'Pokémon Misterioso'
+        
+        const parsedData = {
+          name: response.data.name,
+          japan_name: japanNameObj ? japanNameObj.name : response.data.name,
+          id: response.data.id,
+          order: response.data.order,
+          forms: response.data.forms,
+          description: flavorText,
+          category: category,
+          capture_rate: speciesResponse.data.capture_rate,
+          base_happiness: speciesResponse.data.base_happiness,
+          is_legendary: speciesResponse.data.is_legendary,
+          is_mythical: speciesResponse.data.is_mythical,
+          moves: response.data.moves.map((move: any) => ({
+            name: move.move.name,
+            id: +getId(move.move.url),
+            url: move.move.url
+          })),
+          types: response.data.types.map((type: any) => ({
+            slot: type.slot,
+            name: type.type.name,
+            id: +getId(type.type.url),
+            url: type.type.url
+          })),
+          species: { id: getId(response.data.species.url), ...response.data.species },
+          weight: response.data.weight,
+          height: response.data.height,
+          stats: response.data.stats.map((st: any) => ({
+            name: st.stat.name,
+            url: st.stat.url,
+            id: getId(st.stat.url),
+            effort: st.effort,
+            base_stat: st.base_stat
+          })),
+          image:
+            response.data.sprites?.other?.dream_world?.front_default ??
+            response.data.sprites?.other['official-artwork']?.front_default ??
+            response.data.sprites?.other?.home?.front_default ??
+            '/assets/img/fallback.png'
+        }
+
+        handleDataLoaded(id.toString(), parsedData)
+      } catch (err) {
+        console.error(`Failed to fetch details for compare ID ${id}:`, err)
+      }
+    })
+  }, [compareList, pokemonCache, handleDataLoaded])
 
   // 4. Filter & Sort
   const processedPokemons = useMemo(() => {
@@ -171,15 +293,27 @@ export default function Home() {
     return sorted
   }, [allPokemons, typeFilteredPokemons, searchQuery, sortBy])
 
-  // 5. Paginate
+  // 5. Paginate using visibleCount for Infinite Scroll
   const paginatedPokemons = useMemo(() => {
-    const offset = (currentPage - 1) * itemsPerPage
-    return processedPokemons.slice(offset, offset + itemsPerPage)
-  }, [processedPokemons, currentPage, itemsPerPage])
+    return processedPokemons.slice(0, visibleCount)
+  }, [processedPokemons, visibleCount])
 
-  const totalPages = useMemo(() => {
-    return Math.ceil(processedPokemons.length / itemsPerPage)
-  }, [processedPokemons, itemsPerPage])
+  // Infinite Scroll Trigger using IntersectionObserver Callback Ref
+  const observerRef = React.useRef<IntersectionObserver | null>(null)
+  const sentinelRef = useCallback((node: HTMLDivElement | null) => {
+    if (loading) return
+    if (observerRef.current) observerRef.current.disconnect()
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && visibleCount < processedPokemons.length) {
+        setVisibleCount((prev) => Math.min(prev + 24, processedPokemons.length))
+      }
+    }, { threshold: 0.1, rootMargin: '200px' })
+
+    if (node) {
+      observerRef.current.observe(node)
+    }
+  }, [loading, processedPokemons.length, visibleCount])
 
   // 3. Tema Orgânico Dinâmico (Active Type Aura!)
   // If details modal is open, adapt the ambient orbs to the open Pokémon's element color!
@@ -188,7 +322,7 @@ export default function Home() {
       return pokemonModalData.types[0]?.name?.toLowerCase() || ''
     }
     // If Battle Versus is open, blend type colors dynamically
-    if (compareOpen && compareList.length === 2) {
+    if (compareOpen && compareList[0]) {
       const pokeA = pokemonCache[compareList[0]]
       return pokeA?.types[0]?.name?.toLowerCase() || ''
     }
@@ -210,12 +344,12 @@ export default function Home() {
 
   // Retrieve A and B data from Cache for Versus Modal
   const pokeVersusA = useMemo(() => {
-    if (compareList.length >= 1) return pokemonCache[compareList[0]]
+    if (compareList.length >= 1 && compareList[0]) return pokemonCache[compareList[0]]
     return null
   }, [compareList, pokemonCache])
 
   const pokeVersusB = useMemo(() => {
-    if (compareList.length >= 2) return pokemonCache[compareList[1]]
+    if (compareList.length >= 2 && compareList[1]) return pokemonCache[compareList[1]]
     return null
   }, [compareList, pokemonCache])
 
@@ -247,13 +381,16 @@ export default function Home() {
         setSelectedType={setSelectedType}
         sortBy={sortBy}
         setSortBy={setSortBy}
+        onArenaOpen={() => setCompareOpen(true)}
+        compareCount={compareList.filter(Boolean).length}
+        loading={loading}
       />
 
       {/* Main Body */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 md:py-8 flex flex-col justify-between relative z-10">
         
         {/* HERO BANNER */}
-        {!searchQuery && !selectedType && currentPage === 1 && (
+        {!searchQuery && !selectedType && (
           <section className="relative mb-8 md:mb-12 p-6 md:p-10 rounded-[28px] md:rounded-[36px] overflow-hidden border border-white/5 bg-slate-950/30 backdrop-blur-xl flex flex-col lg:flex-row items-center gap-6 md:gap-8 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
             
             <div className="absolute -left-12 -top-12 w-44 h-44 bg-secondary/15 filter blur-3xl animate-pulse-glow" />
@@ -416,24 +553,24 @@ export default function Home() {
                   onDataLoaded={handleDataLoaded}
                   isComparing={compareList.includes(pokemon.id)}
                   onCompareToggle={handleCompareToggle}
-                  compareListLength={compareList.length}
+                  compareListLength={compareList.filter(Boolean).length}
                 />
               ))}
             </div>
 
-            {/* Pagination */}
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
+            {/* Infinite Scroll Sentinel */}
+            {visibleCount < processedPokemons.length && (
+              <div ref={sentinelRef} className="w-full py-10 flex justify-center items-center">
+                <div className="relative w-8 h-8 border-2 border-white/5 border-t-secondary rounded-full animate-spin shadow-glow-cyan/10" />
+              </div>
+            )}
           </div>
         )}
 
       </main>
 
       {/* FLOATING VS COMBAT COMPANION PROMPT (Guides the user when 1 Pokémon is selected) */}
-      {compareList.length === 1 && (
+      {compareList.filter(Boolean).length === 1 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-md p-4 rounded-2xl border border-secondary/40 bg-slate-950/90 backdrop-blur-md shadow-glow-cyan/20 animate-bounce flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-xl bg-secondary/10 text-secondary animate-pulse">
@@ -454,8 +591,32 @@ export default function Home() {
       )}
 
       {/* Footer Info */}
-      <footer className="py-6 text-center border-t border-white/5 text-[9px] text-slate-600 font-mono tracking-widest uppercase bg-slate-950/40 backdrop-blur-md">
-        &copy; {new Date().getFullYear()} PokéDex Premium.
+      <footer className="py-8 border-t border-white/5 bg-slate-950/40 backdrop-blur-md relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="text-[10px] text-slate-500 font-mono tracking-widest uppercase text-center md:text-left">
+            &copy; {new Date().getFullYear()} PokéDex Premium. Todos os direitos reservados.
+          </div>
+          
+          <a
+            href="https://thiagolins.dev.br"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-3 px-4 py-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all duration-300 hover:scale-[1.03] active:scale-97 select-none"
+          >
+            <span className="text-[9px] font-mono text-slate-500 tracking-widest group-hover:text-slate-400 transition-colors">
+              POWERED BY
+            </span>
+            <div className="flex items-center gap-1.5">
+              {/* Developer Logo Placeholder - sleek tech shape */}
+              <div className="relative w-5 h-5 rounded-lg bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-slate-950 font-sans font-black text-[10px] shadow-glow-cyan/20 group-hover:shadow-glow-cyan/40 group-hover:animate-pulse transition-all">
+                TL
+              </div>
+              <span className="font-sans font-black text-xs text-white tracking-wide group-hover:text-secondary transition-colors uppercase">
+                Thiago Lins
+              </span>
+            </div>
+          </a>
+        </div>
       </footer>
 
       {/* Profile Detail Bottom Drawer */}
@@ -467,8 +628,8 @@ export default function Home() {
         />
       )}
 
-      {/* Battle Versus Arena Modal (Triggers when 2 Pokemons are selected!) */}
-      {compareList.length === 2 && pokeVersusA && pokeVersusB && (
+      {/* Battle Versus Arena Modal */}
+      {compareOpen && (
         <BattleVersusModal
           pokemonA={pokeVersusA}
           pokemonB={pokeVersusB}
@@ -477,7 +638,23 @@ export default function Home() {
             setCompareOpen(false)
             setCompareList([]) // Reset selection upon closing versus modal!
           }}
+          allPokemons={allPokemons}
+          pokemonCache={pokemonCache}
+          onDataLoaded={handleDataLoaded}
+          onSelectSlot={handleSelectSlot}
         />
+      )}
+
+      {/* Floating Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-6 right-6 z-40 p-3.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-secondary/30 text-secondary hover:text-white hover:bg-secondary hover:border-secondary hover:shadow-glow-cyan/50 transition-all duration-300 active:scale-90 shadow-[0_0_15px_rgba(0,240,255,0.15)] cursor-pointer select-none"
+          title="Subir ao topo"
+          aria-label="Subir ao topo"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </button>
       )}
 
     </div>
