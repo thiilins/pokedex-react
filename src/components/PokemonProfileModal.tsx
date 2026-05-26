@@ -95,8 +95,8 @@ const PokemonProfileModal: React.FC<IProps> = ({
                 #{String(pokemon.id).padStart(4, '0')}
               </div>
 
-              {/* Top Right: Custom white/glass type capsule containing element icon badges! */}
-              <div className="flex items-center gap-1.5 p-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20 shadow-sm">
+              {/* Top Right: Fixed Type Capsule (Standardized Inline Sizing for absolute cross-browser rendering!) */}
+              <div className="flex items-center gap-1.5 p-1 rounded-full bg-white/15 backdrop-blur-md border border-white/25 shadow-sm select-none">
                 {pokemon.types.map((t: any) => {
                   const IconComp = pokemonTypesIcons[t.name.toLowerCase()]
                   const typeColors = typeStylingMap[t.name.toLowerCase()] || typeStylingMap.normal
@@ -104,10 +104,16 @@ const PokemonProfileModal: React.FC<IProps> = ({
                   return (
                     <div 
                       key={t.id} 
-                      className={`w-6.5 h-6.5 rounded-full flex items-center justify-center text-white ${typeColors.bg} border border-white/10 p-1.5 shadow-sm`}
+                      className={`rounded-full flex items-center justify-center text-white ${typeColors.bg} border border-white/15 shadow-sm`}
+                      style={{ width: '28px', height: '28px', minWidth: '28px', minHeight: '28px' }}
                       title={t.name}
                     >
-                      {IconComp && <IconComp className="w-full h-full text-white" />}
+                      {IconComp && (
+                        <IconComp 
+                          style={{ width: '16px', height: '16px' }} 
+                          className="text-white" 
+                        />
+                      )}
                     </div>
                   )
                 })}
@@ -144,7 +150,7 @@ const PokemonProfileModal: React.FC<IProps> = ({
             {/* CARD FOOTER DETAILS */}
             <div className="flex justify-between items-end relative z-10 mt-auto">
               
-              {/* Left Side: Huge VERTICAL name, just like in Bulbasaur design! */}
+              {/* Left Side: Huge VERTICAL name */}
               <div className="absolute left-0 bottom-0 select-none pointer-events-none origin-bottom-left -rotate-90 -translate-y-4 translate-x-2">
                 <span className="text-[2.2rem] md:text-[2.8rem] font-black tracking-widest text-white/10 uppercase font-sans whitespace-nowrap leading-none block">
                   {pokemon.name}
@@ -213,7 +219,7 @@ const PokemonProfileModal: React.FC<IProps> = ({
           {/* Panel Container */}
           <div className="flex-1 flex flex-col justify-start min-h-[260px] md:min-h-0">
             
-            {/* TAB: ABOUT (Holographic Description & Research Stats) */}
+            {/* TAB: ABOUT */}
             {activeTab === 'about' && (
               <div className="space-y-4 md:space-y-5 animate-fadeIn">
                 
@@ -267,7 +273,7 @@ const PokemonProfileModal: React.FC<IProps> = ({
               </div>
             )}
 
-            {/* TAB: COMBAT STATS (Gorgeous Game console Grid of Metric Cards!) */}
+            {/* TAB: COMBAT STATS */}
             {activeTab === 'stats' && (
               <div className="space-y-4 animate-fadeIn">
                 
@@ -330,7 +336,7 @@ const PokemonProfileModal: React.FC<IProps> = ({
               </div>
             )}
 
-            {/* TAB: MOVES (Compact holographic moves grid) */}
+            {/* TAB: MOVES */}
             {activeTab === 'moves' && (
               <div className="relative flex-1 min-h-[180px] md:min-h-0">
                 <div className="absolute inset-0 overflow-y-auto pr-1 space-y-1.5 max-h-[220px] md:max-h-[260px] custom-scrollbar">
