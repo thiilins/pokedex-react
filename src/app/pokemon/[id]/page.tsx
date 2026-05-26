@@ -517,14 +517,39 @@ export default function PokemonPage() {
       <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-[#040714]/90 backdrop-blur-md px-4 sm:px-6 py-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           
-          {/* Back button */}
-          <Link 
-            href="/" 
-            className="inline-flex items-center gap-2 text-slate-400 hover:text-secondary hover:scale-[1.02] transition-all font-mono text-xs select-none group"
-          >
-            <ArrowLeft className="w-4 h-4 text-slate-500 group-hover:text-secondary transition-colors" /> 
-            <span>[ RETORNAR AO NEXUS CORE ]</span>
-          </Link>
+          {/* Back button and Powered By brand tag */}
+          <div className="flex items-center gap-4">
+            <Link 
+              href="/" 
+              className="inline-flex items-center gap-2 text-slate-400 hover:text-secondary hover:scale-[1.02] transition-all font-mono text-xs select-none group"
+            >
+              <ArrowLeft className="w-4 h-4 text-slate-500 group-hover:text-secondary transition-colors" /> 
+              <span>[ RETORNAR AO NEXUS CORE ]</span>
+            </Link>
+
+            <a
+              href="https://thiagolins.dev.br"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center gap-2 px-3 py-1 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all duration-300 hover:scale-[1.02] active:scale-97 select-none group/logo"
+            >
+              <span className="text-[7px] font-mono text-slate-500 tracking-wider group-hover/logo:text-slate-400 transition-colors">
+                POWERED BY
+              </span>
+              <div className="flex items-center gap-1.5">
+                <div className="relative w-4 h-4 flex items-center justify-center">
+                  <img
+                    src="/assets/img/thiagolins-dev.svg"
+                    alt="Thiago Lins Logo"
+                    className="w-4 h-4 object-contain filter brightness-100 group-hover/logo:animate-pulse"
+                  />
+                </div>
+                <span className="font-sans font-black text-[9px] text-white tracking-wide group-hover/logo:text-secondary transition-colors uppercase">
+                  Thiago Lins
+                </span>
+              </div>
+            </a>
+          </div>
 
           {/* Sequential cyclic browsing prev/next buttons */}
           <div className="flex gap-2">

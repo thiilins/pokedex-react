@@ -53,6 +53,32 @@ const Header: React.FC<IHeaderProps> = ({
             </span>
           </div>
 
+          {/* Sleek Powered By tag directly in header for permanent visibility */}
+          <a
+            href="https://thiagolins.dev.br"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:flex items-center gap-2 px-3 py-1 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all duration-300 hover:scale-[1.02] active:scale-97 select-none group/logo"
+          >
+            <span className="text-[7px] font-mono text-slate-500 tracking-wider group-hover/logo:text-slate-400 transition-colors">
+              POWERED BY
+            </span>
+            <div className="flex items-center gap-1.5">
+              <div className="relative w-4 h-4 flex items-center justify-center">
+                <Image
+                  src="/assets/img/thiagolins-dev.svg"
+                  alt="Thiago Lins Logo"
+                  width={16}
+                  height={16}
+                  className="object-contain filter brightness-100 group-hover/logo:animate-pulse"
+                />
+              </div>
+              <span className="font-sans font-black text-[9px] text-white tracking-wide group-hover/logo:text-secondary transition-colors uppercase">
+                Thiago Lins
+              </span>
+            </div>
+          </a>
+
           {/* Arena Duelo Launcher Button (Mobile - Clean and highly responsive!) */}
           <button
             onClick={onArenaOpen}
