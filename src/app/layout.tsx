@@ -17,13 +17,35 @@ const robotoMono = Roboto_Mono({
   weight: ['400', '500', '700']
 })
 
+const SITE_URL = 'https://td-pokedex-react.vercel.app'
+
 export const metadata: Metadata = {
-  title: 'Pokédex Premium | O Guia Pokémon Definitivo',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'Pokédex | Todos os 1025 Pokémon',
+    template: '%s | Pokédex'
+  },
   description:
-    'Uma PokéDex moderna, rápida e responsiva construída com Next.js, Tailwind CSS e TypeScript. Explore atributos, estatísticas, fraquezas e movimentos com um design gamer premium de alta fidelidade.',
-  keywords:
-    'pokedex, pokemon, nextjs, react, tailwindcss, typescript, pokeapi, gamer dashboard, anime',
+    'Explore todos os 1025 Pokémon com estatísticas de combate, tipos, fraquezas, evoluções e golpes. Pokédex interativa e completa de todas as gerações.',
   authors: [{ name: 'Thiago Lins' }],
+  alternates: {
+    canonical: '/'
+  },
+  openGraph: {
+    type: 'website',
+    siteName: 'Pokédex',
+    locale: 'pt_BR',
+    url: SITE_URL,
+    title: 'Pokédex | Todos os 1025 Pokémon',
+    description:
+      'Explore todos os 1025 Pokémon com estatísticas, tipos, fraquezas, evoluções e golpes.'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pokédex | Todos os 1025 Pokémon',
+    description:
+      'Explore todos os 1025 Pokémon com estatísticas, tipos, fraquezas, evoluções e golpes.'
+  },
   icons: {
     icon: '/favicon.svg'
   }
@@ -45,9 +67,30 @@ export default function RootLayout({
   // cliente não há fetch — a lista já vem resolvida.
   const initialPokemonsPromise = getCachedAllPokemons()
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Pokédex',
+    url: SITE_URL,
+    description:
+      'Explore todos os 1025 Pokémon com estatísticas, tipos, fraquezas, evoluções e golpes.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${SITE_URL}/?q={search_term_string}`
+      },
+      'query-input': 'required name=search_term_string'
+    }
+  }
+
   return (
     <html lang="pt-BR" className={`${outfit.variable} ${robotoMono.variable}`}>
       <body className="antialiased min-h-screen selection:bg-secondary selection:text-slate-900 bg-background">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Suspense fallback={null}>
           <Providers initialPokemonsPromise={initialPokemonsPromise}>
             {children}
