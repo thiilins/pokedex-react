@@ -1,0 +1,49 @@
+name: ✨ Feature Request
+description: Propor uma feature ou melhoria de produto
+title: "[P? · feature] "
+labels: ["P1 · feature", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Antes de abrir: confirme que isso não está coberto por issue/discussão existente. Substitua `P?` no título pela prioridade real.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema / motivação
+      description: Qual dor isso resolve? Pra quem? Por que agora?
+    validations:
+      required: true
+  - type: textarea
+    id: story
+    attributes:
+      label: User story
+      placeholder: "Como {persona}, quero {ação} pra {valor}."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposta
+      description: Como você imagina o comportamento visível? UI, fluxo, API.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
+      description: O que você tentou/considerou e descartou, com motivo.
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Critério de aceite
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+  - type: textarea
+    id: refs
+    attributes:
+      label: Refs
+      description: Mockups, vault, issues/PRs relacionadas, links externos.

@@ -54,3 +54,12 @@ npm run lint     # next lint
 - org: personal · path: personal/pokedex   (relativo ao vault_root; perguntar root se não souber)
 - ref_branch: main
 - Ordem: overview.md → pokedex.md (L1) → architecture/code-map.md → docs sob demanda
+
+## Tarefas & Roadmap — GitHub Project (fonte de verdade)
+
+Toda tarefa/bug/feature vive no GitHub Project (linkado ao repo `thiilins/pokedex`).
+- Issue nova → escolher um template (`bug` / `feature` / `task`); issue em branco está bloqueada.
+- Trabalho novo → abrir Issue (entra em `Todo`) antes de codar.
+- Status no board (`Todo → In Progress → Done`); PR/commit `Closes #N`.
+- Contexto/critério na Issue; vault guarda só o não-derivável.
+- Wiki (`.wiki/`, clone local gitignored): atualizar quando mudar algo estável; editar e `cd .wiki && git push`.

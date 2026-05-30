@@ -1,0 +1,62 @@
+name: 🐛 Bug Report
+description: Reportar um defeito com passos pra reproduzir
+title: "[P? · bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por reportar. Preencha todos os campos — issues incompletas serão fechadas com pedido de complemento. Substitua o `P?` no título pela prioridade real (P0/P1/P2/P3).
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto
+      description: O que você estava tentando fazer? Qual o impacto (quem afeta, com que frequência)?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Passos pra reproduzir
+      placeholder: |
+        1. Ir em ...
+        2. Clicar em ...
+        3. Observar ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento esperado
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportamento real
+      description: Mensagem de erro, screenshot, log, stack trace.
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Ambiente
+      placeholder: |
+        - Versão / commit:
+        - Browser / OS:
+        - Branch:
+    validations:
+      required: true
+  - type: textarea
+    id: refs
+    attributes:
+      label: Refs
+      description: Ponteiros pra código (`arquivo:linha`), vault, logs, issues relacionadas.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Critério de aceite
+      options:
+        - label: Bug reproduzido em ambiente limpo (não é cache/estado local)
+          required: true
+        - label: Tem regression test cobrindo o caso

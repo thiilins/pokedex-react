@@ -1,0 +1,45 @@
+name: 🔧 Tarefa técnica
+description: Refactor, tech-debt, infra, docs ou chore (sem mudança de comportamento visível ao usuário)
+title: "[P? · tech-debt] "
+labels: ["P2 · tech-debt", "triage"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Tipo
+      options:
+        - refactor
+        - tech-debt
+        - infra
+        - docs
+        - chore
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto
+      description: Por que mexer agora? Qual risco/dor evita? Qual ganho traz?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: O que fazer
+      description: Escopo objetivo, sem inflar. Lista do que entra (e se útil, do que NÃO entra).
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Critério de aceite
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+  - type: textarea
+    id: refs
+    attributes:
+      label: Refs
+      description: Ponteiros pra código, ADRs, vault.

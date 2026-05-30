@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 Wiki do projeto
+    url: https://github.com/thiilins/pokedex/wiki
+    about: Arquitetura, onboarding, glossário, decisões.
+  - name: 💬 Discussions
+    url: https://github.com/thiilins/pokedex/discussions
+    about: Dúvidas e propostas em discussão (antes de virar issue).
