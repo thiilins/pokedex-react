@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import { toPng } from 'html-to-image'
 import { AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
@@ -135,6 +134,8 @@ export default function PokemonPageClient({ data, currentId }: IPokemonPageClien
     try {
       setDownloading(true)
       await new Promise(r => setTimeout(r, 500))
+      // html-to-image (~30KB) carregado sob demanda — só ao baixar o card.
+      const { toPng } = await import('html-to-image')
       const url = await toPng(el, {
         cacheBust: true,
         pixelRatio: 3,

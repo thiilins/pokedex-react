@@ -127,7 +127,9 @@ export const PokedexProvider: React.FC<{
   // Método para adicionar/atualizar itens no cache global
   const setPokemonInCache = useCallback((id: string, parsedData: any) => {
     setPokemonCache(prev => {
-      if (JSON.stringify(prev[id]) === JSON.stringify(parsedData)) return prev
+      // Compara por referência/id em vez de JSON.stringify (que serializava o
+      // objeto inteiro com moves a cada chamada — caro no hot path).
+      if (prev[id] === parsedData || prev[id]?.id === parsedData?.id) return prev
       return { ...prev, [id]: parsedData }
     })
   }, [])

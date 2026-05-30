@@ -1,14 +1,23 @@
 'use client'
 
-import BattleVersusModal from '@/components/BattleVersusModal'
 import { FeaturedPokemonCard } from '@/components/FeaturedPokemonCard'
 import Header from '@/components/Header'
 import PokemonCard from '@/components/PokemonCard'
-import PokemonProfileModal from '@/components/PokemonProfileModal'
 import { typeStylingMap } from '@/components/PokemonTypeIcon'
 import { usePokedex } from '@/contexts/PokedexContext'
 import { ArrowUp, Shield, Swords } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+
+// Modais pesados: carregados sob demanda (fora do bundle inicial da home).
+const PokemonProfileModal = dynamic(
+  () => import('@/components/PokemonProfileModal'),
+  { ssr: false }
+)
+const BattleVersusModal = dynamic(
+  () => import('@/components/BattleVersusModal'),
+  { ssr: false }
+)
 
 export default function HomeView() {
   const {
