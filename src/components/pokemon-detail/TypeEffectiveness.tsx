@@ -54,7 +54,7 @@ export const TypeEffectiveness: React.FC<ITypeEffectivenessProps> = ({ types }) 
 
       {!hasData ? (
         <div className="flex flex-col items-center justify-center p-6 border border-white/5 bg-white/[0.01] rounded-xl text-center select-none uppercase">
-          <span className="text-[9px] text-slate-600 font-mono tracking-wider">Sem dados de eficácia disponíveis.</span>
+          <span className="text-[9px] text-slate-400 font-mono tracking-wider">Sem dados de eficácia disponíveis.</span>
         </div>
       ) : (
         <div className="flex flex-col gap-4">

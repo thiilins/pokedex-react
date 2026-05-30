@@ -19,7 +19,7 @@ export const RetroSpritesGallery: React.FC<IRetroSpritesGalleryProps> = ({
 
       {retroSprites.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-2 border border-white/5 rounded-2xl bg-slate-950/20">
-          <Layers className="w-8 h-8 text-slate-600 animate-pulse" />
+          <Layers className="w-8 h-8 text-slate-400 animate-pulse" />
           <span className="text-[10px] text-slate-500 font-black uppercase font-mono tracking-widest">
             Sem Sprites
           </span>

@@ -91,12 +91,12 @@ export const MiniCollectorCard: React.FC<IMiniCollectorCardProps> = ({
       {/* Header: número + badge */}
       <div className="px-3.5 pt-3 pb-0 flex items-center justify-between z-10 relative">
         <span
-          className={`text-[9px] font-black font-mono tracking-widest ${isSelf ? 'text-secondary' : 'text-white/25'}`}>
+          className={`text-[9px] font-black font-mono tracking-widest ${isSelf ? 'text-secondary' : 'text-white/50'}`}>
           #{String(id).padStart(4, '0')}
         </span>
         {(isSelf || isLegendary) && (
           <span
-            className={`text-[6.5px] font-black px-1.5 py-0.5 rounded border uppercase tracking-wider flex items-center gap-0.5 ${
+            className={`text-[8px] font-black px-1.5 py-0.5 rounded border uppercase tracking-wider flex items-center gap-0.5 ${
               isSelf
                 ? 'bg-secondary/15 text-secondary border-secondary/30'
                 : 'bg-violet-500/15 text-violet-400 border-violet-500/25'
@@ -135,7 +135,7 @@ export const MiniCollectorCard: React.FC<IMiniCollectorCardProps> = ({
           {name.replace(/-/g, ' ')}
         </h3>
         {category && (
-          <p className="text-[7.5px] text-slate-600 font-mono uppercase tracking-wider mt-0.5 truncate">
+          <p className="text-[8px] text-slate-400 font-mono uppercase tracking-wider mt-0.5 truncate">
             {category}
           </p>
         )}
@@ -172,7 +172,7 @@ export const MiniCollectorCard: React.FC<IMiniCollectorCardProps> = ({
             return (
               <div key={stat.name} className="flex items-center gap-2">
                 <span
-                  className={`text-[7.5px] font-black font-mono w-7 shrink-0 ${cfg.color}`}>
+                  className={`text-[8px] font-black font-mono w-7 shrink-0 ${cfg.color}`}>
                   {cfg.label}
                 </span>
                 <div className="flex-1 h-1 rounded-full bg-white/5 overflow-hidden">
@@ -181,7 +181,7 @@ export const MiniCollectorCard: React.FC<IMiniCollectorCardProps> = ({
                     style={{ width: `${pct}%` }}
                   />
                 </div>
-                <span className="text-[7.5px] font-black text-white/40 w-5 text-right shrink-0">
+                <span className="text-[8px] font-black text-white/40 w-5 text-right shrink-0">
                   {stat.base_stat}
                 </span>
               </div>

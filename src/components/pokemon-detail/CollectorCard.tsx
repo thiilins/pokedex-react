@@ -205,7 +205,7 @@ export const OfficialTCGCollectorCard = (
 
         {/* Rotating collector background stamp */}
         <div className="absolute w-44 h-44 rounded-full border border-amber-900/10 -z-5 animate-spin-slow flex items-center justify-center">
-          <span className="font-cinzel text-[7px] text-amber-900/15 tracking-widest font-black uppercase">
+          <span className="font-cinzel text-[8px] text-amber-900/15 tracking-widest font-black uppercase">
             • POKÉDEX OFFICIAL PARCHMENT STAMP •
           </span>
         </div>
@@ -226,7 +226,7 @@ export const OfficialTCGCollectorCard = (
           className="text-left font-mono text-[9px] uppercase font-bold"
           style={{ color: tcgStyle.text }}>
           <div>{data.category}</div>
-          <div className="text-[7px] text-slate-500 font-normal">
+          <div className="text-[8px] text-slate-500 font-normal">
             ESPÉCIE ORIGINAL
           </div>
         </div>
@@ -245,7 +245,7 @@ export const OfficialTCGCollectorCard = (
       </div>
 
       {/* Footer brand details */}
-      <div className="flex justify-between items-center text-[7px] font-mono tracking-wider opacity-60 mt-3 border-t border-amber-900/10 pt-2 text-slate-700">
+      <div className="flex justify-between items-center text-[8px] font-mono tracking-wider opacity-60 mt-3 border-t border-amber-900/10 pt-2 text-slate-700">
         <span>KANTO EDITION CARD ©1996</span>{' '}
         <span className="font-black">{data.japan_name}</span>
         <span className="font-black">THIAGOLINS DEV.BR</span>
@@ -327,7 +327,7 @@ export const retroGameBoyComponent = (data: any, resolvedMainImage: any) => {
           </div>
 
           {/* GameBoy Metrics Box */}
-          <div className="flex justify-between items-center text-[7px] font-pixel border-t border-[#306230] pt-1">
+          <div className="flex justify-between items-center text-[8px] font-pixel border-t border-[#306230] pt-1">
             <div className="text-[6px] tracking-tight uppercase leading-relaxed text-left">
               <span>{data.category.slice(0, 12)}</span>
             </div>
@@ -421,7 +421,7 @@ export const Home3DCollectorCard = (
         <div className="relative z-10 flex items-center justify-between gap-2 transform -rotate-1">
           {/* Box de Nome Inclinado Estilo Chamada de Capa */}
           <div className="bg-red-500 border-4 border-black rounded-xl px-4 py-1.5 shadow-[4px_4px_0px_#000000] text-left flex-1 min-w-0">
-            <span className="text-[7.5px] font-mono font-black text-yellow-300 tracking-wider block leading-none uppercase">
+            <span className="text-[8px] font-mono font-black text-yellow-300 tracking-wider block leading-none uppercase">
               REVELADO! // CAPA Nº {String(data.id).padStart(4, '0')}
             </span>
             <span className="text-xl sm:text-2xl font-black text-white tracking-tighter uppercase block truncate drop-shadow-[2px_2px_0px_rgba(0,0,0,0.85)] mt-0.5">
@@ -459,7 +459,7 @@ export const Home3DCollectorCard = (
           </div>
 
           {/* Adesivo de Dica de Combate */}
-          <div className="absolute bottom-2 right-2 bg-pink-500 border-3 border-black text-white px-2 py-0.5 rounded font-black text-[7px] uppercase tracking-wider shadow-[2px_2px_0px_#000000] transform rotate-6 z-20">
+          <div className="absolute bottom-2 right-2 bg-pink-500 border-3 border-black text-white px-2 py-0.5 rounded font-black text-[8px] uppercase tracking-wider shadow-[2px_2px_0px_#000000] transform rotate-6 z-20">
             DICA DE MESTRE!
           </div>
 
@@ -476,8 +476,8 @@ export const Home3DCollectorCard = (
         {/* ── METRICS SECTION: BOX DE REVIEW TÉCNICO DE CAPA ── */}
         <div className="bg-cyan-400 border-4 border-black rounded-xl p-2.5 flex justify-between items-center text-xs relative z-10 shadow-[4px_4px_0px_#000000] transform rotate-1">
           <div className="text-left font-sans text-[8px] uppercase font-black text-black flex flex-col gap-0.5 leading-none">
-            <span className="bg-black text-cyan-400 px-1 py-0.5 rounded text-[7px] w-fit font-mono font-black">{data.category.toUpperCase()}</span>
-            <span className="text-[6.5px] text-black/70 font-bold mt-1 font-mono">DICAS E ANÁLISE DO MONSTRO</span>
+            <span className="bg-black text-cyan-400 px-1 py-0.5 rounded text-[8px] w-fit font-mono font-black">{data.category.toUpperCase()}</span>
+            <span className="text-[8px] text-black/70 font-bold mt-1 font-mono">DICAS E ANÁLISE DO MONSTRO</span>
           </div>
           <div className="flex gap-2.5 font-mono font-black text-[9px] text-black">
             <div className="flex items-center gap-1 bg-white border-2 border-black rounded px-1.5 py-0.5">
@@ -492,7 +492,7 @@ export const Home3DCollectorCard = (
         </div>
 
         {/* ── FOOTER: DIREITOS E CRÉDITOS RETRÔ ── */}
-        <div className="mt-3 bg-yellow-300 border-3 border-black rounded-xl px-3 py-1 flex justify-between items-center text-[7.5px] font-mono tracking-wider font-black text-black shadow-[3px_3px_0px_#000000] relative z-10">
+        <div className="mt-3 bg-yellow-300 border-3 border-black rounded-xl px-3 py-1 flex justify-between items-center text-[8px] font-mono tracking-wider font-black text-black shadow-[3px_3px_0px_#000000] relative z-10">
           <span>AÇÃO GAMES EDITORA ©1996</span>
           <span className="font-black text-[8px] bg-black text-yellow-300 px-2 py-0.5 rounded uppercase">{data.japan_name}</span>
           <span>SUPER GAMEPOWER SPECIAL</span>
@@ -587,7 +587,7 @@ export const DreamComicComponent = (
       <div className="bg-yellow-300 border-[3.5px] border-black rounded-xl p-3 flex justify-between items-center text-xs relative z-10 shadow-[4px_4px_0px_#000000]">
         <div className="text-left font-mono text-[9px] uppercase font-black text-black">
           <div>{data.category}</div>
-          <div className="text-[7px] text-black/60 font-bold">
+          <div className="text-[8px] text-black/60 font-bold">
             MONSTRO DE BOLSO
           </div>
         </div>
@@ -604,7 +604,7 @@ export const DreamComicComponent = (
       </div>
 
       {/* Footer brand details */}
-      <div className="mt-3 bg-yellow-300 border-[3px] border-black rounded-xl px-3 py-1.5 flex justify-between items-center text-[7.5px] font-mono tracking-wider font-black text-black shadow-[3px_3px_0px_#000000] relative z-10">
+      <div className="mt-3 bg-yellow-300 border-[3px] border-black rounded-xl px-3 py-1.5 flex justify-between items-center text-[8px] font-mono tracking-wider font-black text-black shadow-[3px_3px_0px_#000000] relative z-10">
         <span>POP EDITION COMICS ©1996</span>
         <span className="font-black text-[8px] bg-black text-yellow-300 px-1.5 py-0.5 rounded uppercase">{data.japan_name}</span>
         <span>POKÉDEX VETOR GRAPHIC</span>

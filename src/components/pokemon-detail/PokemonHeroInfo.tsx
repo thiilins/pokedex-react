@@ -84,7 +84,7 @@ export const PokemonHeroInfo: React.FC<IPokemonHeroInfoProps> = ({
           <div
             key={m.label}
             className="p-3 bg-white/5 border border-white/5 rounded-xl">
-            <div className="text-[7px] text-slate-500 font-black uppercase mb-1">
+            <div className="text-[8px] text-slate-500 font-black uppercase mb-1">
               {m.label}
             </div>
             <span className="text-xs font-black text-white">{m.value}</span>

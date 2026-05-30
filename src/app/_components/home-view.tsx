@@ -309,7 +309,7 @@ export default function HomeView() {
           </div>
         ) : processedPokemons.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center py-16 text-center space-y-4 border border-white/5 rounded-3xl bg-slate-950/20 backdrop-blur-md">
-            <Shield className="w-10 h-10 text-slate-600 animate-bounce-slow" />
+            <Shield className="w-10 h-10 text-slate-400 animate-bounce-slow" />
             <h3 className="text-base font-black text-white uppercase tracking-wider">
               Nenhum Registro
             </h3>

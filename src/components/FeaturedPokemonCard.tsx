@@ -104,7 +104,7 @@ export const FeaturedPokemonCard: React.FC<IFeaturedPokemonCardProps> = ({
             </span>
             <div className="flex items-center gap-2">
               {(pokemon.is_legendary || pokemon.is_mythical) && (
-                <span className="text-[7px] font-black px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-400 border border-violet-500/25 uppercase tracking-wider flex items-center gap-1">
+                <span className="text-[8px] font-black px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-400 border border-violet-500/25 uppercase tracking-wider flex items-center gap-1">
                   <Sparkles className="w-2.5 h-2.5" />
                   {pokemon.is_mythical ? 'MÍTICO' : 'LENDÁRIO'}
                 </span>
@@ -174,7 +174,7 @@ export const FeaturedPokemonCard: React.FC<IFeaturedPokemonCardProps> = ({
                   key={st.name}
                   className="px-2 py-2 rounded-xl bg-white/5 border border-white/5 text-center hover:bg-white/10 transition-colors"
                 >
-                  <div className="text-[7.5px] text-slate-500 uppercase font-mono font-bold mb-0.5 truncate">
+                  <div className="text-[8px] text-slate-500 uppercase font-mono font-bold mb-0.5 truncate">
                     {statLabelMap[key] || st.name}
                   </div>
                   <div className={`text-sm font-black ${statColorMap[key] || 'text-white'}`}>

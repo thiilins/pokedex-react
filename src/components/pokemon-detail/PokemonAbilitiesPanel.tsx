@@ -14,8 +14,8 @@ export const PokemonAbilitiesPanel: React.FC<IPokemonAbilitiesPanelProps> = ({ a
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <span className="text-sm font-black text-white capitalize">{ab.name.replace(/-/g, ' ')}</span>
             {ab.is_hidden
-              ? <span className="text-[7px] font-black px-1.5 py-0.5 rounded-full bg-accent/20 text-accent border border-accent/30 uppercase whitespace-nowrap animate-pulse">Oculta</span>
-              : <span className="text-[7px] font-black px-1.5 py-0.5 rounded-full bg-white/10 text-slate-400 uppercase whitespace-nowrap">Normal</span>
+              ? <span className="text-[8px] font-black px-1.5 py-0.5 rounded-full bg-accent/20 text-accent border border-accent/30 uppercase whitespace-nowrap animate-pulse">Oculta</span>
+              : <span className="text-[8px] font-black px-1.5 py-0.5 rounded-full bg-white/10 text-slate-400 uppercase whitespace-nowrap">Normal</span>
             }
           </div>
           <p className="text-xs text-slate-400 leading-relaxed italic">&quot;{ab.description}&quot;</p>

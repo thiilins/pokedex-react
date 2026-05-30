@@ -192,12 +192,12 @@ const PokemonCard: React.FC<IProps> = ({
       {/* Header: número + badges + botão arena */}
       <div className="relative px-4 pt-3.5 pb-0 flex justify-between items-start z-10">
         <div className="flex flex-col gap-1">
-          <span className="text-[9px] font-black font-mono text-white/25 tracking-widest">
+          <span className="text-[9px] font-black font-mono text-white/50 tracking-widest">
             #{String(data.id).padStart(4, '0')}
           </span>
           {/* Badge lendário/mítico */}
           {(data.is_legendary || data.is_mythical) && (
-            <span className="text-[6.5px] font-black px-1.5 py-0.5 rounded bg-violet-500/15 text-violet-400 border border-violet-500/20 uppercase tracking-wider w-fit">
+            <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-violet-500/15 text-violet-400 border border-violet-500/20 uppercase tracking-wider w-fit">
               {data.is_mythical ? '✨ Mítico' : '👑 Lendário'}
             </span>
           )}
@@ -264,7 +264,7 @@ const PokemonCard: React.FC<IProps> = ({
           <h2 className="text-base sm:text-lg font-black text-white capitalize tracking-wide group-hover:text-secondary transition-colors duration-300 leading-tight">
             {data.name}
           </h2>
-          <p className="text-[8px] text-slate-600 font-mono uppercase tracking-wider mt-0.5 truncate">
+          <p className="text-[8px] text-slate-400 font-mono uppercase tracking-wider mt-0.5 truncate">
             {data.category}
           </p>
         </div>
@@ -311,7 +311,7 @@ const PokemonCard: React.FC<IProps> = ({
 
         {/* Rodapé: total stats + peso */}
         <div className="flex items-center justify-between pt-0.5">
-          <span className="text-[8px] font-black font-mono text-slate-600 uppercase tracking-wider">
+          <span className="text-[8px] font-black font-mono text-slate-400 uppercase tracking-wider">
             TOTAL
           </span>
           <span className={`text-[9px] font-black font-mono ${style.text || 'text-secondary'} ${style.bgAlpha} px-1.5 py-0.5 rounded border ${style.border}`}>

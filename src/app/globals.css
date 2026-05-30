@@ -89,3 +89,16 @@
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 1.5rem;
 }
+
+/* Acessibilidade: respeita a preferência de redução de movimento (WCAG 2.3.3).
+   Neutraliza animações decorativas (float, scanline, shimmer, spin-slow, etc.). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -59,7 +59,7 @@ const FighterSelector: React.FC<{
         {/* Scrollable list */}
         <div className="flex-1 overflow-y-auto max-h-[220px] border border-white/5 bg-slate-950/40 rounded-xl p-2 space-y-1 custom-scrollbar">
           {filtered.length === 0 ? (
-            <div className="text-[10px] text-slate-600 font-mono py-6 text-center">Nenhum Pokémon encontrado.</div>
+            <div className="text-[10px] text-slate-400 font-mono py-6 text-center">Nenhum Pokémon encontrado.</div>
           ) : (
             filtered.map((p) => {
               const cached = pokemonCache[p.id]
@@ -81,7 +81,7 @@ const FighterSelector: React.FC<{
                   </div>
                   <div className="flex gap-1">
                     {displayTypes.map((type: string) => (
-                      <span key={type} className="text-[7px] font-black uppercase px-1 py-0.5 rounded bg-white/10 text-white/70">
+                      <span key={type} className="text-[8px] font-black uppercase px-1 py-0.5 rounded bg-white/10 text-white/70">
                         {type}
                       </span>
                     ))}
@@ -1039,12 +1039,12 @@ const BattleVersusModal: React.FC<IProps> = ({
                         </div>
                         <div className="flex gap-1">
                           {pokemonB.types.map((t: any) => (
-                            <span key={t.id} className="text-[7px] font-black uppercase px-1.5 py-0.5 rounded bg-white/10 text-white/80">{t.name}</span>
+                            <span key={t.id} className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded bg-white/10 text-white/80">{t.name}</span>
                           ))}
                         </div>
                       </div>
                       <div className="space-y-0.5">
-                        <div className="flex justify-between text-[7px] font-mono text-slate-400">
+                        <div className="flex justify-between text-[8px] font-mono text-slate-400">
                           <span className="font-black text-white/60">HP</span>
                           <span className={`font-black ${(hpB / maxHpB) > 0.5 ? 'text-emerald-400' : (hpB / maxHpB) > 0.2 ? 'text-amber-400' : 'text-red-400'}`}>{hpB} / {maxHpB}</span>
                         </div>
@@ -1065,7 +1065,7 @@ const BattleVersusModal: React.FC<IProps> = ({
                     <div className={`px-2.5 py-1 rounded-xl text-[8px] font-mono font-black uppercase tracking-widest border transition-all ${
                       activeTurn === 'B'
                         ? 'bg-red-500/20 text-red-400 border-red-500/40 shadow-[0_0_12px_rgba(239,68,68,0.3)] animate-pulse'
-                        : 'bg-white/3 text-slate-600 border-white/5'
+                        : 'bg-white/3 text-slate-400 border-white/5'
                     }`}>
                       {activeTurn === 'B' ? (isThinking ? '🧠 Pensando…' : '⚡ Atacando') : '🛡 Guard'}
                     </div>
@@ -1089,7 +1089,7 @@ const BattleVersusModal: React.FC<IProps> = ({
                     <div className={`px-2.5 py-1 rounded-xl text-[8px] font-mono font-black uppercase tracking-widest border transition-all ${
                       activeTurn === 'A'
                         ? 'bg-secondary/20 text-secondary border-secondary/40 shadow-[0_0_12px_rgba(0,240,255,0.3)] animate-pulse'
-                        : 'bg-white/3 text-slate-600 border-white/5'
+                        : 'bg-white/3 text-slate-400 border-white/5'
                     }`}>
                       {activeTurn === 'A' ? '⚡ Seu turno' : '🛡 Guard'}
                     </div>
@@ -1099,7 +1099,7 @@ const BattleVersusModal: React.FC<IProps> = ({
                       <div className="flex items-center justify-between mb-1">
                         <div className="flex gap-1">
                           {pokemonA.types.map((t: any) => (
-                            <span key={t.id} className="text-[7px] font-black uppercase px-1.5 py-0.5 rounded bg-white/10 text-white/80">{t.name}</span>
+                            <span key={t.id} className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded bg-white/10 text-white/80">{t.name}</span>
                           ))}
                         </div>
                         <div className="text-right">
@@ -1108,7 +1108,7 @@ const BattleVersusModal: React.FC<IProps> = ({
                         </div>
                       </div>
                       <div className="space-y-0.5">
-                        <div className="flex justify-between text-[7px] font-mono text-slate-400">
+                        <div className="flex justify-between text-[8px] font-mono text-slate-400">
                           <span className={`font-black ${(hpA / maxHpA) > 0.5 ? 'text-emerald-400' : (hpA / maxHpA) > 0.2 ? 'text-amber-400' : 'text-red-400'}`}>{hpA} / {maxHpA}</span>
                           <span className="font-black text-white/60">HP</span>
                         </div>
@@ -1129,7 +1129,7 @@ const BattleVersusModal: React.FC<IProps> = ({
 
                 {/* LAST ACTION LOG (1-2 lines compact) */}
                 <div className="rounded-2xl border border-white/5 bg-[#030611]/90 px-4 py-2.5 font-mono text-[9px] min-h-[40px] flex items-center gap-2">
-                  <span className="text-slate-600 text-[7px] uppercase tracking-widest shrink-0">LOG</span>
+                  <span className="text-slate-400 text-[8px] uppercase tracking-widest shrink-0">LOG</span>
                   <div className="flex-1 space-y-0.5">
                     {combatLog.slice(-2).map(log => (
                       <div key={log.id} className={`leading-snug ${
@@ -1140,7 +1140,7 @@ const BattleVersusModal: React.FC<IProps> = ({
                         log.type === 'miss' ? 'text-purple-400' : 'text-slate-300'
                       }`}>{log.text}</div>
                     ))}
-                    {combatLog.length === 0 && <span className="text-slate-600">Pronto para batalhar…</span>}
+                    {combatLog.length === 0 && <span className="text-slate-400">Pronto para batalhar…</span>}
                   </div>
                 </div>
 
@@ -1223,7 +1223,7 @@ const BattleVersusModal: React.FC<IProps> = ({
                   <div className="flex flex-col items-end gap-2 relative z-10">
                     <div className={`flex justify-between w-full items-center gap-2 px-3 py-2 rounded-xl bg-slate-950/70 border ${activeTurn === 'B' ? 'border-red-500/40 shadow-[0_0_10px_rgba(239,68,68,0.2)]' : 'border-white/5'}`}>
                       <div>
-                        <div className="text-[7px] font-mono text-slate-500 uppercase">Oponente</div>
+                        <div className="text-[8px] font-mono text-slate-500 uppercase">Oponente</div>
                         <div className="text-xs font-black capitalize text-white">{pokemonB.name}</div>
                       </div>
                       <div className="text-right">
@@ -1267,7 +1267,7 @@ const BattleVersusModal: React.FC<IProps> = ({
 
                     <div className={`flex justify-between w-full items-center gap-2 px-3 py-2 rounded-xl bg-slate-950/70 border ${activeTurn === 'A' ? 'border-secondary/40 shadow-[0_0_10px_rgba(0,240,255,0.2)]' : 'border-white/5'}`}>
                       <div>
-                        <div className="text-[7px] font-mono text-slate-500 uppercase">Jogador A</div>
+                        <div className="text-[8px] font-mono text-slate-500 uppercase">Jogador A</div>
                         <div className="text-xs font-black capitalize text-white">{pokemonA.name}</div>
                       </div>
                       <div className="text-right">
@@ -1323,11 +1323,11 @@ const BattleVersusModal: React.FC<IProps> = ({
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                           <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                         </span>
-                        <span className="text-[7px] font-mono text-emerald-500 uppercase tracking-widest">LIVE</span>
+                        <span className="text-[8px] font-mono text-emerald-500 uppercase tracking-widest">LIVE</span>
                       </div>
                     )}
                     {battleState === 'paused' && (
-                      <span className="ml-auto text-[7px] font-mono text-amber-500 uppercase tracking-widest">⏸ PAUSED</span>
+                      <span className="ml-auto text-[8px] font-mono text-amber-500 uppercase tracking-widest">⏸ PAUSED</span>
                     )}
                   </div>
 
@@ -1340,7 +1340,7 @@ const BattleVersusModal: React.FC<IProps> = ({
                     )}
                     {combatLog.map((log, i) => (
                       <div key={log.id} className="flex gap-2 items-start leading-relaxed">
-                        <span className="text-slate-700 shrink-0 text-[7px] pt-0.5 w-5 text-right">{i + 1}</span>
+                        <span className="text-slate-700 shrink-0 text-[8px] pt-0.5 w-5 text-right">{i + 1}</span>
                         <span className={`flex-1 ${
                           log.type === 'system' ? 'text-amber-400 font-bold' :
                           log.type === 'dmg-a' ? 'text-emerald-400' :

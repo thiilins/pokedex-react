@@ -50,7 +50,7 @@ export const MoveList: React.FC<IMoveListProps> = ({
 
       <div className="flex-1 overflow-y-auto max-h-[360px] pr-1.5 space-y-2 custom-scrollbar">
         {filtered.length === 0 ? (
-          <div className="text-[10px] text-slate-600 font-mono py-12 text-center select-none uppercase">
+          <div className="text-[10px] text-slate-400 font-mono py-12 text-center select-none uppercase">
             Nenhum golpe correspondente no banco.
           </div>
         ) : (
@@ -127,7 +127,7 @@ export const MoveList: React.FC<IMoveListProps> = ({
                             </div>
                             <div className="p-2 rounded-lg bg-slate-950/40 border border-white/5 flex flex-col items-center justify-center">
                               <div className="text-slate-500 mb-0.5">CLASSE</div>
-                              <span className={`px-1.5 py-0.5 rounded text-[7px] font-black uppercase ${
+                              <span className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${
                                 details.damageClass === 'physical'
                                   ? 'bg-red-500/10 text-red-400 border border-red-500/20'
                                   : details.damageClass === 'special'

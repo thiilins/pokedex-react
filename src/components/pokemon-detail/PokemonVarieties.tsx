@@ -22,7 +22,7 @@ export const PokemonVarieties: React.FC<IPokemonVarietiesProps> = ({ varieties, 
 
       {!hasVarieties && !hasForms ? (
         <div className="flex flex-col items-center justify-center p-6 border border-white/5 bg-white/[0.02] rounded-xl text-center">
-          <span className="text-[9px] text-slate-600 font-mono uppercase">Sem variações catalogadas.</span>
+          <span className="text-[9px] text-slate-400 font-mono uppercase">Sem variações catalogadas.</span>
         </div>
       ) : (
         <div className="flex flex-col gap-2 overflow-y-auto max-h-[360px] pr-1 custom-scrollbar">
@@ -38,10 +38,10 @@ export const PokemonVarieties: React.FC<IPokemonVarietiesProps> = ({ varieties, 
                   <Image src={getArtworkUrl(v.id)} alt={v.name} width={32} height={32} className="object-contain" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="text-[7px] font-mono text-slate-500 block">#{v.id}</span>
+                  <span className="text-[8px] font-mono text-slate-500 block">#{v.id}</span>
                   <span className={`text-xs font-black capitalize block truncate ${isSelf ? 'text-secondary' : 'text-white'}`}>{v.name.replace(/-/g, ' ')}</span>
                 </div>
-                <span className={`text-[6.5px] font-black px-1.5 py-0.5 rounded border uppercase whitespace-nowrap ${
+                <span className={`text-[8px] font-black px-1.5 py-0.5 rounded border uppercase whitespace-nowrap ${
                   v.is_default ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-white/10 text-slate-400 border-white/5'
                 }`}>{v.is_default ? 'Original' : 'Variante'}</span>
               </Link>

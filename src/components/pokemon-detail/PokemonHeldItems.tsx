@@ -21,7 +21,7 @@ export const PokemonHeldItems: React.FC<IPokemonHeldItemsProps> = ({ heldItems }
               <p className="text-xs font-black text-white truncate">{hi.displayName}</p>
               <div className="flex flex-wrap gap-1 mt-0.5">
                 {hi.version_details.slice(0, 2).map((vd, i) => (
-                  <span key={i} className="text-[6.5px] font-black px-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase whitespace-nowrap">
+                  <span key={i} className="text-[8px] font-black px-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase whitespace-nowrap">
                     {vd.versionName}: {vd.rarity}%
                   </span>
                 ))}
@@ -33,7 +33,7 @@ export const PokemonHeldItems: React.FC<IPokemonHeldItemsProps> = ({ heldItems }
     ) : (
       <div className="flex flex-col items-center justify-center p-6 border border-white/5 bg-white/[0.02] rounded-xl text-center">
         <AlertCircle className="w-5 h-5 text-slate-700 mb-1" />
-        <span className="text-[9px] text-slate-600 font-mono uppercase">Sem itens portados.</span>
+        <span className="text-[9px] text-slate-400 font-mono uppercase">Sem itens portados.</span>
       </div>
     )}
   </div>
