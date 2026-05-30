@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { X, Ruler, Weight, Award, Star, Compass, Heart, Swords, Shield, Zap, ShieldAlert, Gauge, Sparkles, Volume2 } from 'lucide-react'
 import PokemonTypeIcon, { typeStylingMap } from './PokemonTypeIcon'
 import { pokemonTypesIcons } from './PokemonTypeIconData'
+import { useModalA11y } from '@/hooks/useModalA11y'
 
 interface IProps {
   pokemon: any
@@ -19,12 +20,13 @@ const PokemonProfileModal: React.FC<IProps> = ({
   const [activeTab, setActiveTab] = useState<'about' | 'stats' | 'moves'>('about')
   const [isRendered, setIsRendered] = useState(false)
 
+  // A11y: focus trap + ESC + retorno de foco + scroll lock.
+  const dialogRef = useModalA11y<HTMLDivElement>(isOpen, onRequestClose)
+
   useEffect(() => {
     if (isOpen) {
       setIsRendered(true)
-      document.body.style.overflow = 'hidden' 
     } else {
-      document.body.style.overflow = ''
       const timer = setTimeout(() => setIsRendered(false), 300)
       return () => clearTimeout(timer)
     }
@@ -59,11 +61,16 @@ const PokemonProfileModal: React.FC<IProps> = ({
       }`}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-background/85" onClick={onRequestClose} />
+      <div className="absolute inset-0 bg-background/85" onClick={onRequestClose} aria-hidden="true" />
 
       {/* Main Console Container */}
       <div
-        className={`relative w-full rounded-[36px] border ${style.border} bg-[#040714]/95 backdrop-blur-2xl overflow-y-auto md:overflow-hidden shadow-[0_0_60px_rgba(0,240,255,0.15)] flex flex-col md:flex-row transition-all duration-300 max-h-[92vh] md:max-h-[85vh] md:max-w-4xl z-10 ${
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Detalhes de ${pokemon.name}`}
+        tabIndex={-1}
+        className={`relative w-full rounded-[36px] border ${style.border} bg-[#040714]/95 backdrop-blur-2xl overflow-y-auto md:overflow-hidden shadow-[0_0_60px_rgba(0,240,255,0.15)] flex flex-col md:flex-row transition-all duration-300 max-h-[92vh] md:max-h-[85vh] md:max-w-4xl z-10 focus:outline-none ${
           isOpen ? 'scale-100 translate-y-0 shadow-[0_0_60px_rgba(0,240,255,0.2)]' : 'scale-95 translate-y-4'
         }`}
       >
@@ -217,7 +224,10 @@ const PokemonProfileModal: React.FC<IProps> = ({
           </button>
 
           {/* Cyber Menu Tabs (Controller Neon Buttons look!) */}
-          <div className="flex gap-2 border-b border-white/10 pb-4 mb-6 mt-2 md:mt-0">
+          <div
+            role="tablist"
+            aria-label="Seções do Pokémon"
+            className="flex gap-2 border-b border-white/10 pb-4 mb-6 mt-2 md:mt-0">
             {(['about', 'stats', 'moves'] as const).map((tab) => {
               const isActive = activeTab === tab
               const tabLabels = { about: 'Sobre', stats: 'Combate', moves: 'Golpes' }
@@ -225,8 +235,24 @@ const PokemonProfileModal: React.FC<IProps> = ({
               return (
                 <button
                   key={tab}
+                  role="tab"
+                  id={`tab-${tab}`}
+                  aria-selected={isActive}
+                  aria-controls={`tabpanel-${tab}`}
+                  tabIndex={isActive ? 0 : -1}
                   onClick={() => setActiveTab(tab)}
-                  className={`flex-1 md:flex-none px-4 py-2.5 text-xs font-black tracking-widest uppercase rounded-xl transition-all duration-300 active:scale-95 cursor-pointer border ${
+                  onKeyDown={e => {
+                    const order = ['about', 'stats', 'moves'] as const
+                    const idx = order.indexOf(tab)
+                    if (e.key === 'ArrowRight') {
+                      e.preventDefault()
+                      setActiveTab(order[(idx + 1) % order.length])
+                    } else if (e.key === 'ArrowLeft') {
+                      e.preventDefault()
+                      setActiveTab(order[(idx - 1 + order.length) % order.length])
+                    }
+                  }}
+                  className={`flex-1 md:flex-none px-4 py-2.5 text-xs font-black tracking-widest uppercase rounded-xl transition-all duration-300 active:scale-95 cursor-pointer border focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary ${
                     isActive
                       ? `${style.bg} ${style.text} ${style.border} shadow-glow-default scale-102`
                       : 'text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 border-white/5'
@@ -246,7 +272,11 @@ const PokemonProfileModal: React.FC<IProps> = ({
 
             {/* TAB: ABOUT (Holographic database terminal) */}
             {activeTab === 'about' && (
-              <div className="space-y-4 md:space-y-5 animate-fadeIn relative z-10">
+              <div
+                role="tabpanel"
+                id="tabpanel-about"
+                aria-labelledby="tab-about"
+                className="space-y-4 md:space-y-5 animate-fadeIn relative z-10">
                 
                 {/* Description holographic terminal cell */}
                 <div className="relative p-4 rounded-2xl border-l-4 border-secondary bg-secondary/5 border-y border-r border-secondary/15 backdrop-blur-md overflow-hidden">
@@ -300,7 +330,11 @@ const PokemonProfileModal: React.FC<IProps> = ({
 
             {/* TAB: COMBAT STATS (Reactor status console!) */}
             {activeTab === 'stats' && (
-              <div className="space-y-4 animate-fadeIn relative z-10">
+              <div
+                role="tabpanel"
+                id="tabpanel-stats"
+                aria-labelledby="tab-stats"
+                className="space-y-4 animate-fadeIn relative z-10">
                 
                 {/* Grand Combat Index Power Level Radar Badge (Dragon Ball look!) */}
                 <div className="flex items-center justify-between p-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 relative overflow-hidden shadow-glow-electric/5">
@@ -363,7 +397,11 @@ const PokemonProfileModal: React.FC<IProps> = ({
 
             {/* TAB: MOVES (Futuristic Weapons Grid Matrix!) */}
             {activeTab === 'moves' && (
-              <div className="relative flex-1 min-h-[180px] md:min-h-0 relative z-10">
+              <div
+                role="tabpanel"
+                id="tabpanel-moves"
+                aria-labelledby="tab-moves"
+                className="relative flex-1 min-h-[180px] md:min-h-0 relative z-10">
                 <div className="absolute inset-0 overflow-y-auto pr-1.5 space-y-2 max-h-[220px] md:max-h-[250px] custom-scrollbar">
                   <div className="grid grid-cols-2 gap-2">
                     {pokemon.moves.map((move: any) => (

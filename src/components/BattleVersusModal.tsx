@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { X, Swords, Trophy, Heart, Shield, Zap, ShieldAlert, Gauge, Star, Volume2, Play, Pause, RotateCcw, Gamepad2, Cpu } from 'lucide-react'
 import PokemonTypeIcon, { typeStylingMap } from './PokemonTypeIcon'
 import { getTypeEffectiveness, PokemonType } from '@/utils/typeMatchups'
+import { useModalA11y } from '@/hooks/useModalA11y'
 
 interface IProps {
   pokemonA: any
@@ -213,12 +214,13 @@ const BattleVersusModal: React.FC<IProps> = ({
   const autoSimTimerRef = useRef<NodeJS.Timeout | null>(null)
   const logContainerRef = useRef<HTMLDivElement | null>(null)
 
+  // A11y: focus trap + ESC + retorno de foco + scroll lock.
+  const dialogRef = useModalA11y<HTMLDivElement>(isOpen, onClose)
+
   useEffect(() => {
     if (isOpen) {
       setIsRendered(true)
-      document.body.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = ''
       const timer = setTimeout(() => setIsRendered(false), 300)
       resetBattleState()
       return () => {
@@ -688,11 +690,16 @@ const BattleVersusModal: React.FC<IProps> = ({
       }`}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-background/90" onClick={onClose} />
+      <div className="absolute inset-0 bg-background/90" onClick={onClose} aria-hidden="true" />
 
       {/* Cyber Combat Arena Container */}
       <div
-        className={`relative w-full max-w-5xl rounded-[36px] border border-white/10 bg-gradient-to-b from-[#030616]/95 via-[#080d24]/98 to-[#030616]/95 backdrop-blur-2xl overflow-y-auto max-h-[92vh] md:max-h-[85vh] shadow-2xl p-5 md:p-10 flex flex-col justify-between transition-all duration-300 z-10 ${
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Arena de Duelo Pokémon"
+        tabIndex={-1}
+        className={`relative w-full max-w-5xl rounded-[36px] border border-white/10 bg-gradient-to-b from-[#030616]/95 via-[#080d24]/98 to-[#030616]/95 backdrop-blur-2xl overflow-y-auto max-h-[92vh] md:max-h-[85vh] shadow-2xl p-5 md:p-10 flex flex-col justify-between transition-all duration-300 z-10 focus:outline-none ${
           isOpen ? 'scale-100 translate-y-0 shadow-[0_0_80px_rgba(0,240,255,0.3)]' : 'scale-95 translate-y-4'
         }`}
       >
@@ -702,9 +709,10 @@ const BattleVersusModal: React.FC<IProps> = ({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 md:top-6 md:right-6 p-2 rounded-full border border-white/10 bg-white/5 text-white/60 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer z-20"
+          aria-label="Fechar arena de duelo"
+          className="absolute top-4 right-4 md:top-6 md:right-6 p-2 rounded-full border border-white/10 bg-white/5 text-white/60 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer z-20 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
         >
-          <X className="w-5 h-5" />
+          <X className="w-5 h-5" aria-hidden="true" />
         </button>
 
         {/* HEADER SECTION (Battle Status) */}
