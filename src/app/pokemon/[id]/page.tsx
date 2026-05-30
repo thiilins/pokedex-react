@@ -9,12 +9,10 @@ interface IPageProps {
   params: Promise<{ id: string }>
 }
 
-// Pré-renderiza as 1025 fichas no build (dados imutáveis + use cache = full static).
-export async function generateStaticParams() {
-  return Array.from({ length: TOTAL_POKEMON }, (_, i) => ({
-    id: String(i + 1)
-  }))
-}
+// Nota: NÃO usamos generateStaticParams para as 1025 fichas — prerenderizar todas
+// no build estoura USE_CACHE_TIMEOUT (cada ficha encadeia vários fetches à PokeAPI).
+// As fichas são geradas on-demand com PPR + use cache (cache no primeiro acesso) e
+// permanecem indexáveis via sitemap.ts.
 
 export async function generateMetadata({
   params
