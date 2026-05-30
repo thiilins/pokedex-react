@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Swords, ExternalLink } from 'lucide-react'
+import { Swords, ExternalLink, AlertCircle, RotateCw } from 'lucide-react'
 import PokemonTypeIcon, { typeStylingMap } from './PokemonTypeIcon'
 
 interface IProps {
@@ -37,12 +37,16 @@ const PokemonCard: React.FC<IProps> = ({
 }) => {
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const [opening, setOpening] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
 
   useEffect(() => {
     let isMounted = true
     const loadCard = async () => {
       try {
+        setLoading(true)
+        setError(false)
         // Versão LEVE via Route Handler GET — requisições paralelas (não enfileiradas),
         // cacheadas no browser/CDN. Busca uma vez por id; o modal puxa o completo ao clicar.
         const res = await fetch(`/api/pokemon/${pokemonId}`)
@@ -54,13 +58,18 @@ const PokemonCard: React.FC<IProps> = ({
         }
       } catch (err) {
         console.error('Error fetching pokemon card:', err)
+        // Sem isto o card ficaria preso no skeleton para sempre.
+        if (isMounted) {
+          setError(true)
+          setLoading(false)
+        }
       }
     }
     loadCard()
     return () => {
       isMounted = false
     }
-  }, [pokemonId])
+  }, [pokemonId, retryCount])
 
   // Abre o modal com o detalhe COMPLETO, buscado sob demanda (só ao clicar).
   const handleOpen = useCallback(async () => {
@@ -83,6 +92,28 @@ const PokemonCard: React.FC<IProps> = ({
       setOpening(false)
     }
   }, [pokemonId, pokemonCache, onDataLoaded, setPokemonModalData, setOpen])
+
+  // Estado de erro: fetch do card falhou — oferece retry em vez de skeleton eterno.
+  if (error && !loading) {
+    return (
+      <div
+        role="alert"
+        className="w-full rounded-[24px] bg-white/[0.03] border border-red-500/20 overflow-hidden flex flex-col items-center justify-center gap-3 p-6 min-h-[260px] text-center">
+        <AlertCircle className="w-8 h-8 text-red-400/70" />
+        <p className="text-[11px] font-mono text-slate-400 leading-relaxed">
+          Falha ao carregar
+          <br />
+          <span className="text-white/40">#{String(pokemonId).padStart(4, '0')}</span>
+        </p>
+        <button
+          onClick={() => setRetryCount(c => c + 1)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest text-secondary bg-secondary/10 border border-secondary/30 hover:bg-secondary/20 active:scale-95 transition-all cursor-pointer">
+          <RotateCw className="w-3 h-3" />
+          Tentar de novo
+        </button>
+      </div>
+    )
+  }
 
   // Skeleton premium
   if (loading || !data) {

@@ -4,7 +4,6 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { toPng } from 'html-to-image'
 import { AlertCircle } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
 import { typeStylingMap } from '@/components/PokemonTypeIcon'
 import { usePokedex } from '@/contexts/PokedexContext'
@@ -32,7 +31,6 @@ const getArtworkUrl = (id: string) =>
   `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
 
 export default function PokemonPageClient({ data, currentId }: IPokemonPageClientProps) {
-  const router = useRouter()
   const { setPokemonInCache } = usePokedex()
 
   // Sincroniza dados com o cache global do cliente

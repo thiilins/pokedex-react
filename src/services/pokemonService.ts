@@ -4,10 +4,21 @@ import { cacheLife, cacheTag } from 'next/cache'
 const BASE_URL = 'https://pokeapi.co/api/v2'
 
 // Função auxiliar interna para realizar requisições normais sem opções legadas de cache
+const ALLOWED_HOSTS = new Set(['pokeapi.co', 'raw.githubusercontent.com'])
+
 async function fetchFromApi(path: string) {
   const cleanPath = path.startsWith('http')
     ? path
     : `${BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`
+
+  // Hardening SSRF: URLs absolutas só podem apontar para hosts conhecidos da PokeAPI.
+  // Protege caso a própria API retorne uma URL inesperada/maliciosa.
+  if (path.startsWith('http')) {
+    const host = new URL(cleanPath).hostname
+    if (!ALLOWED_HOSTS.has(host)) {
+      throw new Error(`Blocked fetch to disallowed host: ${host}`)
+    }
+  }
 
   // Requisição feita de forma normal, delegando o caching inteiramente ao Next.js 16
   const res = await fetch(cleanPath)

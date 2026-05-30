@@ -97,8 +97,8 @@ export interface IPokemonDetailPageDataProps {
   image: string | null
 }
 export interface IPokemonResumeProps {
-  name: strings
-  japan_name: any
+  name: string
+  japan_name: string
   id: number
   types: {
     slot: number
