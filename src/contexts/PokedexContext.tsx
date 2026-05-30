@@ -42,6 +42,8 @@ interface PokedexContextType {
 
   // Pokémon do Dia
   featuredPokemon: any
+
+
 }
 
 const PokedexContext = createContext<PokedexContextType | undefined>(undefined)
@@ -208,7 +210,7 @@ export const PokedexProvider: React.FC<{
     toggleCompare,
     clearCompare,
     handleSelectSlot,
-    featuredPokemon
+    featuredPokemon,
   }), [
     allPokemons,
     typeFilteredPokemons,
@@ -223,7 +225,7 @@ export const PokedexProvider: React.FC<{
     toggleCompare,
     clearCompare,
     handleSelectSlot,
-    featuredPokemon
+    featuredPokemon,
   ])
 
   return (
