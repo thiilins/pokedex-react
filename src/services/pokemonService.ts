@@ -1,5 +1,11 @@
 import getId from '@/utils/getId'
 import { cacheLife, cacheTag } from 'next/cache'
+import { TOTAL_POKEMON } from '@/constants/pokemon'
+import type {
+  PokemonCardData,
+  PokemonDetailData,
+  PokemonListItem
+} from '@/types/pokemon-data'
 
 const BASE_URL = 'https://pokeapi.co/api/v2'
 
@@ -68,12 +74,12 @@ const extractRetroSprites = (versionsObj: any) => {
  * Service SSR com a diretiva 'use cache' no nível da função (conforme a doc)
  * Busca a listagem indexada de todos os 1025 Pokémon de forma isolada no servidor.
  */
-export async function getCachedAllPokemons() {
+export async function getCachedAllPokemons(): Promise<PokemonListItem[]> {
   'use cache'
   cacheLife('max')
   cacheTag('all-pokemons')
   try {
-    const res = await fetchFromApi('/pokemon?limit=1025')
+    const res = await fetchFromApi(`/pokemon?limit=${TOTAL_POKEMON}`)
     return res.data.results.map((item: any) => ({
       name: item.name,
       url: item.url,
@@ -91,7 +97,7 @@ export async function getCachedAllPokemons() {
  * abilities, forms ou moves. Suficiente para renderizar o card; o detalhe
  * completo só é buscado ao abrir o modal/ficha.
  */
-export async function getCachedPokemonCard(id: number) {
+export async function getCachedPokemonCard(id: number): Promise<PokemonCardData> {
   'use cache'
   cacheLife('max')
   cacheTag(`pokemon-card-${id}`)
@@ -148,7 +154,7 @@ export async function getCachedPokemonCard(id: number) {
  * Service SSR com a diretiva 'use cache' no nível da função (conforme a doc)
  * Busca e consolida os detalhes completos de um Pokémon por ID no servidor.
  */
-export async function getCachedPokemonDetail(id: number) {
+export async function getCachedPokemonDetail(id: number): Promise<PokemonDetailData> {
   'use cache'
   cacheLife('max')
   cacheTag(`pokemon-${id}`)
@@ -383,7 +389,7 @@ export async function getCachedPokemonsByType(selectedType: string) {
         url: item.pokemon.url,
         id: getId(item.pokemon.url)
       }))
-      .filter((p: any) => parseInt(p.id) <= 1025)
+      .filter((p: any) => parseInt(p.id) <= TOTAL_POKEMON)
   } catch (err) {
     console.error(
       `Error in pokemonService.getCachedPokemonsByType for type ${selectedType}:`,

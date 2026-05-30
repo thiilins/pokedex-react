@@ -1,9 +1,8 @@
 import { getCachedPokemonDetail } from '@/services/pokemonService'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { TOTAL_POKEMON } from '@/constants/pokemon'
 import PokemonPageClient from './PokemonPageClient'
-
-const TOTAL_POKEMON = 1025
 
 interface IPageProps {
   params: Promise<{ id: string }>

@@ -6,12 +6,13 @@ import {
   fetchPokemonDetailAction,
   fetchPokemonsByTypeAction
 } from '@/services/pokemonActions'
+import type {
+  PokemonDetailData,
+  PokemonListItem
+} from '@/types/pokemon-data'
 
-export interface IPokemonListItem {
-  name: string
-  url: string
-  id: string
-}
+// Mantido como alias por compatibilidade com os imports existentes.
+export type IPokemonListItem = PokemonListItem
 
 interface PokedexContextType {
   // Lista de todos os Pokémons
@@ -28,8 +29,8 @@ interface PokedexContextType {
   setSortBy: (sort: string) => void
 
   // Cache global de dados de Pokémon
-  pokemonCache: Record<string, any>
-  setPokemonInCache: (id: string, parsedData: any) => void
+  pokemonCache: Record<string, PokemonDetailData>
+  setPokemonInCache: (id: string, parsedData: PokemonDetailData) => void
 
   // Arena de Batalha (Versus)
   compareList: string[]
@@ -64,7 +65,7 @@ export const PokedexProvider: React.FC<{
   const [sortBy, setSortBy] = useState('id-asc')
 
   // Cache global
-  const [pokemonCache, setPokemonCache] = useState<Record<string, any>>({})
+  const [pokemonCache, setPokemonCache] = useState<Record<string, PokemonDetailData>>({})
 
   // Arena de Batalha
   const [compareList, setCompareList] = useState<string[]>([])
@@ -125,7 +126,7 @@ export const PokedexProvider: React.FC<{
   }, [selectedType])
 
   // Método para adicionar/atualizar itens no cache global
-  const setPokemonInCache = useCallback((id: string, parsedData: any) => {
+  const setPokemonInCache = useCallback((id: string, parsedData: PokemonDetailData) => {
     setPokemonCache(prev => {
       // Compara por referência/id em vez de JSON.stringify (que serializava o
       // objeto inteiro com moves a cada chamada — caro no hot path).

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
+import { TOTAL_POKEMON } from '@/constants/pokemon'
 
 const SITE_URL = 'https://td-pokedex-react.vercel.app'
-const TOTAL_POKEMON = 1025
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const fichas: MetadataRoute.Sitemap = Array.from(
