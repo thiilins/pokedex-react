@@ -121,3 +121,6 @@ pnpm-lock.yaml
 .next/
 pnpm-workspace.yaml
 
+
+# Wiki do repo (clone local, editar/pushar de dentro de .wiki/)
+.wiki/
