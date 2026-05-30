@@ -33,8 +33,10 @@ const Header: React.FC<IHeaderProps> = ({
       <div className="mx-auto flex max-w-7xl flex-col gap-3.5 sm:flex-row sm:items-center sm:justify-between">
         {/* Logo and branding */}
         <div className="flex items-center justify-between sm:justify-start gap-4">
-          <div
-            className="flex items-center gap-3 cursor-pointer select-none group"
+          <button
+            type="button"
+            aria-label="Voltar ao início e redefinir filtros"
+            className="flex items-center gap-3 cursor-pointer select-none group rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
             onClick={() => {
               setSearchQuery('')
               setSelectedType('')
@@ -52,7 +54,7 @@ const Header: React.FC<IHeaderProps> = ({
             <span className="hidden md:inline-block text-[9px] font-black px-2 py-0.5 rounded bg-secondary/15 text-secondary border border-secondary/20 tracking-wider">
               POKÉDEX DATABASE
             </span>
-          </div>
+          </button>
 
           {/* Arena Duelo Launcher Button (Mobile - Clean and highly responsive!) */}
           <button
@@ -67,13 +69,20 @@ const Header: React.FC<IHeaderProps> = ({
         <div className="flex flex-col gap-3 md:flex-row md:items-center flex-1 max-w-4xl justify-end">
           {/* Search Input */}
           <div className="relative flex-1 min-w-[160px]">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <label htmlFor="pokemon-search" className="sr-only">
+              Buscar Pokémon por nome ou número
+            </label>
+            <Search
+              aria-hidden="true"
+              className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+            />
             <input
+              id="pokemon-search"
               type="text"
               placeholder="Buscar por nome ou ID..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-white/10 bg-white/5 text-white placeholder-slate-400 transition-all duration-300 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary focus:bg-white/10"
+              className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-white/10 bg-white/5 text-white placeholder-slate-400 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus:border-secondary focus:bg-white/10"
             />
             {searchQuery && (
               <button
@@ -88,10 +97,15 @@ const Header: React.FC<IHeaderProps> = ({
           <div className="flex items-center gap-2">
             {/* Filter by Type */}
             <div className="relative flex-1 sm:flex-none">
+              <label htmlFor="filter-type" className="sr-only">
+                Filtrar por tipo
+              </label>
               <select
+                id="filter-type"
+                aria-label="Filtrar por tipo"
                 value={selectedType}
                 onChange={e => setSelectedType(e.target.value)}
-                className="w-full appearance-none pl-3 pr-8 py-2 text-xs sm:text-sm rounded-xl border border-white/10 bg-white/5 text-white cursor-pointer transition-all duration-300 focus:outline-none focus:border-secondary focus:bg-white/10">
+                className="w-full appearance-none pl-3 pr-8 py-2 text-xs sm:text-sm rounded-xl border border-white/10 bg-white/5 text-white cursor-pointer transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus:border-secondary focus:bg-white/10">
                 <option value="" className="bg-background text-white">
                   Todos os Tipos
                 </option>
@@ -109,10 +123,15 @@ const Header: React.FC<IHeaderProps> = ({
 
             {/* Sort Order Selector */}
             <div className="relative flex-1 sm:flex-none">
+              <label htmlFor="sort-order" className="sr-only">
+                Ordenar por
+              </label>
               <select
+                id="sort-order"
+                aria-label="Ordenar por"
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value)}
-                className="w-full appearance-none pl-3 pr-8 py-2 text-xs sm:text-sm rounded-xl border border-white/10 bg-white/5 text-white cursor-pointer transition-all duration-300 focus:outline-none focus:border-secondary focus:bg-white/10">
+                className="w-full appearance-none pl-3 pr-8 py-2 text-xs sm:text-sm rounded-xl border border-white/10 bg-white/5 text-white cursor-pointer transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus:border-secondary focus:bg-white/10">
                 <option value="id-asc" className="bg-background text-white">
                   Nº Crescente
                 </option>

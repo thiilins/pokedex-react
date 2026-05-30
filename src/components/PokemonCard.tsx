@@ -153,8 +153,17 @@ const PokemonCard: React.FC<IProps> = ({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label={`Ver detalhes de ${data.name}, #${String(data.id).padStart(4, '0')}`}
       onClick={handleOpen}
-      className={`group relative flex flex-col w-full rounded-[24px] border overflow-hidden cursor-pointer select-none transition-all duration-400 hover:-translate-y-1.5 active:scale-[0.98] ${
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleOpen()
+        }
+      }}
+      className={`group relative flex flex-col w-full rounded-[24px] border overflow-hidden cursor-pointer select-none transition-all duration-400 hover:-translate-y-1.5 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
         isComparing
           ? 'border-secondary ring-1 ring-secondary/40 shadow-glow-cyan/20'
           : `${style.border} hover:border-white/20`
@@ -199,10 +208,11 @@ const PokemonCard: React.FC<IProps> = ({
           <Link
             href={`/pokemon/${data.id}`}
             onClick={e => e.stopPropagation()}
-            className="p-1.5 rounded-lg border border-white/5 bg-white/5 text-white/30 hover:text-secondary hover:bg-secondary/10 hover:border-secondary/30 transition-all duration-200 cursor-pointer"
+            aria-label={`Ver ficha completa de ${data.name}`}
+            className="p-1.5 rounded-lg border border-white/5 bg-white/5 text-white/30 hover:text-secondary hover:bg-secondary/10 hover:border-secondary/30 transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
             title="Ver ficha completa"
           >
-            <ExternalLink className="w-3 h-3" />
+            <ExternalLink className="w-3 h-3" aria-hidden="true" />
           </Link>
 
           {/* Botão arena */}
@@ -212,14 +222,20 @@ const PokemonCard: React.FC<IProps> = ({
               onCompareToggle(pokemonId)
             }}
             disabled={!isComparing && compareListLength >= 2}
-            className={`p-1.5 rounded-lg border transition-all duration-300 active:scale-90 disabled:opacity-20 disabled:pointer-events-none cursor-pointer ${
+            aria-label={
+              isComparing
+                ? `Remover ${data.name} do combate`
+                : `Adicionar ${data.name} ao combate`
+            }
+            aria-pressed={isComparing}
+            className={`p-1.5 rounded-lg border transition-all duration-300 active:scale-90 disabled:opacity-20 disabled:pointer-events-none cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary ${
               isComparing
                 ? 'bg-secondary text-slate-950 border-secondary shadow-glow-cyan/40 scale-105'
                 : 'bg-white/5 text-white/35 border-white/10 hover:text-white hover:bg-white/10 hover:border-white/20'
             }`}
             title={isComparing ? 'Remover do combate' : 'Adicionar ao combate'}
           >
-            <Swords className="w-3.5 h-3.5" />
+            <Swords className="w-3.5 h-3.5" aria-hidden="true" />
           </button>
         </div>
       </div>
